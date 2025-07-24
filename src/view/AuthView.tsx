@@ -102,7 +102,7 @@ export const AuthView: React.FC = () => {
       </div>
 
       {/* 样式定义 */}
-      <style jsx>{`
+      <style>{`
         @keyframes blob {
           0% {
             transform: translate(0px, 0px) scale(1);

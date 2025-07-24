@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useAtom } from 'jotai'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
@@ -11,8 +11,6 @@ import {
   previousStepAtom,
   isInitializationCompletedAtom,
   isInitializationSkippedAtom,
-  type InitializationStep,
-  type PetInfo,
 } from '@/store/PetState'
 
 import { authStateAtom, updateUserAtom } from '@/store/AuthState'
@@ -113,7 +111,7 @@ export const PetInitializationView: React.FC = () => {
     setLoading(true)
     
     try {
-      const response = await PetService.initializePetInfo(petInfo, authState.accessToken)
+      await PetService.initializePetInfo(petInfo, authState.accessToken)
       
       // 更新用户状态
       updateUser({

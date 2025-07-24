@@ -18,8 +18,7 @@ export default defineConfig({
             '/api': {
                 target: 'http://localhost:8080',
                 changeOrigin: true,
-                // 不需要 rewrite，因为API路径本身就包含 /api
-                // rewrite: (path) => path.replace(/^\/api/, ''),
+                rewrite: function (path) { return path.replace(/^\/api/, ''); }, // 移除/api前缀，因为后端路径不包含/api
             },
         },
     },

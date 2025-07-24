@@ -369,6 +369,11 @@ module.exports = {
             },
             fontFamily: {
                 sans: [
+                    '"LXGW Bright"',
+                    '"LXGW Bright SemiLight"',
+                    '"PingFang SC"',
+                    '"Hiragino Sans GB"',
+                    '"Microsoft YaHei"',
                     'ui-sans-serif',
                     'system-ui',
                     '-apple-system',

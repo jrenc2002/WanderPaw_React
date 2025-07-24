@@ -1,5 +1,5 @@
 import axios, { type AxiosResponse } from 'axios'
-import type { LoginForm, RegisterForm, User } from '@/store/AuthState'
+import type { LoginForm, RegisterForm } from '@/store/AuthState'
 
 // API基础配置
 const API_BASE_URL = 'http://localhost:8080' // 直接请求方式（已修复CORS）
@@ -198,7 +198,7 @@ export class AuthService {
   static async testConnection(): Promise<{ success: boolean; message: string }> {
     try {
       // 使用认证相关的端点测试连接
-      const response = await axios.options(`${API_BASE_URL}${API_PREFIX}/register`, {
+      await axios.options(`${API_BASE_URL}${API_PREFIX}/register`, {
         timeout: 5000,
       })
       

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+/* 霞鹜文楷 Bright 字体已在 HTML 中导入 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25,9 +25,9 @@
 
 /* 优化地图文字渲染 */
 .leaflet-container {
-  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Noto Sans CJK SC", Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Noto Sans CJK SC", Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   letter-spacing: 0.02em;
-  font-weight: 500;
+  font-weight: 400;
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
@@ -44,16 +44,16 @@
 .leaflet-container .leaflet-popup-content,
 .leaflet-container .leaflet-tooltip,
 .leaflet-container .custom-div-icon {
-  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   font-size: 14px !important; /* 增大中文字体尺寸提高清晰度 */
-  font-weight: 500 !important; /* 稍微加粗中文字体增强可读性 */
+  font-weight: 400 !important; /* 使用霞鹜文楷的默认字重 */
   letter-spacing: 0.01em !important;
 }
 
 /* 特别针对中文字体类 */
 .zh-text {
-  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif !important;
-  font-weight: 550 !important; 
+  font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif !important;
+  font-weight: 400 !important; 
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
   letter-spacing: 0.03em !important;
@@ -71,8 +71,8 @@
   background: rgba(255,255,255,0.8);
   padding: 2px 6px;
   border-radius: 4px;
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
-  font-weight: 600 !important;
+  font-family: 'LXGW Bright Medium', 'LXGW Bright', "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-weight: 400 !important;
   font-size: 13px !important;
   color: #333;
   line-height: 1.2;
@@ -89,8 +89,8 @@
 
 /* 优化中文标记点内字体 */
 .custom-div-icon span {
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
-  font-weight: 600 !important;
+  font-family: 'LXGW Bright Medium', 'LXGW Bright', "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-weight: 400 !important;
   text-shadow: 0 1px 1px rgba(0,0,0,0.15) !important;
 }
 
@@ -117,7 +117,7 @@
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -146,6 +146,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Inter, system-ui, sans-serif;
+  font-weight: 400;
 }
 
 h1 {
