@@ -62,9 +62,9 @@ export function DockObject(): React.ReactElement {
 
 
   return (
-    <div className=" z-50  bg-background absolute  flex  bottom-4   flex-col items-center  justify-center rounded-lg h-20">
+    <div className="z-50 bg-background absolute flex bottom-4 left-4 flex-col items-center justify-center rounded-lg h-20">
 
-      <Dock className="relative  bg-[rgba(255,255,255)] hover:bg-[rgb(255,255,255)] dark:bg-zinc-800 dark:hover:bg-zinc-700 duration-200 hover:backdrop-blur-xl  ">
+      <Dock className="relative bg-[rgba(255,255,255)] hover:bg-[rgb(255,255,255)] dark:bg-zinc-800 dark:hover:bg-zinc-700 duration-200 hover:backdrop-blur-xl">
  
 
         <DockIcon
