@@ -1,5 +1,5 @@
-// Leaflet地图使用的示例数据
-export interface InteractivePoint {
+// 地图数据类型定义
+export interface MapPoint {
   id: string
   position: [number, number] // [lat, lng]
   title: string
@@ -15,8 +15,45 @@ export interface InteractivePoint {
   }
 }
 
-// 中国主要城市的躺平指数数据
-export const chineseCitiesData: InteractivePoint[] = [
+export interface MapRoute {
+  id: string
+  name: string
+  description?: string
+  waypoints: Array<{
+    position: [number, number] // [lat, lng]
+    name?: string
+  }>
+  style?: {
+    color?: string
+    weight?: number
+    opacity?: number
+    dashArray?: string
+  }
+  travelMode?: 'driving' | 'walking' | 'transit' | 'bicycling'
+  // 🌟 简单弯曲配置
+  curveStyle?: {
+    enabled?: boolean        // 是否启用弯曲
+    intensity?: number      // 弯曲强度 (0.1-1.0，默认0.3)
+  }
+}
+
+export interface MapConfig {
+  center: [number, number]
+  zoom: number
+  points: MapPoint[]
+  routes: MapRoute[]
+}
+
+// 默认样式配置
+export const defaultRouteStyle = {
+  color: '#3388ff',
+  weight: 4,
+  opacity: 0.8,
+  dashArray: ''
+}
+
+// 中国主要城市的数据
+export const chineseCitiesData: MapPoint[] = [
   {
     id: 'beijing',
     position: [39.9042, 116.4074],
@@ -199,113 +236,149 @@ export const chineseCitiesData: InteractivePoint[] = [
   }
 ]
 
-// 全球主要城市数据
-export const globalCitiesData: InteractivePoint[] = [
+// 示例路线数据 - 展示可爱弯曲线条！🎨
+export const sampleRoutes: MapRoute[] = [
   {
-    id: 'tokyo',
-    position: [35.6762, 139.6503],
-    title: '东京',
-    description: 'Japan\'s capital, high living standards',
-    tangpingIndex: 40,
-    data: {
-      averageSalary: 45000,
-      rentPrice: 120000,
-      currency: 'JPY',
-      workLifeBalance: '一般',
-      costOfLiving: 88,
-      qualityOfLife: 85
+    id: 'beijing-shanghai',
+    name: '京沪高铁',
+    description: '连接北京和上海的高速铁路',
+    waypoints: [
+      { position: [39.9042, 116.4074], name: '北京' },
+      { position: [34.8114, 117.1175], name: '徐州' },
+      { position: [32.0603, 118.7969], name: '南京' },
+      { position: [31.2304, 121.4737], name: '上海' }
+    ],
+    style: {
+      color: '#ff4444',
+      weight: 6,
+      opacity: 0.9
+    },
+    travelMode: 'transit',
+    // 🚄 高铁线路：微妙弯曲
+    curveStyle: {
+      enabled: true,
+      intensity: 0.3
     }
   },
   {
-    id: 'seoul',
-    position: [37.5665, 126.9780],
-    title: '首尔',
-    description: 'South Korea\'s dynamic capital',
-    tangpingIndex: 35,
-    data: {
-      averageSalary: 3500000,
-      rentPrice: 800000,
-      currency: 'KRW',
-      workLifeBalance: '较差',
-      costOfLiving: 85,
-      qualityOfLife: 80
+    id: 'beijing-shenzhen',
+    name: '京深高速',
+    description: '从北京到深圳的高速公路',
+    waypoints: [
+      { position: [39.9042, 116.4074], name: '北京' },
+      { position: [30.5928, 114.3055], name: '武汉' },
+      { position: [23.1291, 113.2644], name: '广州' },
+      { position: [22.5431, 114.0579], name: '深圳' }
+    ],
+    style: {
+      color: '#44ff44',
+      weight: 5,
+      opacity: 0.8
+    },
+    travelMode: 'driving',
+    // 🛣️ 高速公路：轻微弯曲
+    curveStyle: {
+      enabled: true,
+      intensity: 0.25
     }
   },
   {
-    id: 'singapore',
-    position: [1.3521, 103.8198],
-    title: '新加坡',
-    description: 'Garden city with high quality of life',
-    tangpingIndex: 60,
-    data: {
-      averageSalary: 6500,
-      rentPrice: 2800,
-      currency: 'SGD',
-      workLifeBalance: '良好',
-      costOfLiving: 90,
-      qualityOfLife: 92
-    }
-  },
-  {
-    id: 'bangkok',
-    position: [13.7563, 100.5018],
-    title: '曼谷',
-    description: 'Thailand\'s vibrant capital',
-    tangpingIndex: 80,
-    data: {
-      averageSalary: 25000,
-      rentPrice: 8000,
-      currency: 'THB',
-      workLifeBalance: '很好',
-      costOfLiving: 45,
-      qualityOfLife: 75
-    }
-  },
-  {
-    id: 'amsterdam',
-    position: [52.3676, 4.9041],
-    title: '阿姆斯特丹',
-    description: 'Netherlands\' liberal capital',
-    tangpingIndex: 85,
-    data: {
-      averageSalary: 4500,
-      rentPrice: 1800,
-      currency: 'EUR',
-      workLifeBalance: '优秀',
-      costOfLiving: 82,
-      qualityOfLife: 95
-    }
-  },
-  {
-    id: 'copenhagen',
-    position: [55.6761, 12.5683],
-    title: '哥本哈根',
-    description: 'Denmark\'s happiest city',
-    tangpingIndex: 90,
-    data: {
-      averageSalary: 45000,
-      rentPrice: 12000,
-      currency: 'DKK',
-      workLifeBalance: '优秀',
-      costOfLiving: 88,
-      qualityOfLife: 98
+    id: 'hangzhou-chengdu',
+    name: '杭蓉高速',
+    description: '从杭州到成都的旅游路线',
+    waypoints: [
+      { position: [30.2741, 120.1551], name: '杭州' },
+      { position: [32.0603, 118.7969], name: '南京' },
+      { position: [34.3416, 108.9398], name: '西安' },
+      { position: [30.5728, 104.0668], name: '成都' }
+    ],
+    style: {
+      color: '#4444ff',
+      weight: 4,
+      opacity: 0.7,
+      dashArray: '10,5'
+    },
+    travelMode: 'driving',
+    // 🏞️ 旅游线路：自然弯曲
+    curveStyle: {
+      enabled: true,
+      intensity: 0.4
     }
   }
 ]
 
 // 根据缩放级别返回不同的数据
-export const getPointsByZoom = (zoom: number): InteractivePoint[] => {
+export const getPointsByZoom = (zoom: number): MapPoint[] => {
   if (zoom >= 8) {
     // 高缩放级别显示所有城市
-    return [...chineseCitiesData, ...globalCitiesData]
+    return chineseCitiesData
   } else if (zoom >= 5) {
     // 中等缩放级别显示主要城市
-    return [
-      ...chineseCitiesData.filter(city => ['beijing', 'shanghai', 'shenzhen', 'guangzhou', 'chengdu'].includes(city.id)),
-      ...globalCitiesData
-    ]
+    return chineseCitiesData.filter(city => 
+      ['beijing', 'shanghai', 'shenzhen', 'guangzhou', 'chengdu', 'hangzhou'].includes(city.id)
+    )
   } else {
-    // 低缩放级别只显示全球主要城市
-    return globalCitiesData
+    // 低缩放级别只显示主要城市
+    return chineseCitiesData.filter(city => 
+      ['beijing', 'shanghai', 'shenzhen', 'chengdu'].includes(city.id)
+    )
   }
+}
+
+// 根据缩放级别返回路线数据
+export const getRoutesByZoom = (zoom: number): MapRoute[] => {
+  if (zoom >= 6) {
+    return sampleRoutes
+  } else if (zoom >= 4) {
+    return sampleRoutes.filter(route => 
+      ['beijing-shanghai', 'beijing-shenzhen'].includes(route.id)
+    )
+  } else {
+    return []
+  }
+}
+
+// 默认地图配置
+export const defaultMapConfig: MapConfig = {
+  center: [35.0, 110.0], // 中国中心
+  zoom: 4,
+  points: getPointsByZoom(4),
+  routes: getRoutesByZoom(4)
+}
+
+// JSON配置示例
+export const mapConfigExample = {
+  center: [35.0, 110.0],
+  zoom: 5,
+  points: [
+    {
+      id: 'example-city',
+      position: [39.9042, 116.4074],
+      title: '示例城市',
+      description: '这是一个示例城市',
+      tangpingIndex: 60,
+      data: {
+        averageSalary: 8000,
+        rentPrice: 3000,
+        currency: 'CNY'
+      }
+    }
+  ],
+  routes: [
+    {
+      id: 'example-route',
+      name: '示例路线',
+      description: '这是一个示例路线',
+      waypoints: [
+        { position: [39.9042, 116.4074], name: '起点' },
+        { position: [31.2304, 121.4737], name: '终点' }
+      ],
+      style: {
+        color: '#ff6600',
+        weight: 5,
+        opacity: 0.8
+      },
+      travelMode: 'driving'
+    }
+  ]
 } 

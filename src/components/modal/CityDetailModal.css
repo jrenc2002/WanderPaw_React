@@ -1,0 +1,312 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+:root {
+  --city-gap: 85px;
+}
+
+/* 弹窗背景 */
+.city-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  font-family: "Inter", sans-serif;
+}
+
+/* 弹窗容器 */
+.city-modal-container {
+  position: relative;
+  width: 90vw;
+  max-width: 900px;
+  height: 80vh;
+  max-height: 700px;
+  background-color: #eeeced;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* 关闭按钮 */
+.city-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  z-index: 10001;
+}
+
+.city-modal-close:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.city-modal-close:active {
+  transform: scale(0.95);
+}
+
+/* 卡片区域 */
+.city-modal-cards {
+  position: relative;
+  width: 400px;
+  height: 200px;
+  margin-bottom: 40px;
+}
+
+.city-card {
+  position: absolute;
+  width: 200px;
+  aspect-ratio: 1;
+  border: 8px solid #fff;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  left: 50%;
+  top: 50%;
+  margin-left: -100px; /* -width/2 to center */
+  margin-top: -100px;  /* -height/2 to center */
+  transform-origin: center center;
+}
+
+.city-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 城市信息区域 */
+.city-modal-info {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 30px;
+}
+
+.city-info-main {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.city-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.city-description {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.city-tangping {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.2rem;
+}
+
+.tangping-label {
+  color: #555;
+  font-weight: 500;
+}
+
+.tangping-value {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+/* 数据网格 */
+.city-data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.city-data-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.data-icon {
+  font-size: 1.2rem;
+  min-width: 24px;
+}
+
+.data-label {
+  color: #666;
+  font-size: 0.9rem;
+  min-width: 80px;
+}
+
+.data-value {
+  color: #333;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+/* 底部操作区域 */
+.city-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin-top: auto;
+}
+
+.city-modal-links {
+  display: flex;
+  gap: 10px;
+}
+
+.city-btn {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.city-btn:hover {
+  transform: translateY(-5px);
+  color: rgba(0, 0, 0, 1);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+}
+
+.city-btn:active {
+  transform: translateY(0px);
+  color: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
+}
+
+.city-btn-icon {
+  height: 16px;
+  width: 16px;
+}
+
+.city-replay-btn {
+  margin-left: auto;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .city-modal-container {
+    width: 95vw;
+    height: 85vh;
+    padding: 20px;
+  }
+
+  .city-modal-cards {
+    width: 300px;
+    height: 150px;
+    margin-bottom: 30px;
+  }
+
+  .city-card {
+    width: 120px;
+  }
+
+  .city-modal-cards {
+    --city-gap: 50px;
+  }
+
+  .city-title {
+    font-size: 2rem;
+  }
+
+  .city-description {
+    font-size: 1rem;
+  }
+
+  .city-data-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .city-data-item {
+    padding: 12px;
+  }
+
+  .city-modal-actions {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .city-modal-links {
+    justify-content: center;
+  }
+
+  .city-replay-btn {
+    margin-left: 0;
+    align-self: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .city-modal-cards {
+    width: 250px;
+    height: 120px;
+  }
+
+  .city-card {
+    width: 100px;
+  }
+
+  .city-modal-cards {
+    --city-gap: 35px;
+  }
+
+  .city-title {
+    font-size: 1.8rem;
+  }
+
+  .city-tangping {
+    font-size: 1rem;
+  }
+
+  .tangping-value {
+    font-size: 1.3rem;
+  }
+} 
