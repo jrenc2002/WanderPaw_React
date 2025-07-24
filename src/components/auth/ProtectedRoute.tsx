@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { Navigate, useLocation } from 'react-router-dom'
-import { authStateAtom } from '@/store/AuthState'
+import { authStateAtom, isUserInitializedAtom } from '@/store/AuthState'
 import { AuthService } from '@/services/authService'
 
 interface ProtectedRouteProps {
@@ -14,6 +14,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireAuth = true 
 }) => {
   const [authState, setAuthState] = useAtom(authStateAtom)
+  const [isInitialized] = useAtom(isUserInitializedAtom)
   const location = useLocation()
 
   // 验证令牌有效性
@@ -82,6 +83,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         replace 
       />
     )
+  }
+
+  // 如果用户已登录但未完成初始化，重定向到初始化页面
+  // 但不包括初始化页面本身和设置页面（允许用户跳过后再设置）
+  if (!isInitialized && 
+      location.pathname !== '/pet-initialization' && 
+      location.pathname !== '/setting') {
+    return <Navigate to="/pet-initialization" replace />
   }
 
   // 用户已登录，返回子组件

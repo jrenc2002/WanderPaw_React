@@ -5,7 +5,7 @@ echo "🚀 开始测试 WanderPaw 认证API..."
 echo "========================================"
 
 # API基础地址
-API_BASE="http://localhost:3000"
+API_BASE="http://localhost:8080"
 
 # 颜色定义
 GREEN='\033[0;32m'
@@ -49,12 +49,12 @@ test_api "健康检查" "GET" "$API_BASE/health"
 
 # 测试用户注册
 echo -e "\n${YELLOW}=== 用户注册测试 ===${NC}"
-register_data='{"username":"testuser123","password":"password123","phoneNumber":"+8613800138000"}'
+register_data='{"username":"testuser456","password":"password123","phoneNumber":"+8613900139000"}'
 test_api "用户注册" "POST" "$API_BASE/auth/register" "$register_data"
 
 # 测试用户登录
 echo -e "\n${YELLOW}=== 用户登录测试 ===${NC}"
-login_data='{"username":"testuser123","password":"password123"}'
+login_data='{"username":"testuser456","password":"password123"}'
 echo -e "\n${YELLOW}测试: 用户登录${NC}"
 echo "URL: POST $API_BASE/auth/login"
 echo "Data: $login_data"
@@ -108,12 +108,12 @@ test_api "重复注册" "POST" "$API_BASE/auth/register" "$register_data"
 
 # 测试错误密码登录（应该失败）
 echo -e "\n${YELLOW}=== 错误密码登录测试（应该失败）===${NC}"
-wrong_login_data='{"username":"testuser123","password":"wrongpassword"}'
+wrong_login_data='{"username":"testuser456","password":"wrongpassword"}'
 test_api "错误密码登录" "POST" "$API_BASE/auth/login" "$wrong_login_data"
 
 echo -e "\n${YELLOW}========================================"
 echo -e "🎉 测试完成！"
 echo -e "📝 如果看到上述测试结果，说明认证API工作正常"
 echo -e "🌐 前端地址: http://localhost:5173"
-echo -e "🔧 后端地址: http://localhost:3000"
+echo -e "🔧 后端地址: http://localhost:8080"
 echo -e "========================================${NC}" 

@@ -392,7 +392,7 @@ interface UserStory {
 
 1.  **扩展数据模型：** 我需要先修改 `src/data/mockData.ts` 和 `src/store/GlobalMapState.ts`，为城市添加“详细成本分解”、“生活方式标签”和“房产数据”等新字段。我会先为 **曼谷** 和 **柏林** 这两个特色鲜明的城市填充高质量的模拟数据作为范例。
 2.  **创建新组件：** 我会创建一个新的 `CityDetailPanel.tsx` 组件，专门负责渲染这个面板的UI和交互。
-3.  **集成图表库：** `package.json` 中已经有了 `echarts`，我会用它来制作生活成本的甜甜圈图和核心指标的雷达图。
+3.  **集成图表库：** 可以考虑使用 CSS 原生图表或轻量级图表库来制作生活成本的可视化图表和核心指标展示。
 4.  **改造主视图：** 我会修改 `HomeView.tsx`，将原来的点击事件逻辑改为打开这个新的详情面板。
 
 这个方案将使“躺平网”的体验发生质的飞跃，真正开始兑现我们“重新设计生活”的承诺。
@@ -475,7 +475,7 @@ interface UserStory {
     *   我会创建一个全新的文件来容纳这个面板的复杂UI。
 
 3.  **第三步：实现新UI并集成图表**
-    *   使用 `ECharts` 来实现成本分解的甜甜圈图。
+    *   使用 CSS 图表或轻量级图表库来实现成本分解的可视化展示。
 
 4.  **第四步：整合到主视图**
     *   修改 `HomeView.tsx` 中的点击事件，使其能够传递正确的城市数据并优雅地弹出这个新的详情面板。
@@ -909,7 +909,7 @@ I've realized that I couldn't write directly to the file; the right course of ac
 *   **Milestone 3: 前端开发 - 样本展示 (Frontend - Sample Display)**
     *   `[ ]` **任务3.1:** 创建新视图组件 `src/view/LibraryView.tsx`，作为展示所有生活样本的首页。UI以卡片网格布局，突出封面图和核心信息。
     *   `[ ]` **任务3.2:** 创建新视图组件 `src/view/SampleDetailView.tsx`，用于展示单个生活样本的完整内容。
-    *   `[ ]` **任务3.3 (核心):** 在 `SampleDetailView.tsx` 中，精心设计UI，用优雅的可视化方式（如使用ECharts的甜甜圈图展示预算构成）和故事化叙述，呈现样本的每个模块。
+    *   `[ ]` **任务3.3 (核心):** 在 `SampleDetailView.tsx` 中，精心设计UI，用优雅的可视化方式（如使用CSS图表或第三方图表库展示预算构成）和故事化叙述，呈现样本的每个模块。
     *   `[ ]` **任务3.4:** 设置React Router，将 `/` 指向 `LibraryView`，并设置动态路由 `/sample/:id` 指向 `SampleDetailView`。
     *   `[ ]` **任务3.5:** **战略性调整:** 暂时隐藏或移除现有的地图视图 (`HomeView.tsx`)，将产品100%的焦点集中在“生活图书馆”上，避免用户分心。
 
@@ -1004,7 +1004,7 @@ I've realized that I couldn't write directly to the file; the right course of ac
 *   **Milestone 3: 前端开发 - 样本展示 (Frontend - Sample Display)**
     *   `[ ]` **任务3.1:** 创建新视图组件 `src/view/LibraryView.tsx`，作为展示所有生活样本的首页。UI以卡片网格布局，突出封面图和核心信息。
     *   `[ ]` **任务3.2:** 创建新视图组件 `src/view/SampleDetailView.tsx`，用于展示单个生活样本的完整内容。
-    *   `[ ]` **任务3.3 (核心):** 在 `SampleDetailView.tsx` 中，精心设计UI，用优雅的可视化方式（如使用ECharts的甜甜圈图展示预算构成）和故事化叙述，呈现样本的每个模块。
+    *   `[ ]` **任务3.3 (核心):** 在 `SampleDetailView.tsx` 中，精心设计UI，用优雅的可视化方式（如使用CSS图表或第三方图表库展示预算构成）和故事化叙述，呈现样本的每个模块。
     *   `[ ]` **任务3.4:** 设置React Router，将 `/` 指向 `LibraryView`，并设置动态路由 `/sample/:id` 指向 `SampleDetailView`。
     *   `[ ]` **任务3.5:** **战略性调整:** 暂时隐藏或移除现有的地图视图 (`HomeView.tsx`)，将产品100%的焦点集中在“生活图书馆”上，避免用户分心。
 

@@ -7,6 +7,8 @@ export interface User {
   username: string
   phoneNumber?: string
   lastLogin?: string
+  isInitialized?: boolean
+  petInfo?: any
 }
 
 // 认证状态接口
@@ -124,5 +126,27 @@ export const setAuthDataAtom = atom(
       loading: false,
       error: null,
     })
+  }
+)
+
+// 更新用户信息atom
+export const updateUserAtom = atom(
+  null,
+  (get, set, updates: Partial<User>) => {
+    const currentState = get(authStateAtom)
+    if (currentState.user) {
+      set(authStateAtom, {
+        ...currentState,
+        user: { ...currentState.user, ...updates }
+      })
+    }
+  }
+)
+
+// 用户是否已完成初始化atom
+export const isUserInitializedAtom = atom(
+  (get) => {
+    const user = get(authStateAtom).user
+    return user?.isInitialized ?? false
   }
 ) 

@@ -4,7 +4,7 @@ import {
   mapNavigationAtom,
   regionsDataAtom,
   type MapLevel
-} from '@/store/GlobalMapState'
+} from '@/store/MapState'
 import { mockRegionsData } from '@/data/mockData'
 
 interface MapNavigationProps {

@@ -1,4 +1,4 @@
-import { RegionData } from '@/store/GlobalMapState'
+import { RegionData } from '@/store/MapState'
 
 // Mock数据：全球地区生活成本和躺平指数
 export const mockRegionsData: Record<string, RegionData> = {

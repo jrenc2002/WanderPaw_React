@@ -17,6 +17,7 @@ import SettingView from '@/view/SettingView';
 import { SampleTestView } from '@/view/SampleTestView';
 import { SampleDetailView } from '@/view/SampleDetailView';
 import { AuthView } from '@/view/AuthView';
+import { PetInitializationView } from '@/view/PetInitializationView';
 
 function App() {
 
@@ -36,11 +37,12 @@ function App() {
 const MainContent = () => {
     const location = useLocation()
     const isAuthPage = location.pathname === '/auth'
+    const isPetInitPage = location.pathname === '/pet-initialization'
 
     return (
         <main className="h-screen w-screen grow">
-            {isAuthPage ? (
-                // 认证页面 - 不显示背景装饰和Dock
+            {isAuthPage || isPetInitPage ? (
+                // 认证页面和初始化页面 - 不显示背景装饰和Dock
                 <div className="w-full h-screen">
                     <Routes>
                         {/* 公共路由 */}
@@ -51,6 +53,13 @@ const MainContent = () => {
                             <GuestRoute>
                                 <AuthView />
                             </GuestRoute>
+                        } />
+                        
+                        {/* 宠物初始化路由 - 只有已登录用户可以访问 */}
+                        <Route path="/pet-initialization" element={
+                            <ProtectedRoute>
+                                <PetInitializationView />
+                            </ProtectedRoute>
                         } />
                         
                         {/* 受保护的路由 - 需要登录才能访问 */}
@@ -93,6 +102,13 @@ const MainContent = () => {
                                     <GuestRoute>
                                         <AuthView />
                                     </GuestRoute>
+                                } />
+                                
+                                {/* 宠物初始化路由 - 只有已登录用户可以访问 */}
+                                <Route path="/pet-initialization" element={
+                                    <ProtectedRoute>
+                                        <PetInitializationView />
+                                    </ProtectedRoute>
                                 } />
                                 
                                 {/* 受保护的路由 - 需要登录才能访问 */}

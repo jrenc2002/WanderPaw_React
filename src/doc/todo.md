@@ -44,7 +44,7 @@
 *   **Milestone 3: 前端开发 - 样本展示 (Frontend - Sample Display)**
     *   `[ ]` **任务3.1:** 创建新视图组件 `src/view/LibraryView.tsx`，作为展示所有生活样本的首页。UI以卡片网格布局，突出封面图和核心信息。
     *   `[ ]` **任务3.2:** 创建新视图组件 `src/view/SampleDetailView.tsx`，用于展示单个生活样本的完整内容。
-    *   `[ ]` **任务3.3 (核心):** 在 `SampleDetailView.tsx` 中，精心设计UI，用优雅的可视化方式（如使用ECharts的甜甜圈图展示预算构成）和故事化叙述，呈现样本的每个模块。
+    *   `[ ]` **任务3.3 (核心):** 在 `SampleDetailView.tsx` 中，精心设计UI，用优雅的可视化方式（如使用CSS图表或第三方图表库展示预算构成）和故事化叙述，呈现样本的每个模块。
     *   `[ ]` **任务3.4:** 设置React Router，将 `/` 指向 `LibraryView`，并设置动态路由 `/sample/:id` 指向 `SampleDetailView`。
     *   `[ ]` **任务3.5:** **战略性调整:** 暂时隐藏或移除现有的地图视图 (`HomeView.tsx`)，将产品100%的焦点集中在“生活图书馆”上，避免用户分心。
 

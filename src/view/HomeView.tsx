@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
-import { selectedLanguageAtom } from '@/store/GlobalMapState'
+import { selectedLanguageAtom } from '@/store/MapState'
 import { LeafletMap } from '@/components/map/LeafletMap'
 import { getPointsByZoom, type InteractivePoint } from '@/data/leafletMockData'
 import toast from 'react-hot-toast'

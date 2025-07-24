@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import {
   hoveredRegionAtom,
   selectedLanguageAtom
-} from '@/store/GlobalMapState'
+} from '@/store/MapState'
 import { mockRegionsData } from '@/data/mockData'
 
 interface RegionInfoProps {

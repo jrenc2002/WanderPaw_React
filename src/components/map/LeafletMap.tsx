@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from 'rea
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useAtom } from 'jotai'
-import { selectedLanguageAtom } from '@/store/GlobalMapState'
+import { selectedLanguageAtom } from '@/store/MapState'
 
 // 修复默认图标问题
 delete (L.Icon.Default.prototype as any)._getIconUrl

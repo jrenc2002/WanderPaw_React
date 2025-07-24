@@ -1,25 +1,41 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { GlobalMap } from '@/components/map/GlobalMap'
+import { LeafletMap } from '@/components/map/LeafletMap'
 import { getAllGenesisSamples } from '@/data/genesisSamples'
 
 export const SampleTestView: React.FC = () => {
   const navigate = useNavigate()
   const samples = getAllGenesisSamples()
 
-  const handleRegionClick = (regionId: string) => {
-    console.log('点击了国家:', regionId)
+  // 将生活样本转换为 Leaflet 地图标点格式
+  const mapPoints = samples.map(sample => ({
+    id: sample.id,
+    position: [sample.location.coordinates[1], sample.location.coordinates[0]] as [number, number], // Leaflet 使用 [lat, lng]
+    title: sample.sharerProfile.nickname,
+    description: `${sample.location.cityName} - ${sample.sharerProfile.profession}`,
+    tangpingIndex: sample.qualityScore || 70,
+    data: {
+      averageSalary: sample.monthlyBudget.totalMonthly,
+      currency: sample.monthlyBudget.currency,
+      workLifeBalance: sample.sharerProfile.workMode === 'remote' ? '很好' : 
+                       sample.sharerProfile.workMode === 'hybrid' ? '良好' : '一般',
+      costOfLiving: sample.monthlyBudget.totalMonthly,
+      qualityOfLife: sample.qualityScore || 70
+    }
+  }))
+
+  const handleRegionClick = (regionId: string, data?: any) => {
+    console.log('点击了地区:', regionId, data)
+    // 如果是生活样本点，导航到详情页
+    if (regionId.startsWith('sample_')) {
+      const sampleId = regionId.replace('sample_', '')
+      navigate(`/sample/${sampleId}`)
+    }
   }
 
-  const handleSampleClick = (sampleId: string) => {
-    console.log('点击了生活样本:', sampleId)
-    // 导航到详情页
-    navigate(`/sample/${sampleId}`)
-  }
-
-  const handleRegionHover = (regionId: string | null) => {
+  const handleRegionHover = (regionId: string | null, data?: any) => {
     if (regionId) {
-      console.log('悬停在:', regionId)
+      console.log('悬停在:', regionId, data)
     }
   }
 
@@ -51,11 +67,14 @@ export const SampleTestView: React.FC = () => {
       {/* 地图主体 */}
       <div className="h-[calc(100vh-200px)] p-6">
         <div className="h-full bg-black/30 rounded-lg backdrop-blur-sm border border-gray-800 overflow-hidden">
-          <GlobalMap
+          <LeafletMap
             onRegionClick={handleRegionClick}
-            onSampleClick={handleSampleClick}
             onRegionHover={handleRegionHover}
             className="w-full h-full"
+            center={[30.0, 120.0]} // 以中国为中心
+            zoom={4}
+            points={mapPoints}
+            mapStyle="light"
           />
         </div>
       </div>
@@ -69,10 +88,10 @@ export const SampleTestView: React.FC = () => {
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-gradient-to-r from-red-400 to-green-400 rounded"></div>
-            <span>国家躺平指数（颜色表示）</span>
+            <span>质量评分（颜色表示）</span>
           </div>
           <div className="text-xs">
-            💡 提示：点击绿色圆点查看详细生活样本，点击国家查看整体数据
+            💡 提示：点击标记点查看详细生活样本信息
           </div>
         </div>
       </div>

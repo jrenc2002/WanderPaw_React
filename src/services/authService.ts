@@ -173,6 +173,25 @@ export class AuthService {
   }
 
   /**
+   * 获取用户资料
+   * @param token 访问令牌
+   * @returns 用户资料
+   */
+  static async getUserProfile(token: string): Promise<any> {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/users/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return response.data
+    } catch (error) {
+      console.error('获取用户资料失败:', error)
+      throw new Error('获取用户资料失败')
+    }
+  }
+
+  /**
    * 测试服务器连接
    * @returns 连接是否成功
    */

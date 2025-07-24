@@ -6,7 +6,8 @@ import {
   loginFormAtom, 
   authLoadingAtom, 
   authErrorAtom, 
-  setAuthDataAtom 
+  setAuthDataAtom,
+  updateUserAtom
 } from '@/store/AuthState'
 import { AuthService } from '@/services/authService'
 
@@ -24,6 +25,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const [loading, setLoading] = useAtom(authLoadingAtom)
   const [, setError] = useAtom(authErrorAtom)
   const [, setAuthData] = useAtom(setAuthDataAtom)
+  const [, updateUser] = useAtom(updateUserAtom)
   
   const [showPassword, setShowPassword] = useState(false)
 
@@ -56,10 +58,23 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           username: response.username,
           phoneNumber: response.phoneNumber,
           lastLogin: response.lastLogin,
+          isInitialized: false, // 默认为未初始化，后续会通过API获取实际状态
         },
         accessToken: response.accessToken,
         refreshToken: response.refreshToken,
       })
+
+      // 获取用户详细信息（包括初始化状态）
+      try {
+        const userProfile = await AuthService.getUserProfile(response.accessToken)
+        updateUser({
+          isInitialized: userProfile.isInitialized ?? false,
+          petInfo: userProfile.petInfo,
+        })
+      } catch (profileError) {
+        console.error('获取用户资料失败:', profileError)
+        // 即使获取资料失败，也不影响登录流程
+      }
 
       toast.success(`欢迎回来，${response.username}！`)
       
