@@ -214,30 +214,4 @@ export const PRESET_PET_CHARACTERS: PresetPetCharacter[] = [
     bgColor: 'from-blue-100 to-sky-50',
     accentColor: 'blue-500'
   },
-  {
-    id: 'xiaobai',
-    name: '小白',
-    type: 'other',
-    gender: 'unknown',
-    personality: ['shy', 'gentle', 'calm'],
-    age: 'young',
-    emoji: '🐰',
-    description: '小白很害羞但很温柔，他喜欢安静的角落，会在你难过时默默靠近，用柔软的毛和温暖的体温安慰你。',
-    quote: '安静的陪伴也是一种力量',
-    bgColor: 'from-gray-100 to-slate-50',
-    accentColor: 'gray-500'
-  },
-  {
-    id: 'no-pet',
-    name: '暂无小伙伴',
-    type: 'none',
-    gender: 'unknown',
-    personality: [],
-    age: 'adult',
-    emoji: '🌱',
-    description: '现在还没有毛茸茸的小伙伴，但这并不妨碍你感受生活的美好。也许在某个温暖的午后，你会遇到那个对的它。',
-    quote: '美好的相遇值得等待',
-    bgColor: 'from-green-100 to-emerald-50',
-    accentColor: 'green-500'
-  }
 ] 
