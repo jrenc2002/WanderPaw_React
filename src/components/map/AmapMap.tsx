@@ -26,7 +26,6 @@ interface AmapMapProps {
   center?: [number, number]
   zoom?: number
   points?: InteractivePoint[]
-  mapStyle?: 'standard' | 'satellite' | 'terrain' | 'light' | 'fresh'
 }
 
 export const AmapMap: React.FC<AmapMapProps> = ({
@@ -35,8 +34,7 @@ export const AmapMap: React.FC<AmapMapProps> = ({
   className = "w-full h-full",
   center = [39.9042, 116.4074], // 默认北京
   zoom = 5,
-  points = [],
-  mapStyle = 'fresh'
+  points = []
 }) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
@@ -59,7 +57,7 @@ export const AmapMap: React.FC<AmapMapProps> = ({
 
       const script = document.createElement('script')
       script.type = 'text/javascript'
-      script.src = `https://webapi.amap.com/maps?v=2.0&key=04475e3e2f3f06596d30bc50a740678d&plugin=AMap.Scale,AMap.ToolBar,AMap.ControlBar,AMap.MapType`
+      script.src = `https://webapi.amap.com/maps?v=2.0&key=04475e3e2f3f06596d30bc50a740678d`
       script.onload = () => {
         initMap()
       }
@@ -75,19 +73,12 @@ export const AmapMap: React.FC<AmapMapProps> = ({
         center: [center[1], center[0]], // 高德地图使用 [lng, lat]
         viewMode: '2D',
         lang: language === 'zh' ? 'zh_cn' : 'en',
-        mapStyle: getMapStyle(mapStyle),
+        mapStyle: 'amap://styles/fresh', // 固定使用草色青样式
         features: ['bg', 'point', 'road', 'building'], // 显示地图要素
         showLabel: true // 显示地名标注
       })
 
-      // 添加控件
-      map.addControl(new window.AMap.Scale())
-      map.addControl(new window.AMap.ToolBar({
-        position: {
-          bottom: '40px',
-          right: '40px'
-        }
-      }))
+      // 不添加额外控件，保持简洁界面
 
       mapInstanceRef.current = map
       setIsMapLoaded(true)
@@ -108,21 +99,7 @@ export const AmapMap: React.FC<AmapMapProps> = ({
     }
   }, [])
 
-  // 获取地图样式
-  const getMapStyle = (style: string) => {
-    switch (style) {
-      case 'satellite':
-        return 'amap://styles/satellite'
-      case 'terrain':
-        return 'amap://styles/normal'
-      case 'light':
-        return 'amap://styles/light'
-      case 'fresh':
-        return 'amap://styles/fresh'
-      default:
-        return 'amap://styles/fresh'
-    }
-  }
+
 
   // 创建自定义标记
   const createCustomMarker = (point: InteractivePoint) => {
@@ -230,12 +207,7 @@ export const AmapMap: React.FC<AmapMapProps> = ({
     mapInstanceRef.current.setZoomAndCenter(zoom, [center[1], center[0]])
   }, [center, zoom, isMapLoaded])
 
-  // 更新地图样式
-  useEffect(() => {
-    if (!isMapLoaded || !mapInstanceRef.current) return
-    
-    mapInstanceRef.current.setMapStyle(getMapStyle(mapStyle))
-  }, [mapStyle, isMapLoaded])
+
 
   return (
     <div className={className}>

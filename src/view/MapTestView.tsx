@@ -78,19 +78,11 @@ export const MapTestView: React.FC = () => {
             center={[35.0, 110.0]} // 中国中心
             zoom={5}
             points={testPoints}
-            mapStyle="standard"
+
           />
         </div>
 
-        <div className="mt-6 bg-white rounded-lg shadow-lg p-4">
-          <h2 className="text-xl font-semibold mb-2">使用说明</h2>
-          <ul className="list-disc list-inside text-gray-600 space-y-1">
-            <li>点击地图上的标记查看详细信息</li>
-            <li>使用鼠标滚轮缩放地图</li>
-            <li>拖拽移动地图视角</li>
-            <li>右下角有缩放控件</li>
-          </ul>
-        </div>
+
       </div>
     </div>
   )

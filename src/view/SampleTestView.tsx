@@ -74,7 +74,7 @@ export const SampleTestView: React.FC = () => {
             center={[30.0, 120.0]} // 以中国为中心
             zoom={4}
             points={mapPoints}
-            mapStyle="light"
+
           />
         </div>
       </div>
