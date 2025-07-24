@@ -221,7 +221,7 @@ const TripJourneyView: React.FC = () => {
                 style={{ width: `${((currentActivityIndex + 1) / activities.length) * 100}%` }}
               ></div>
               
-              {activities.map((activity, index) => (
+              {activities.map((activity: TripActivity, index: number) => (
                 <div key={activity.id} className="flex flex-col items-center relative z-10">
                   <div className={`w-3 h-3 rounded-full border ${
                     index <= currentActivityIndex 
@@ -276,7 +276,7 @@ const TripJourneyView: React.FC = () => {
               </button>
             </div>
 
-            {upcomingActivities.slice(0, 2).map((activity, index) => (
+            {upcomingActivities.slice(0, 2).map((activity: TripActivity, index: number) => (
               <div key={activity.id} className="flex items-center gap-3 p-3 bg-white rounded-xl">
                 <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
                 <div className="flex-1">

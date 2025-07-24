@@ -94,8 +94,22 @@ const CitySelectionView: React.FC = () => {
       position = diff > 0 ? diff - totalCards : diff + totalCards
     }
     
-    // 限制位置范围 -5 到 5
-    return Math.max(-5, Math.min(5, position))
+    // 圆弧轮播只显示5张卡片：限制位置范围 -2 到 2
+    return Math.max(-2, Math.min(2, position))
+  }
+
+  // 获取可见的卡片索引
+  const getVisibleCards = () => {
+    if (cities.length === 0) return []
+    
+    const visibleCards = []
+    for (let i = 0; i < cities.length; i++) {
+      const position = getCardPosition(i)
+      if (Math.abs(position) <= 2) {
+        visibleCards.push({ city: cities[i], index: i, position })
+      }
+    }
+    return visibleCards
   }
 
   return (
@@ -144,8 +158,7 @@ const CitySelectionView: React.FC = () => {
                 </svg>
               </button>
 
-              {cities.map((city, index) => {
-                const position = getCardPosition(index)
+              {getVisibleCards().map(({ city, index, position }) => {
                 const isCenter = position === 0
                 
                 return (
@@ -153,7 +166,7 @@ const CitySelectionView: React.FC = () => {
                     key={city.id}
                     onClick={() => handleCitySelect(index)}
                     tabIndex={0}
-                    className="city-card"
+                    className="city-card arc-card"
                     data-position={position}
                   >
                     <div className="city-card-content">
