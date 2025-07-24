@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../WanderPaw_Fastify"
+		}
+	],
+	"settings": {
+		"i18n-ally.localesPaths": [
+			"src/i18n"
+		]
+	}
+}
