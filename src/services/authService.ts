@@ -2,8 +2,9 @@ import axios, { type AxiosResponse } from 'axios'
 import type { LoginForm, RegisterForm, User } from '@/store/AuthState'
 
 // API基础配置
-const API_BASE_URL = 'http://localhost:6655' // 后端服务地址
-const API_PREFIX = '/auth'
+const API_BASE_URL = 'http://localhost:8080' // 直接请求方式（已修复CORS）
+// const API_BASE_URL = '' // 使用代理方式
+const API_PREFIX = '/auth' // 后端实际路径
 
 // 创建axios实例
 const authApi = axios.create({
@@ -49,11 +50,29 @@ export class AuthService {
     } catch (error: any) {
       console.error('注册失败:', error)
       
-      if (error.response?.data) {
-        throw new Error(error.response.data.message || '注册失败')
+      // 处理网络错误
+      if (error.code === 'ERR_NETWORK') {
+        throw new Error('无法连接到服务器，请检查网络连接或稍后重试')
       }
       
-      throw new Error('网络错误，请稍后重试')
+      // 处理CORS错误
+      if (error.message.includes('CORS') || error.message.includes('Network Error')) {
+        throw new Error('服务器连接失败，请联系管理员检查服务器配置')
+      }
+      
+      // 处理HTTP响应错误
+      if (error.response?.data) {
+        const message = error.response.data.message || error.response.data.error || '注册失败'
+        throw new Error(message)
+      }
+      
+      // 处理超时错误
+      if (error.code === 'ECONNABORTED') {
+        throw new Error('请求超时，请检查网络连接后重试')
+      }
+      
+      // 其他未知错误
+      throw new Error('注册失败，请稍后重试')
     }
   }
 
@@ -73,11 +92,29 @@ export class AuthService {
     } catch (error: any) {
       console.error('登录失败:', error)
       
-      if (error.response?.data) {
-        throw new Error(error.response.data.message || '登录失败')
+      // 处理网络错误
+      if (error.code === 'ERR_NETWORK') {
+        throw new Error('无法连接到服务器，请检查网络连接或稍后重试')
       }
       
-      throw new Error('网络错误，请稍后重试')
+      // 处理CORS错误
+      if (error.message.includes('CORS') || error.message.includes('Network Error')) {
+        throw new Error('服务器连接失败，请联系管理员检查服务器配置')
+      }
+      
+      // 处理HTTP响应错误
+      if (error.response?.data) {
+        const message = error.response.data.message || error.response.data.error || '登录失败'
+        throw new Error(message)
+      }
+      
+      // 处理超时错误
+      if (error.code === 'ECONNABORTED') {
+        throw new Error('请求超时，请检查网络连接后重试')
+      }
+      
+      // 其他未知错误
+      throw new Error('登录失败，请稍后重试')
     }
   }
 
@@ -132,6 +169,52 @@ export class AuthService {
       return true
     } catch (error) {
       return false
+    }
+  }
+
+  /**
+   * 测试服务器连接
+   * @returns 连接是否成功
+   */
+  static async testConnection(): Promise<{ success: boolean; message: string }> {
+    try {
+      // 使用认证相关的端点测试连接
+      const response = await axios.options(`${API_BASE_URL}${API_PREFIX}/register`, {
+        timeout: 5000,
+      })
+      
+      return {
+        success: true,
+        message: '服务器连接正常'
+      }
+    } catch (error: any) {
+      console.error('连接测试失败:', error)
+      
+      if (error.code === 'ERR_NETWORK') {
+        return {
+          success: false,
+          message: '无法连接到服务器，请检查网络连接'
+        }
+      }
+      
+      if (error.message.includes('CORS')) {
+        return {
+          success: false,
+          message: 'CORS配置问题，请联系管理员'
+        }
+      }
+      
+      if (error.code === 'ECONNABORTED') {
+        return {
+          success: false,
+          message: '连接超时，服务器可能繁忙'
+        }
+      }
+      
+      return {
+        success: false,
+        message: `连接失败: ${error.message || '未知错误'}`
+      }
     }
   }
 
