@@ -1,29 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { getTopCountries } from '@/data/mockData'
 import type { RegionData } from '@/store/MapState'
+import './CitySelectionView.css'
 
 const CitySelectionView: React.FC = () => {
   const navigate = useNavigate()
   const [language] = useAtom(selectedLanguageAtom)
   const [cities, setCities] = useState<RegionData[]>([])
-  const [selectedCity, setSelectedCity] = useState<string | null>(null)
-
-  useEffect(() => {
-    // 获取热门城市数据
-    const popularCities = getTopCountries().slice(0, 12) // 取前12个热门目的地
-    setCities(popularCities)
-  }, [])
-
-  const handleCitySelect = (cityId: string) => {
-    setSelectedCity(cityId)
-    // 短暂延迟后跳转到主题选择页面
-    setTimeout(() => {
-      navigate(`/trip-themes/${cityId}`)
-    }, 300)
-  }
+  const [currentCenterIndex, setCurrentCenterIndex] = useState(0)
 
   const handleBack = () => {
     navigate(-1)
@@ -43,143 +30,239 @@ const CitySelectionView: React.FC = () => {
     return language === 'zh' ? '需要奋斗' : 'Need Hustle'
   }
 
+  // 定义函数
+  const handleCitySelect = useCallback((cityIndex: number) => {
+    setCurrentCenterIndex(cityIndex)
+  }, [])
+
+  const handleConfirm = useCallback(() => {
+    const selectedCity = cities[currentCenterIndex]
+    if (selectedCity) {
+      navigate(`/trip-themes/${selectedCity.id}`)
+    }
+  }, [cities, currentCenterIndex, navigate])
+
+  const goToPrevious = useCallback(() => {
+    setCurrentCenterIndex((prev) => (prev - 1 + cities.length) % cities.length)
+  }, [cities.length])
+
+  const goToNext = useCallback(() => {
+    setCurrentCenterIndex((prev) => (prev + 1) % cities.length)
+  }, [cities.length])
+
+  useEffect(() => {
+    try {
+      // 获取热门城市数据
+      const popularCities = getTopCountries().slice(0, 12) // 取前12个热门目的地
+      setCities(popularCities)
+    } catch (error) {
+      console.error('Error loading cities:', error)
+    }
+  }, [])
+
+  useEffect(() => {
+    // 键盘导航支持
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        goToPrevious()
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        goToNext()
+      } else if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault()
+        handleConfirm()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [goToPrevious, goToNext, handleConfirm])
+
+  const getCardPosition = (cardIndex: number) => {
+    // 如果没有城市数据，返回0
+    if (cities.length === 0) return 0
+    
+    const diff = cardIndex - currentCenterIndex
+    if (diff === 0) return 0
+    
+    // 处理环绕情况
+    const totalCards = cities.length
+    let position = diff
+    
+    if (Math.abs(diff) > totalCards / 2) {
+      position = diff > 0 ? diff - totalCards : diff + totalCards
+    }
+    
+    // 限制位置范围 -5 到 5
+    return Math.max(-5, Math.min(5, position))
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* 头部导航 */}
-      <div className="relative z-10 flex items-center justify-between p-6 bg-white/80 backdrop-blur-sm">
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span>{language === 'zh' ? '返回' : 'Back'}</span>
-        </button>
-        
-        <h1 className="text-xl font-bold text-gray-800">
-          {language === 'zh' ? '选择旅行目的地' : 'Choose Your Destination'}
-        </h1>
-        
-        <div className="w-16"></div> {/* 占位符保持居中 */}
-      </div>
+    <div className="min-h-screen relative" style={{ backgroundColor: '#FFF6E4' }}>
+      {/* 返回按钮 - 左上角 */}
+      <button
+        onClick={handleBack}
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-amber-800 hover:text-amber-900 transition-colors bg-transparent p-2 rounded-lg hover:bg-white/20"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span>{language === 'zh' ? '返回' : 'Back'}</span>
+      </button>
 
       {/* 主要内容 */}
       <div className="px-6 py-8">
         {/* 标题和描述 */}
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            {language === 'zh' ? '🌍 发现你的理想目的地' : '🌍 Discover Your Ideal Destination'}
-          </h2>
-          <p className="text-gray-600 text-sm">
-            {language === 'zh' 
-              ? '选择一个城市，开始你的躺平之旅' 
-              : 'Select a city to start your chill journey'
-            }
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-amber-800 dark:text-amber-200 mb-4">
+            WonderPaw
+          </h1>
+          <p className="text-xl text-amber-700 dark:text-amber-300 font-medium">
+            请选择希望探索的城市
           </p>
         </div>
 
-        {/* 城市卡片网格 */}
-        <div className="overflow-x-auto pb-4">
-          <div className="flex gap-4 min-w-max">
-            {cities.map((city) => (
-              <div
-                key={city.id}
-                onClick={() => handleCitySelect(city.id)}
-                className={`
-                  relative flex-shrink-0 w-72 h-80 rounded-2xl cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl
-                  ${selectedCity === city.id ? 'scale-105 shadow-2xl ring-4 ring-blue-400' : 'hover:shadow-xl'}
-                `}
-              >
-                {/* 背景渐变 */}
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${getTangpingColor(city.tangpingIndex)} opacity-90`} />
+        {/* 城市卡片轮播 */}
+        <div className="city-cards-carousel">
+          {cities.length === 0 ? (
+            <div className="text-center text-amber-700">
+              <p>正在加载城市数据...</p>
+            </div>
+          ) : (
+            <>
+              {/* 导航按钮 */}
+              <button onClick={goToPrevious} className="carousel-nav-btn prev">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              
+              <button onClick={goToNext} className="carousel-nav-btn next">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+
+              {cities.map((city, index) => {
+                const position = getCardPosition(index)
+                const isCenter = position === 0
                 
-                {/* 装饰性图案 */}
-                <div className="absolute top-4 right-4 w-16 h-16 bg-white/20 rounded-full" />
-                <div className="absolute bottom-8 left-4 w-8 h-8 bg-white/20 rounded-full" />
-                
-                {/* 内容 */}
-                <div className="relative p-6 h-full flex flex-col justify-between text-white">
-                  {/* 顶部信息 */}
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm bg-white/20 px-3 py-1 rounded-full">
-                        {city.countryCode}
-                      </span>
-                      <span className="text-2xl">
-                        {selectedCity === city.id ? '✈️' : '🏙️'}
-                      </span>
-                    </div>
-                    
-                    <h3 className="text-2xl font-bold mb-2">
-                      {language === 'zh' ? city.name : city.nameEn}
-                    </h3>
-                    
-                    <div className="space-y-2 text-sm text-white/90">
-                      <div className="flex items-center gap-2">
-                        <span>💰</span>
-                        <span>
-                          {language === 'zh' ? '月薪' : 'Salary'}: {city.averageSalary.toLocaleString()} {city.currency}
-                        </span>
+                return (
+                  <div
+                    key={city.id}
+                    onClick={() => handleCitySelect(index)}
+                    tabIndex={0}
+                    className="city-card"
+                    data-position={position}
+                  >
+                    <div className="city-card-content">
+                      {/* 背景渐变 */}
+                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${getTangpingColor(city.tangpingIndex)} opacity-90`} />
+                      
+                      {/* 装饰性图案 */}
+                      <div className="absolute top-4 right-4 w-16 h-16 bg-white/20 rounded-full" />
+                      <div className="absolute bottom-8 left-4 w-8 h-8 bg-white/20 rounded-full" />
+                      
+                      {/* 内容 */}
+                      <div className="relative p-6 h-full flex flex-col justify-between text-white">
+                        {/* 顶部信息 */}
+                        <div>
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-sm bg-white/20 px-3 py-1 rounded-full">
+                              {city.countryCode}
+                            </span>
+                            <span className="text-2xl">
+                              {isCenter ? '✈️' : '🏙️'}
+                            </span>
+                          </div>
+                          
+                          <h3 className="text-2xl font-bold mb-2">
+                            {language === 'zh' ? city.name : city.nameEn}
+                          </h3>
+                          
+                          <div className="space-y-2 text-sm text-white/90">
+                            <div className="flex items-center gap-2">
+                              <span>💰</span>
+                              <span>
+                                {language === 'zh' ? '月薪' : 'Salary'}: {city.averageSalary.toLocaleString()} {city.currency}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span>🏠</span>
+                              <span>
+                                {language === 'zh' ? '房租' : 'Rent'}: {city.rentPrice.toLocaleString()} {city.currency}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span>⚖️</span>
+                              <span>
+                                {language === 'zh' ? '工作平衡' : 'Work-Life'}: {city.workLifeBalance}/100
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* 底部躺平指数 */}
+                        <div className="mt-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium">
+                              {language === 'zh' ? '躺平指数' : 'Chill Index'}
+                            </span>
+                            <span className="text-lg font-bold">{city.tangpingIndex}</span>
+                          </div>
+                          
+                          <div className="w-full bg-white/20 rounded-full h-2 mb-2">
+                            <div 
+                              className="bg-white h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${city.tangpingIndex}%` }}
+                            />
+                          </div>
+                          
+                          <span className="text-xs text-white/80">
+                            {getTangpingText(city.tangpingIndex)}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span>🏠</span>
-                        <span>
-                          {language === 'zh' ? '房租' : 'Rent'}: {city.rentPrice.toLocaleString()} {city.currency}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span>⚖️</span>
-                        <span>
-                          {language === 'zh' ? '工作平衡' : 'Work-Life'}: {city.workLifeBalance}/100
-                        </span>
-                      </div>
+                      
+                      {/* 选中状态指示器 - 飞机图标 */}
+                      {isCenter && (
+                        <div className="absolute top-2 right-2 selected-indicator">
+                          <svg 
+                            xmlns='http://www.w3.org/2000/svg' 
+                            width='36' 
+                            height='36' 
+                            viewBox='0 0 24 24'
+                            className="text-emerald-600 opacity-70 transform rotate-12 drop-shadow-lg"
+                          >
+                            <path 
+                              fill='currentColor' 
+                              d="M21 16v-2l-8-5V3.5A1.5 1.5 0 0 0 11.5 2A1.5 1.5 0 0 0 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1L15 22v-1.5L13 19v-5.5L21 16Z"
+                            />
+                          </svg>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  
-                  {/* 底部躺平指数 */}
-                  <div className="mt-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">
-                        {language === 'zh' ? '躺平指数' : 'Chill Index'}
-                      </span>
-                      <span className="text-lg font-bold">{city.tangpingIndex}</span>
-                    </div>
-                    
-                    <div className="w-full bg-white/20 rounded-full h-2 mb-2">
-                      <div 
-                        className="bg-white h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${city.tangpingIndex}%` }}
-                      />
-                    </div>
-                    
-                    <span className="text-xs text-white/80">
-                      {getTangpingText(city.tangpingIndex)}
-                    </span>
-                  </div>
-                </div>
-                
-                {/* 选中状态指示器 */}
-                {selectedCity === city.id && (
-                  <div className="absolute inset-0 rounded-2xl border-4 border-white/50 pointer-events-none">
-                    <div className="absolute top-2 right-2 w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M20 6L9 17l-5-5" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                )
+              })}
+            </>
+          )}
         </div>
 
-        {/* 底部提示 */}
-        <div className="text-center mt-8 text-gray-600">
-          <p className="text-sm">
+        {/* 底部确认按钮和提示 */}
+        <div className="text-center mt-8">
+          <button
+            onClick={handleConfirm}
+            className="mb-4 px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full font-bold text-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-lg transform hover:scale-105"
+          >
+            {language === 'zh' ? '确认选择' : 'Confirm Selection'}
+          </button>
+          
+          <p className="text-sm text-amber-700">
             {language === 'zh' 
-              ? '👆 左右滑动查看更多城市，点击卡片继续' 
-              : '👆 Swipe to see more cities, tap a card to continue'
+              ? '✨ 点击卡片切换城市，使用左右箭头或点击确认按钮' 
+              : '✨ Click cards to switch cities, use arrow buttons or confirm button'
             }
           </p>
         </div>

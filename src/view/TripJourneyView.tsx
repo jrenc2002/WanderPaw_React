@@ -24,7 +24,7 @@ const TripJourneyView: React.FC = () => {
   const [currentTime, setCurrentTime] = useState<string>('12:45')
   const [currentActivityIndex, setCurrentActivityIndex] = useState<number>(0)
   const [showMoodDialog, setShowMoodDialog] = useState<boolean>(false)
-  const [showDressUpDialog, setShowDressUpDialog] = useState<boolean>(false)
+
   const [petMood, setPetMood] = useState<string>('')
 
   const { tripPlan, activities } = location.state || {}
@@ -105,8 +105,13 @@ const TripJourneyView: React.FC = () => {
     }, 3000)
   }
 
-  const handleDressUpClick = () => {
-    setShowDressUpDialog(true)
+  const handleJournalClick = () => {
+    navigate('/travel-journal', {
+      state: {
+        tripPlan,
+        currentActivity: activities[currentActivityIndex]
+      }
+    })
   }
 
   const handleNextActivity = () => {
@@ -139,6 +144,17 @@ const TripJourneyView: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-100 via-yellow-50 to-green-50 relative overflow-hidden">
+      {/* 返回按钮 - 左上角 */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-amber-800 hover:text-amber-900 transition-colors bg-transparent p-2 rounded-lg hover:bg-white/20"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span>{language === 'zh' ? '返回' : 'Back'}</span>
+      </button>
+
       {/* 装饰性植物 */}
       <div className="absolute top-0 left-0 w-32 h-32 opacity-30">
         <svg viewBox="0 0 100 100" className="w-full h-full text-green-400">
@@ -155,56 +171,68 @@ const TripJourneyView: React.FC = () => {
         </svg>
       </div>
 
-      {/* 顶部状态栏 */}
-      <div className="relative z-10 flex items-center justify-between p-6 bg-white/80 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-orange-200 rounded-full flex items-center justify-center">
-            <span className="text-lg">🐹</span>
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-gray-800">
-                {language === 'zh' ? '豚豚君' : 'Pig-kun'}
-              </span>
-              <span className="text-lg">☀️</span>
-            </div>
-            <p className="text-xs text-gray-600">
-              {language === 'zh' ? '正在：身着和服在水灵寺拍照' : 'Currently: Taking photos in kimono at Suirenji Temple'}
-            </p>
-          </div>
-        </div>
-        
-        <div className="text-right">
-          <div className="text-2xl font-bold text-gray-800">{currentTime}</div>
-          <div className="text-sm text-gray-600">
-            {language === 'zh' ? `${tripPlan.cityName}` : tripPlan.cityName}
-          </div>
-        </div>
-      </div>
 
-      {/* 行程进度条 */}
-      <div className="px-6 py-4 bg-white/60 backdrop-blur-sm">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">
-            {language === 'zh' ? '行程中' : 'In Progress'}
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          {activities.map((activity, index) => (
-            <div key={activity.id} className="flex flex-col items-center">
-              <div className={`w-4 h-4 rounded-full ${
-                index <= currentActivityIndex ? 'bg-green-500' : 'bg-gray-300'
-              }`}></div>
-              <span className="text-xs text-gray-600 mt-1">{activity.time}</span>
+
+      {/* 旅行状态卡片 */}
+      <div className="flex justify-center px-6 pt-6 pb-4">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-lg max-w-3xl w-full border border-white/30">
+          {/* 主要信息行 */}
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center">
+                <span className="text-sm">🐹</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-gray-800 text-sm">
+                  {language === 'zh' ? '豚豚君' : 'Pig-kun'}
+                </span>
+                <span className="text-sm">☀️</span>
+              </div>
+              <div className="ml-4">
+                <span className="text-sm text-gray-600">
+                  {language === 'zh' ? '正在：' : 'Currently: '}
+                </span>
+                <span className="text-sm text-gray-800">
+                  {language === 'zh' ? currentActivity.title : currentActivity.titleEn}
+                </span>
+              </div>
             </div>
-          ))}
-        </div>
-        <div className="relative mt-2">
-          <div className="w-full h-1 bg-gray-200 rounded"></div>
-          <div 
-            className="absolute top-0 left-0 h-1 bg-green-500 rounded transition-all duration-500"
-            style={{ width: `${((currentActivityIndex + 1) / activities.length) * 100}%` }}
-          ></div>
+            
+            <div className="text-right">
+              <div className="text-xl font-bold text-gray-800">{currentTime}</div>
+              <div className="text-xs text-gray-600">
+                {language === 'zh' ? `${tripPlan.cityName}` : tripPlan.cityName}
+              </div>
+            </div>
+          </div>
+          
+          {/* 行程进度条 */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-medium text-gray-700">
+                {language === 'zh' ? '行程中' : 'In Progress'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between relative">
+              {/* 连接线 */}
+              <div className="absolute top-1.5 left-0 right-0 h-0.5 bg-gray-300"></div>
+              <div 
+                className="absolute top-1.5 left-0 h-0.5 bg-green-500 transition-all duration-500"
+                style={{ width: `${((currentActivityIndex + 1) / activities.length) * 100}%` }}
+              ></div>
+              
+              {activities.map((activity, index) => (
+                <div key={activity.id} className="flex flex-col items-center relative z-10">
+                  <div className={`w-3 h-3 rounded-full border ${
+                    index <= currentActivityIndex 
+                      ? 'bg-green-500 border-green-500' 
+                      : 'bg-white border-gray-300'
+                  }`}></div>
+                  <span className="text-xs text-gray-600 mt-0.5">{activity.time}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -325,40 +353,15 @@ const TripJourneyView: React.FC = () => {
         </div>
       </div>
 
-      {/* 装扮按钮 */}
+      {/* 手帐按钮 */}
       <button
-        onClick={handleDressUpClick}
-        className="fixed bottom-8 right-8 w-16 h-16 bg-pink-400 hover:bg-pink-500 rounded-full flex items-center justify-center shadow-lg transition-colors z-50"
+        onClick={handleJournalClick}
+        className="fixed bottom-8 right-8 w-16 h-16 bg-amber-400 hover:bg-amber-500 rounded-full flex items-center justify-center shadow-lg transition-colors z-50"
       >
-        <span className="text-2xl">👗</span>
+        <span className="text-2xl">📝</span>
       </button>
 
-      {/* 装扮对话框 */}
-      {showDressUpDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">
-              {language === 'zh' ? '装扮豚豚君' : 'Dress up Pig-kun'}
-            </h3>
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              {['🎩', '👑', '🎀', '👒', '🧢', '🎭'].map((item, index) => (
-                <button
-                  key={index}
-                  className="w-16 h-16 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center text-2xl transition-colors"
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={() => setShowDressUpDialog(false)}
-              className="w-full bg-pink-400 hover:bg-pink-500 text-white py-2 rounded-xl font-medium transition-colors"
-            >
-              {language === 'zh' ? '确定' : 'OK'}
-            </button>
-          </div>
-        </div>
-      )}
+
     </div>
   )
 }
