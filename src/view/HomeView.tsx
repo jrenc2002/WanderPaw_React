@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
-import { LeafletMap } from '@/components/map/LeafletMap'
+import { AmapMap } from '@/components/map/AmapMap'
 import { getPointsByZoom, type InteractivePoint } from '@/data/leafletMockData'
 import toast from 'react-hot-toast'
 
@@ -70,8 +70,8 @@ const HomeView: React.FC = () => {
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50">
-      {/* Leaflet地图 */}
-      <LeafletMap
+      {/* 高德地图 */}
+      <AmapMap
         onRegionClick={handleRegionClick}
         onRegionHover={handleRegionHover}
         className="w-full h-full"

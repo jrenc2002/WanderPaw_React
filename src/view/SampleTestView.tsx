@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LeafletMap } from '@/components/map/LeafletMap'
+import { AmapMap } from '@/components/map/AmapMap'
 import { getAllGenesisSamples } from '@/data/genesisSamples'
 
 export const SampleTestView: React.FC = () => {
@@ -67,7 +67,7 @@ export const SampleTestView: React.FC = () => {
       {/* 地图主体 */}
       <div className="h-[calc(100vh-200px)] p-6">
         <div className="h-full bg-black/30 rounded-lg backdrop-blur-sm border border-gray-800 overflow-hidden">
-          <LeafletMap
+          <AmapMap
             onRegionClick={handleRegionClick}
             onRegionHover={handleRegionHover}
             className="w-full h-full"

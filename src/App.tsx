@@ -18,6 +18,7 @@ import { SampleTestView } from '@/view/SampleTestView';
 import { SampleDetailView } from '@/view/SampleDetailView';
 import { AuthView } from '@/view/AuthView';
 import { PetInitializationView } from '@/view/PetInitializationView';
+import { MapTestView } from '@/view/MapTestView';
 
 function App() {
 
@@ -83,6 +84,11 @@ const MainContent = () => {
                                 <SampleDetailView />
                             </ProtectedRoute>
                         } />
+                        <Route path="/map-test" element={
+                            <ProtectedRoute>
+                                <MapTestView />
+                            </ProtectedRoute>
+                        } />
                     </Routes>
                     <div><Toaster position="top-center" /></div>
                 </div>
@@ -130,6 +136,11 @@ const MainContent = () => {
                                 <Route path="/sample/:id" element={
                                     <ProtectedRoute>
                                         <SampleDetailView />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path="/map-test" element={
+                                    <ProtectedRoute>
+                                        <MapTestView />
                                     </ProtectedRoute>
                                 } />
                             </Routes>
