@@ -156,3 +156,88 @@ export const PET_AGE_OPTIONS = [
   { value: 'adult', label: '成年', emoji: '💪' },
   { value: 'senior', label: '老年', emoji: '👴' },
 ] as const 
+
+// 预设宠物角色接口
+export interface PresetPetCharacter {
+  id: string
+  name: string
+  type: PetType
+  gender: PetGender
+  personality: PetPersonality[]
+  age: PetAge
+  emoji: string
+  avatar?: string
+  description: string
+  quote: string
+  bgColor: string
+  accentColor: string
+}
+
+// 预设宠物角色数据
+export const PRESET_PET_CHARACTERS: PresetPetCharacter[] = [
+  {
+    id: 'tuntunji',
+    name: '豚豚君',
+    type: 'other',
+    gender: 'unknown',
+    personality: ['calm', 'gentle', 'independent'],
+    age: 'adult',
+    emoji: '🐹',
+    description: '水豚君走得很慢，但看得多，他喜欢凝视傍晚的小卷，坐在路边喝一杯手冲咖啡，他总能发现不经意的风景，并写成一段柔软的碎念寄给你。',
+    quote: '慢一点，看得多一点',
+    bgColor: 'from-orange-100 to-amber-50',
+    accentColor: 'orange-500'
+  },
+  {
+    id: 'xiaomao',
+    name: '小喵',
+    type: 'cat',
+    gender: 'female',
+    personality: ['curious', 'playful', 'independent'],
+    age: 'young',
+    emoji: '🐱',
+    description: '小喵总是对世界充满好奇，她会在阳光下伸懒腰，会追逐窗外的蝴蝶，也会在深夜悄悄陪伴你工作到很晚。',
+    quote: '好奇心是最好的向导',
+    bgColor: 'from-pink-100 to-rose-50',
+    accentColor: 'pink-500'
+  },
+  {
+    id: 'wangzai',
+    name: '旺仔',
+    type: 'dog',
+    gender: 'male',
+    personality: ['active', 'clingy', 'playful'],
+    age: 'adult',
+    emoji: '🐶',
+    description: '旺仔是最忠诚的伙伴，他会在你回家时热烈欢迎，陪你散步看日落，用无条件的爱温暖你的每一天。',
+    quote: '陪伴是最长情的告白',
+    bgColor: 'from-blue-100 to-sky-50',
+    accentColor: 'blue-500'
+  },
+  {
+    id: 'xiaobai',
+    name: '小白',
+    type: 'other',
+    gender: 'unknown',
+    personality: ['shy', 'gentle', 'calm'],
+    age: 'young',
+    emoji: '🐰',
+    description: '小白很害羞但很温柔，他喜欢安静的角落，会在你难过时默默靠近，用柔软的毛和温暖的体温安慰你。',
+    quote: '安静的陪伴也是一种力量',
+    bgColor: 'from-gray-100 to-slate-50',
+    accentColor: 'gray-500'
+  },
+  {
+    id: 'no-pet',
+    name: '暂无小伙伴',
+    type: 'none',
+    gender: 'unknown',
+    personality: [],
+    age: 'adult',
+    emoji: '🌱',
+    description: '现在还没有毛茸茸的小伙伴，但这并不妨碍你感受生活的美好。也许在某个温暖的午后，你会遇到那个对的它。',
+    quote: '美好的相遇值得等待',
+    bgColor: 'from-green-100 to-emerald-50',
+    accentColor: 'green-500'
+  }
+] 
