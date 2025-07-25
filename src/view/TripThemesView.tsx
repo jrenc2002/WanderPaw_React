@@ -97,8 +97,8 @@ const TripThemesView: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">{language === 'zh' ? '加载中...' : 'Loading...'}</p>
+          <div className="animate-spin w-[3vh] h-[3vh] border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-[1.5vh]"></div>
+          <p className="text-gray-600 text-[1.4vh]">{language === 'zh' ? '加载中...' : 'Loading...'}</p>
         </div>
       </div>
     )
@@ -109,61 +109,61 @@ const TripThemesView: React.FC = () => {
       {/* 返回按钮 - 左上角 */}
       <button
         onClick={handleBack}
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg"
+        className="absolute top-[2.2vh] left-[2.2vh] z-20 flex items-center gap-[0.7vh] text-[#687949] bg-transparent p-[0.7vh] rounded-lg"
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <svg width="3vh" height="3vh" viewBox="0 0 24 24" fill="none">
           <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <span>{language === 'zh' ? '返回' : 'Back'}</span>
+        <span style={{ fontSize: '2.5vh' }}>{language === 'zh' ? '返回' : 'Back'}</span>
       </button>
 
       {/* 左下角水豚装饰 */}
-      <div className="fixed bottom-0 left-8 z-0">
+      <div className="fixed bottom-0 left-[3vh] z-0">
         <img 
           src="/decorations/capybara.jpeg" 
           alt="Capybara decoration"
-          className="w-[280px] h-[280px] object-contain transition-opacity duration-300"
+          className="w-[35vh] h-[35vh] object-contain transition-opacity duration-300"
         />
       </div>
 
       {/* 主要内容 */}
-      <div className="px-6 py-8">
+      <div className="px-[2.2vh] py-[3vh]">
         {/* 主标题 */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#687949] dark:text-amber-200 mb-4">
+        <div className="text-center mb-[3vh]">
+          <h1 className="text-[4.4vh] md:text-[5.5vh] font-bold text-[#687949] dark:text-amber-200 mb-[1.5vh]">
             WanderPaw
           </h1>
-          <p className="text-xl text-[#687949] dark:text-amber-300 font-medium">
+          <p className="text-[1.8vh] text-[#687949] dark:text-amber-300 font-medium">
             小伙伴将代您探索世界
           </p>
         </div>
 
         {/* 主题选择卡片 */}
         <div 
-          className="mx-auto max-w-2xl pt-5 pb-5 px-12 mb-8 relative z-10"
+          className="mx-auto max-w-2xl pt-[3vh] pb-[3vh] px-[4.4vh] mb-[3vh] relative z-10"
           style={{
-            borderRadius: '38px',
+            borderRadius: '3.5vh',
             background: '#FEFDF9',
-            boxShadow: '0 2px 34.9px 3px rgba(123, 66, 15, 0.11)'
+            boxShadow: '0 0.2vh 3.2vh 0.3vh rgba(123, 66, 15, 0.11)'
           }}
         >
           {/* 夹子装饰 */}
-          <div className="absolute -top-12 -right-12 z-20">
+          <div className="absolute -top-[8vh] -right-[8vh] z-20">
             <img 
               src={clipImage} 
               alt="Clip decoration"
-              className="w-[127px] h-[128px] object-contain transform rotate-12"
+              className="w-[18vh] h-[18vh] object-contain transform rotate-12"
             />
           </div>
           
           {/* 卡片标题 */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-[3vh]">
             <h2 
-              className="mb-4"
+              className="mb-[1.5vh]"
               style={{
                 color: '#687949',
                 fontFamily: '"PingFang SC"',
-                fontSize: '23px',
+                fontSize: '2.5vh',
                 fontWeight: 600,
                 lineHeight: 'normal'
               }}
@@ -174,7 +174,7 @@ const TripThemesView: React.FC = () => {
               style={{
                 color: '#ADA89E',
                 fontFamily: '"PingFang SC"',
-                fontSize: '13px',
+                fontSize: '1.5vh',
                 fontWeight: 400,
                 lineHeight: 'normal'
               }}
@@ -184,31 +184,31 @@ const TripThemesView: React.FC = () => {
           </div>
 
           {/* 主题网格 - 四宫格布局 */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-[1.5vh]">
             {tripThemes.slice(0, 4).map((theme) => {
               const isSelected = selectedTheme === theme.id
               return (
                 <div
                   key={theme.id}
                   onClick={() => setSelectedTheme(theme.id)}
-                  className="cursor-pointer transition-all duration-300 hover:scale-105 p-4 h-32 flex items-center justify-center"
+                  className="cursor-pointer transition-all duration-300 hover:scale-105 p-[1.5vh] h-[18vh] flex items-center justify-center"
                   style={{
-                    borderRadius: '10px',
-                    border: '2px solid #E5E2DC',
+                    borderRadius: '1vh',
+                    border: '0.2vh solid #E5E2DC',
                     background: isSelected ? '#F0F3EA' : 'transparent'
                   }}
                 >
                   {/* 内容 */}
                   <div className="text-center">
-                    <div className="mb-3 flex justify-center">
+                    <div className="mb-[1.1vh] flex justify-center">
                       {theme.id === 'photography' ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 60 60" fill="none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="4.5vh" height="4.5vh" viewBox="0 0 60 60" fill="none">
                           <path d="M55.3379 31.9645C54.5099 31.9645 53.8379 31.2925 53.8379 30.4645V29.7715C53.8379 28.9435 54.5099 28.2715 55.3379 28.2715C56.1659 28.2715 56.8379 28.9435 56.8379 29.7715V30.4645C56.8379 31.2925 56.1659 31.9645 55.3379 31.9645Z" fill="#687949"/>
                           <path d="M46.3372 52.1736H13.7812C7.99125 52.1736 3.28125 47.1696 3.28125 41.0196V25.4976C3.28125 19.3476 7.99125 14.3436 13.7812 14.3436H15.4462C15.7372 14.3436 16.0132 14.2026 16.1842 13.9686L18.9292 10.2276C20.4442 8.08863 23.1892 7.51562 24.5782 7.51562H36.1342C37.6042 7.51562 40.4302 8.12762 41.7862 10.4136L44.2462 13.9206C44.4292 14.1906 44.7112 14.3406 45.0172 14.3406H46.3402C52.1302 14.3406 56.8402 19.3446 56.8402 25.4946C56.8402 26.3226 56.1682 26.9946 55.3402 26.9946C54.5122 26.9946 53.8402 26.3226 53.8402 25.4946C53.8402 20.9976 50.4772 17.3406 46.3402 17.3406H45.0172C43.7182 17.3406 42.5062 16.6986 41.7772 15.6246L39.2962 12.0876C39.2692 12.0486 39.2452 12.0126 39.2242 11.9736C38.5942 10.8756 36.8722 10.5186 36.1372 10.5186H24.5782C24.0112 10.5186 22.2082 10.7856 21.3742 11.9676C21.3682 11.9766 21.3622 11.9856 21.3562 11.9916L18.6022 15.7416C18.238 16.2365 17.7627 16.639 17.2146 16.9168C16.6664 17.1945 16.0607 17.3397 15.4462 17.3406H13.7812C9.64425 17.3406 6.28125 21.0006 6.28125 25.4946V41.0136C6.28125 45.5106 9.64425 49.1676 13.7812 49.1676H46.3342C50.4712 49.1676 53.8342 45.5076 53.8342 41.0136V34.6686C53.8342 33.8406 54.5062 33.1686 55.3342 33.1686C56.1622 33.1686 56.8342 33.8406 56.8342 34.6686V41.0136C56.8372 47.1696 52.1272 52.1736 46.3372 52.1736Z" fill="#687949"/>
                           <path d="M30.06 42.6544C24.486 42.6544 19.953 38.1184 19.953 32.5474C19.953 26.9764 24.486 22.4404 30.06 22.4404C35.634 22.4404 40.167 26.9764 40.167 32.5474C40.167 38.1184 35.634 42.6544 30.06 42.6544ZM30.06 25.4374C26.142 25.4374 22.953 28.6264 22.953 32.5444C22.953 36.4624 26.142 39.6514 30.06 39.6514C33.978 39.6514 37.167 36.4624 37.167 32.5444C37.167 28.6264 33.981 25.4374 30.06 25.4374ZM16.296 24.6094H11.625C10.797 24.6094 10.125 23.9374 10.125 23.1094C10.125 22.2814 10.797 21.6094 11.625 21.6094H16.296C17.124 21.6094 17.796 22.2814 17.796 23.1094C17.796 23.9374 17.124 24.6094 16.296 24.6094Z" fill="#687949"/>
                         </svg>
-                                              ) : theme.id === 'nature' ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 49 49" fill="none">
+                      ) : theme.id === 'nature' ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="4.5vh" height="4.5vh" viewBox="0 0 49 49" fill="none">
                           <g clipPath="url(#clip0_5036_10360)">
                             <path d="M24.5383 4.55547C24.1172 4.55547 23.7727 4.21094 23.7727 3.78984V0.957031C23.7727 0.535937 24.1172 0.191406 24.5383 0.191406C24.9594 0.191406 25.3039 0.535937 25.3039 0.957031V3.78984C25.3039 4.21094 24.9594 4.55547 24.5383 4.55547ZM28.6344 48.8086C25.9547 48.8086 23.7344 46.6266 23.7344 43.9086V26.95C23.7344 26.5289 24.0789 26.1844 24.5 26.1844C24.9211 26.1844 25.2656 26.5289 25.2656 26.95V43.9086C25.2656 45.7461 26.7586 47.2773 28.6344 47.2773C30.4719 47.2773 32.0031 45.7844 32.0031 43.9086C32.0031 43.4875 32.3477 43.143 32.7687 43.143C33.1898 43.143 33.5344 43.4875 33.5344 43.9086C33.5344 46.6266 31.3141 48.8086 28.6344 48.8086Z" fill="#687949" stroke="#687949"/>
                             <path d="M12.7467 27.7157C12.5553 27.7157 12.3639 27.5625 12.3639 27.3711C12.3639 27.1797 11.4451 9.37895 24.3459 3.44535C24.5373 3.36879 24.767 3.44535 24.8436 3.63676C24.9201 3.82817 24.8436 4.05785 24.6522 4.13442C12.249 9.83832 13.1295 27.1414 13.1295 27.3329C13.1295 27.5243 12.9764 27.7157 12.7467 27.7157Z" fill="#687949"/>
@@ -226,7 +226,7 @@ const TripThemesView: React.FC = () => {
                           </defs>
                         </svg>
                       ) : theme.id === 'culture' ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="21" viewBox="0 0 81 48" fill="none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="4.5vh" height="2.7vh" viewBox="0 0 81 48" fill="none">
                           <path d="M23.9879 9.74194C24.1132 10.0075 24.2356 10.2791 24.352 10.5611C24.6295 11.2102 25.3771 11.5087 26.0202 11.2296C26.6634 10.9506 26.9678 10.1971 26.6858 9.54945C26.5529 9.23162 26.4127 8.92423 26.2739 8.62579C25.9695 7.98863 25.2115 7.72452 24.5773 8.0334C23.9431 8.33929 23.6805 9.10776 23.9879 9.74194Z" fill="#687949"/>
                           <path d="M39.1657 5.33488C39.1762 5.62884 39.1822 5.92727 39.1792 6.23168C39.1822 6.93748 39.7566 7.50451 40.455 7.49854C41.1578 7.49406 41.7293 6.91659 41.7263 6.21079C41.7278 5.86759 41.7189 5.53035 41.7054 5.20058C41.6741 4.49627 41.0787 3.9561 40.3744 3.99192C39.6716 4.02773 39.1299 4.63057 39.1657 5.33488Z" fill="#687949"/>
                           <path d="M26.372 15.6889C25.7573 14.2444 25.8334 12.8254 26.5481 12.5225C27.2584 12.2181 28.3357 13.1507 28.9461 14.5936L40.7731 42.4302C41.3863 43.8746 41.3102 45.2907 40.597 45.5936C39.8852 45.8965 38.8108 44.9684 38.1976 43.524L26.372 15.6889Z" fill="#687949"/>
@@ -243,17 +243,17 @@ const TripThemesView: React.FC = () => {
                           <path d="M38.6443 46.4607C39.6068 47.0053 40.705 46.883 41.0975 46.1906C41.4854 45.5012 41.0229 44.5 40.0589 43.9553L2.58731 22.8022C1.62635 22.2576 0.526614 22.3784 0.138648 23.0678C-0.252303 23.7587 0.211764 24.7629 1.17571 25.3061L38.6443 46.4607Z" fill="#687949"/>
                         </svg>
                       ) : theme.id === 'random' ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 59 59" fill="none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="4.5vh" height="4.5vh" viewBox="0 0 59 59" fill="none">
                           <path d="M23.7182 51.0943L17.1397 36.0788L5.07422 29.5003L17.1397 22.9218L23.7182 7.90633L30.2967 22.9218L42.3622 29.5003L30.2967 36.0788L23.7182 51.0943ZM46.4922 21.0928L43.8667 15.1338L39.0877 12.5083L43.8667 9.88283L46.4922 3.92383L49.1177 9.88283L53.9262 12.5083L49.1177 15.1338L46.4922 21.0928ZM46.4922 55.0768L43.8667 49.1178L39.0877 46.4923L43.8667 43.8668L46.4922 37.9078L49.1177 43.8668L53.9262 46.4923L49.1177 49.1178L46.4922 55.0768Z" stroke="#687949" strokeWidth="3"/>
                         </svg>
                       ) : (
-                        <span className="text-3xl">{theme.icon}</span>
+                        <span style={{ fontSize: '3.5vh' }}>{theme.icon}</span>
                       )}
                     </div>
-                    <h3 className="text-base font-bold mb-1" style={{ color: '#687949' }}>
+                    <h3 className="font-bold mb-[0.4vh]" style={{ color: '#687949', fontSize: '3vh' }}>
                       {language === 'zh' ? theme.name : theme.nameEn}
                     </h3>
-                    <p className="text-xs text-gray-500 leading-tight">
+                    <p className="text-gray-500 leading-tight" style={{ fontSize: '1.4vh' }}>
                       {language === 'zh' ? theme.description : theme.descriptionEn}
                     </p>
                   </div>
@@ -263,7 +263,7 @@ const TripThemesView: React.FC = () => {
           </div>
 
           {/* 确认按钮 */}
-          <div className="text-center mt-8">
+          <div className="text-center mt-[3vh]">
             <button
               onClick={() => {
                 if (selectedTheme) {
@@ -272,11 +272,11 @@ const TripThemesView: React.FC = () => {
                   toast.error(language === 'zh' ? '请先选择一个主题' : 'Please select a theme first')
                 }
               }}
-              className={`px-8 py-2 bg-gradient-to-r text-white rounded-[13px] font-bold text-lg transition-all duration-200 shadow-lg transform hover:scale-105 ${
-                selectedTheme 
-                  ? 'from-[#687949] to-[#687949] hover:from-[#C7AA6C] hover:to-[#C7AA6C]' 
-                  : 'from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600'
-              }`}
+              className="px-[3vh] py-[0.7vh] bg-gradient-to-r from-[#687949] to-[#687949] hover:from-[#C7AA6C] hover:to-[#C7AA6C] text-white font-bold transition-all duration-200 shadow-lg transform hover:scale-105"
+              style={{
+                borderRadius: '1.2vh',
+                fontSize: '2vh'
+              }}
             >
               {language === 'zh' ? '生成计划' : 'Generate Plan'}
             </button>

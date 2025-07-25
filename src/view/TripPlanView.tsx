@@ -403,7 +403,7 @@ const generateActivitiesForThemes = (themes: string[], cityName: string): Omit<T
     ]
   }
 
-  let activities: Omit<TripActivity, 'coordinates' | 'status'>[] = []
+  const activities: Omit<TripActivity, 'coordinates' | 'status'>[] = []
   themes.forEach(theme => {
     if (themeActivities[theme]) {
       activities.push(...themeActivities[theme])
@@ -613,82 +613,92 @@ const TripPlanView: React.FC = () => {
             }
           </h2>
           
-          {/* 城市信息部分 */}
-          <div className="mt-6 p-4 bg-white/80 rounded-xl">
-            <h3 className="text-lg font-semibold text-[#573E23] mb-2">
-              {language === 'zh' ? cityData?.name : cityData?.nameEn}
-            </h3>
-            <p className="text-gray-600 text-sm">
-              {language === 'zh' 
-                ? `探索主题：${tripPlan.selectedThemeNames.join('、')}` 
-                : `Themes: ${tripPlan.selectedThemeNames.join(', ')}`
-              }
-            </p>
-          </div>
+          
 
           {/* 活动列表部分 */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold text-[#573E23] mb-4">
+          <div className="mt-6 flex flex-col" style={{ height: 'calc(100vh - 400px)', minHeight: '400px' }}>
+            <h3 className="text-lg font-semibold text-[#573E23] mb-4 flex-shrink-0">
               {language === 'zh' ? '今日计划' : 'Today\'s Plan'}
             </h3>
             
-            {isGenerating ? (
-              <div className="text-center py-8">
-                <div className="animate-spin w-8 h-8 border-4 border-[#C7AA6C] border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p className="text-gray-600">{language === 'zh' ? '生成计划中...' : 'Generating plan...'}</p>
-              </div>
-            ) : (
-              <div className="space-y-4 max-h-96 overflow-y-auto activities-scroll">
-                {activities.map((activity, index) => (
-                  <div key={activity.id} className="relative flex items-start gap-4">
-                    {/* 时间线 */}
-                    <div className="relative z-10 flex-shrink-0">
-                      <div className="w-8 h-8 bg-[#C7AA6C] rounded-full flex items-center justify-center">
-                        <div className="w-3 h-3 bg-white rounded-full"></div>
-                      </div>
-                      {index < activities.length - 1 && (
-                        <div className="absolute top-8 left-4 w-0.5 h-8 bg-gray-300"></div>
-                      )}
-                      <div className="mt-2 text-sm font-medium text-gray-700">
-                        {activity.time}
-                      </div>
+            {/* 固定高度的活动容器 */}
+            <div className="flex-1 overflow-y-auto activities-scroll pr-2">
+                {isGenerating ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center">
+                      <div className="animate-spin w-8 h-8 border-4 border-[#C7AA6C] border-t-transparent rounded-full mx-auto mb-4"></div>
+                      <p className="text-gray-600">{language === 'zh' ? '生成计划中...' : 'Generating plan...'}</p>
                     </div>
-                    
-                    {/* 活动内容 */}
-                    <div className="flex-1 bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-start gap-3 flex-1">
-                          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                            <div className="w-8 h-6 bg-green-200 rounded-sm relative">
-                              <div className="absolute top-0 left-1 w-2 h-1 bg-green-400 rounded-full"></div>
-                              <div className="absolute top-1 right-1 w-1 h-1 bg-red-400 rounded-full"></div>
-                              <div className="absolute bottom-1 left-2 w-3 h-0.5 bg-blue-300 rounded"></div>
-                              <div className="absolute top-2 left-0 w-2 h-0.5 bg-yellow-400 rounded"></div>
-                            </div>
+                  </div>
+                ) : (
+                  <div className="h-full">
+                <div className="relative">
+                  {/* 左侧时间线SVG背景 */}
+                  <div className="absolute left-4 top-0 z-0" style={{ height: `${activities.length * 120}px` }}>
+                    <svg width="32" height="100%" viewBox="0 0 32 238" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full">
+                      <line x1="16.5" y1="48.5" x2="16.5" y2="100%" stroke="#687949" strokeLinecap="round"/>
+                      <path d="M16 0C7.13846 0 0 7.13846 0 16C0 24.8615 7.13846 32 16 32C24.8615 32 32 24.8615 32 16C32 7.13846 24.8615 0 16 0ZM16 29.5385C8.49231 29.5385 2.46154 23.5077 2.46154 16C2.46154 8.49231 8.49231 2.46154 16 2.46154C23.5077 2.46154 29.5385 8.49231 29.5385 16C29.5385 23.5077 23.5077 29.5385 16 29.5385Z" fill="#687949" fillOpacity="0.22"/>
+                      <circle cx="16" cy="16" r="9" fill="#687949"/>
+                    </svg>
+                  </div>
+
+                  <div className="space-y-6 relative z-10">
+                    {activities.map((activity, index) => (
+                      <div key={activity.id} className="flex items-start gap-6">
+                        {/* 时间显示 */}
+                        <div className="flex-shrink-0 w-16 pt-6">
+                          <div className="text-sm font-bold text-[#687949] text-center">
+                            {activity.time}
                           </div>
-                          
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-bold text-gray-800 mb-1">
-                              {language === 'zh' ? activity.title : activity.titleEn}
-                            </h4>
-                            <p className="text-sm text-gray-600 mb-2">
-                              {language === 'zh' ? activity.location : activity.locationEn}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {language === 'zh' ? activity.description : activity.descriptionEn}
-                            </p>
-                            <p className="text-xs text-[#C7AA6C] mt-1 font-medium">
-                              {language === 'zh' ? `预计 ${activity.duration} 分钟` : `Est. ${activity.duration} min`}
-                            </p>
+                          {/* 在每个时间点添加一个小圆点标记 */}
+                          {index > 0 && (
+                            <div className="absolute left-[12px] w-2 h-2 bg-[#687949] rounded-full" style={{ top: `${index * 120 + 24}px` }}></div>
+                          )}
+                        </div>
+                        
+                        {/* 活动内容卡片 */}
+                        <div 
+                          className="flex-1 p-5 transition-all duration-200 hover:scale-[1.02]"
+                          style={{
+                            borderRadius: '30px',
+                            background: '#FDF9EF',
+                            boxShadow: '0 2px 11.4px 3px rgba(123, 66, 15, 0.11)'
+                          }}
+                        >
+                          <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                              <div className="w-8 h-6 bg-green-200 rounded-sm relative">
+                                <div className="absolute top-0 left-1 w-2 h-1 bg-green-400 rounded-full"></div>
+                                <div className="absolute top-1 right-1 w-1 h-1 bg-red-400 rounded-full"></div>
+                                <div className="absolute bottom-1 left-2 w-3 h-0.5 bg-blue-300 rounded"></div>
+                                <div className="absolute top-2 left-0 w-2 h-0.5 bg-yellow-400 rounded"></div>
+                              </div>
+                            </div>
+                            
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-bold text-[#573E23] mb-1 text-lg">
+                                {language === 'zh' ? activity.title : activity.titleEn}
+                              </h4>
+                              <p className="text-sm text-[#687949] mb-2 font-medium">
+                                {language === 'zh' ? activity.location : activity.locationEn}
+                              </p>
+                              <p className="text-sm text-gray-600 leading-relaxed">
+                                {language === 'zh' ? activity.description : activity.descriptionEn}
+                              </p>
+                              <p className="text-sm text-[#C7AA6C] mt-2 font-semibold">
+                                {language === 'zh' ? `预计 ${activity.duration} 分钟` : `Est. ${activity.duration} min`}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
         </DashedCard>
       </div>
     </WarmBg>
