@@ -547,7 +547,7 @@ const TripPlanView: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div className="animate-spin border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" style={{ width: '2.22vw', height: '2.22vw' }}></div>
           <p className="text-gray-600">{language === 'zh' ? '生成计划中...' : 'Generating plan...'}</p>
         </div>
       </div>
@@ -558,36 +558,286 @@ const TripPlanView: React.FC = () => {
     <WarmBg>
       <style>{`
         .activities-scroll::-webkit-scrollbar {
-          width: 6px;
+          width: 0.42vw;
         }
         .activities-scroll::-webkit-scrollbar-track {
           background: #F5F5F5;
-          border-radius: 3px;
+          border-radius: 0.21vw;
         }
         .activities-scroll::-webkit-scrollbar-thumb {
           background: #D1BA9E;
-          border-radius: 3px;
+          border-radius: 0.21vw;
         }
         .activities-scroll::-webkit-scrollbar-thumb:hover {
           background: #C7AA6C;
         }
+        .trip-plan-container {
+          padding: 2.22vw 1.67vw;
+          max-width: 37.5vw;
+          margin: 0 auto;
+        }
+        .main-card {
+          min-height: 77.78vh;
+          position: relative;
+        }
+        .bottom-buttons {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 1.11vw;
+          padding-top: 1.11vw;
+          border-top: 0.07vw solid #e5e7eb;
+          margin-bottom: 1.11vw;
+        }
+        .start-button {
+          padding: 0.56vw 2.22vw;
+          color: white;
+          border-radius: 0.90vw;
+          font-weight: bold;
+          font-size: 1.25vw;
+          transition: all 0.2s;
+          box-shadow: 0 0.28vw 0.42vw rgba(0,0,0,0.1);
+          transform: scale(1);
+        }
+        .start-button:hover:not(:disabled) {
+          transform: scale(1.05);
+        }
+        .start-button:disabled {
+          transform: none;
+        }
+        .regenerate-button {
+          padding: 0.56vw;
+          transition: all 0.2s;
+        }
+        .regenerate-button:hover:not(:disabled) {
+          transform: scale(1.1);
+        }
+        .regenerate-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        .regenerate-icon {
+          width: 1.67vw;
+          height: 1.67vw;
+          transition: transform 0.2s;
+        }
+        .plan-title {
+          font-size: 1.67vw;
+          font-weight: bold;
+          color: #573E23;
+          margin-top: 1.11vw;
+          text-align: center;
+        }
+        .activities-container {
+          margin-top: 1.67vw;
+          display: flex;
+          flex-direction: column;
+          height: calc(100vh - 44.44vh);
+          min-height: 44.44vh;
+        }
+        .activities-title {
+          font-size: 1.25vw;
+          font-weight: 600;
+          color: #573E23;
+          margin-bottom: 1.11vw;
+          flex-shrink: 0;
+        }
+        .activities-scroll-container {
+          flex: 1;
+          overflow-y: auto;
+          padding-right: 0.56vw;
+        }
+        .activities-list {
+          height: 100%;
+        }
+        .timeline-container {
+          position: relative;
+        }
+        .timeline-svg {
+          position: absolute;
+          left: 1.11vw;
+          top: 0;
+          z-index: 0;
+          width: 2.22vw;
+          height: 100%;
+        }
+        .timeline-line {
+          stroke: #687949;
+          stroke-linecap: round;
+        }
+        .timeline-start-circle {
+          fill: #687949;
+          fill-opacity: 0.22;
+        }
+        .timeline-center-circle {
+          fill: #687949;
+        }
+        .activity-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 1.67vw;
+          margin-bottom: 1.67vw;
+        }
+        .activity-time {
+          flex-shrink: 0;
+          width: 4.44vw;
+          padding-top: 1.67vw;
+        }
+        .activity-time-text {
+          font-size: 0.97vw;
+          font-weight: bold;
+          color: #687949;
+          text-align: center;
+        }
+        .activity-dot {
+          position: absolute;
+          left: 0.83vw;
+          width: 0.56vw;
+          height: 0.56vw;
+          background: #687949;
+          border-radius: 50%;
+        }
+        .activity-card {
+          flex: 1;
+          padding: 1.39vw;
+          transition: all 0.2s;
+          border-radius: 2.08vw;
+          background: #FDF9EF;
+          box-shadow: 0 0.56vw 3.17vw 0.83vw rgba(123, 66, 15, 0.11);
+        }
+        .activity-card:hover {
+          transform: scale(1.02);
+        }
+        .activity-content {
+          display: flex;
+          align-items: flex-start;
+          gap: 1.11vw;
+        }
+        .activity-icon {
+          width: 3.33vw;
+          height: 3.33vw;
+          background: #dcfce7;
+          border-radius: 0.83vw;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          position: relative;
+          overflow: hidden;
+        }
+        .activity-icon-inner {
+          width: 2.22vw;
+          height: 1.67vw;
+          background: #bbf7d0;
+          border-radius: 0.14vw;
+          position: relative;
+        }
+        .activity-icon-dot1 {
+          position: absolute;
+          top: 0;
+          left: 0.28vw;
+          width: 0.56vw;
+          height: 0.28vw;
+          background: #4ade80;
+          border-radius: 50%;
+        }
+        .activity-icon-dot2 {
+          position: absolute;
+          top: 0.28vw;
+          right: 0.28vw;
+          width: 0.28vw;
+          height: 0.28vw;
+          background: #f87171;
+          border-radius: 50%;
+        }
+        .activity-icon-line1 {
+          position: absolute;
+          bottom: 0.28vw;
+          left: 0.56vw;
+          width: 0.83vw;
+          height: 0.14vw;
+          background: #60a5fa;
+          border-radius: 0.07vw;
+        }
+        .activity-icon-line2 {
+          position: absolute;
+          top: 0.56vw;
+          left: 0;
+          width: 0.56vw;
+          height: 0.14vw;
+          background: #fbbf24;
+          border-radius: 0.07vw;
+        }
+        .activity-text {
+          flex: 1;
+          min-width: 0;
+        }
+        .activity-title {
+          font-weight: bold;
+          color: #573E23;
+          margin-bottom: 0.28vw;
+          font-size: 1.25vw;
+        }
+        .activity-location {
+          font-size: 0.97vw;
+          color: #687949;
+          margin-bottom: 0.56vw;
+          font-weight: 500;
+        }
+        .activity-description {
+          font-size: 0.97vw;
+          color: #6b7280;
+          line-height: 1.5;
+        }
+        .activity-duration {
+          font-size: 0.97vw;
+          color: #C7AA6C;
+          margin-top: 0.56vw;
+          font-weight: 600;
+        }
+        .loading-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+        }
+        .loading-content {
+          text-align: center;
+        }
+        .loading-spinner {
+          animation: spin 1s linear infinite;
+          width: 2.22vw;
+          height: 2.22vw;
+          border: 0.28vw solid #C7AA6C;
+          border-top-color: transparent;
+          border-radius: 50%;
+          margin: 0 auto 1.11vw;
+        }
+        .loading-text {
+          color: #6b7280;
+        }
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
       `}</style>
-      <div className="px-6 py-8 max-w-xl mx-auto">
+      <div className="trip-plan-container">
         <DashedCard 
           width="100%" 
           style={{ 
-            minHeight: '700px',
+            minHeight: '77.78vh',
             position: 'relative'
           }}
           bottomElement={
-            <div className="flex items-center justify-center gap-4 pt-4 border-t border-gray-200 mb-4">
+            <div className="bottom-buttons">
               <button
                 onClick={handleStartTrip}
                 disabled={isGenerating || !activities.length}
-                className={`px-8 py-2 bg-gradient-to-r text-white rounded-[13px] font-bold text-lg transition-all duration-200 shadow-lg transform hover:scale-105 ${
+                className={`start-button ${
                   !isGenerating && activities.length
-                    ? 'from-[#687949] to-[#687949] hover:from-[#C7AA6C] hover:to-[#C7AA6C]' 
-                    : 'from-gray-400 to-gray-500 cursor-not-allowed transform-none'
+                    ? 'bg-gradient-to-r from-[#687949] to-[#687949] hover:from-[#C7AA6C] hover:to-[#C7AA6C]' 
+                    : 'bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed'
                 }`}
               >
                 {language === 'zh' ? '开始旅程' : 'Start Journey'}
@@ -596,17 +846,17 @@ const TripPlanView: React.FC = () => {
               <button
                 onClick={handleRegeneratePlan}
                 disabled={isGenerating}
-                className="p-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group hover:scale-110"
+                className="regenerate-button"
                 title={language === 'zh' ? '重新生成计划' : 'Regenerate plan'}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" fill="none" className="transition-transform duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" fill="none" className="regenerate-icon">
                   <path d="M42 9.3V17.7C42 18.6 41.7 19.2 41.1 19.8C40.5 20.4 39.6 20.7 39 20.7H30.6C29.7 20.7 29.1 20.4 28.5 19.8C27.3 18.6 27.3 16.8 28.5 15.6C29.1 15 29.7 14.7 30.6 14.7H31.8C29.4 12.9 27 12 24.3 12C20.7 12 17.7 13.2 15.6 15.6C14.4 16.8 12.6 16.8 11.4 15.6C10.2 14.4 10.2 12.6 11.4 11.4C14.7 8.1 19.2 6 24.3 6C28.8 6 33 7.8 36 10.5V9.3C36 8.4 36.3 7.8 36.9 7.2C38.1 6 39.9 6 41.1 7.2C41.7 7.5 42 8.4 42 9.3ZM19.5 32.4C18.9 33 18 33.3 17.4 33.3H16.5C18.6 35.1 21 36 23.7 36C27 36 30 34.8 32.1 32.4C33.3 31.2 35.1 31.2 36.3 32.4C37.5 33.6 37.5 35.4 36.3 36.6C33.3 39.9 28.8 42 23.7 42C19.2 42 15 40.2 12 37.5V39C12 39.9 11.7 40.5 11.1 41.1C9.9 42.3 8.1 42.3 6.9 41.1C6.3 40.5 6 39.6 6 38.7V30.3C6 29.4 6.3 28.8 6.9 28.2C7.5 27.6 8.1 27.3 9 27.3H17.4C18.3 27.3 18.9 27.6 19.5 28.2C20.7 29.4 20.7 31.2 19.5 32.4Z" fill="#C7AA6C"/>
                 </svg>
               </button>
             </div>
           }
         >
-          <h2 className="text-2xl font-bold text-[#573E23] mt-4 text-center">
+          <h2 className="plan-title">
             {language === 'zh' 
               ? `${petInfo.type === 'cat' ? '猫咪' : petInfo.type === 'dog' ? '狗狗' : '仓鼠'}的探索计划` 
               : `${petInfo.type === 'cat' ? 'Cat' : petInfo.type === 'dog' ? 'Dog' : 'Hamster'} Exploration Plan`
@@ -616,76 +866,69 @@ const TripPlanView: React.FC = () => {
           
 
           {/* 活动列表部分 */}
-          <div className="mt-6 flex flex-col" style={{ height: 'calc(100vh - 400px)', minHeight: '400px' }}>
-            <h3 className="text-lg font-semibold text-[#573E23] mb-4 flex-shrink-0">
+          <div className="activities-container">
+            <h3 className="activities-title">
               {language === 'zh' ? '今日计划' : 'Today\'s Plan'}
             </h3>
             
             {/* 固定高度的活动容器 */}
-            <div className="flex-1 overflow-y-auto activities-scroll pr-2">
+            <div className="activities-scroll-container">
                 {isGenerating ? (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="text-center">
-                      <div className="animate-spin w-8 h-8 border-4 border-[#C7AA6C] border-t-transparent rounded-full mx-auto mb-4"></div>
-                      <p className="text-gray-600">{language === 'zh' ? '生成计划中...' : 'Generating plan...'}</p>
+                  <div className="loading-container">
+                    <div className="loading-content">
+                      <div className="loading-spinner"></div>
+                      <p className="loading-text">{language === 'zh' ? '生成计划中...' : 'Generating plan...'}</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="h-full">
-                <div className="relative">
+                  <div className="activities-list">
+                <div className="timeline-container">
                   {/* 左侧时间线SVG背景 */}
-                  <div className="absolute left-4 top-0 z-0" style={{ height: `${activities.length * 120}px` }}>
+                  <div className="timeline-svg" style={{ height: `${activities.length * 13.33}vh` }}>
                     <svg width="32" height="100%" viewBox="0 0 32 238" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full">
-                      <line x1="16.5" y1="48.5" x2="16.5" y2="100%" stroke="#687949" strokeLinecap="round"/>
-                      <path d="M16 0C7.13846 0 0 7.13846 0 16C0 24.8615 7.13846 32 16 32C24.8615 32 32 24.8615 32 16C32 7.13846 24.8615 0 16 0ZM16 29.5385C8.49231 29.5385 2.46154 23.5077 2.46154 16C2.46154 8.49231 8.49231 2.46154 16 2.46154C23.5077 2.46154 29.5385 8.49231 29.5385 16C29.5385 23.5077 23.5077 29.5385 16 29.5385Z" fill="#687949" fillOpacity="0.22"/>
-                      <circle cx="16" cy="16" r="9" fill="#687949"/>
+                      <line x1="16.5" y1="48.5" x2="16.5" y2="100%" className="timeline-line"/>
+                      <path d="M16 0C7.13846 0 0 7.13846 0 16C0 24.8615 7.13846 32 16 32C24.8615 32 32 24.8615 32 16C32 7.13846 24.8615 0 16 0ZM16 29.5385C8.49231 29.5385 2.46154 23.5077 2.46154 16C2.46154 8.49231 8.49231 2.46154 16 2.46154C23.5077 2.46154 29.5385 8.49231 29.5385 16C29.5385 23.5077 23.5077 29.5385 16 29.5385Z" className="timeline-start-circle"/>
+                      <circle cx="16" cy="16" r="9" className="timeline-center-circle"/>
                     </svg>
                   </div>
 
-                  <div className="space-y-6 relative z-10">
+                  <div style={{ position: 'relative', zIndex: 10 }}>
                     {activities.map((activity, index) => (
-                      <div key={activity.id} className="flex items-start gap-6">
+                      <div key={activity.id} className="activity-item">
                         {/* 时间显示 */}
-                        <div className="flex-shrink-0 w-16 pt-6">
-                          <div className="text-sm font-bold text-[#687949] text-center">
+                        <div className="activity-time">
+                          <div className="activity-time-text">
                             {activity.time}
                           </div>
                           {/* 在每个时间点添加一个小圆点标记 */}
                           {index > 0 && (
-                            <div className="absolute left-[12px] w-2 h-2 bg-[#687949] rounded-full" style={{ top: `${index * 120 + 24}px` }}></div>
+                            <div className="activity-dot" style={{ top: `${index * 13.33 + 2.67}vh` }}></div>
                           )}
                         </div>
                         
                         {/* 活动内容卡片 */}
-                        <div 
-                          className="flex-1 p-5 transition-all duration-200 hover:scale-[1.02]"
-                          style={{
-                            borderRadius: '30px',
-                            background: '#FDF9EF',
-                            boxShadow: '0 2px 11.4px 3px rgba(123, 66, 15, 0.11)'
-                          }}
-                        >
-                          <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden">
-                              <div className="w-8 h-6 bg-green-200 rounded-sm relative">
-                                <div className="absolute top-0 left-1 w-2 h-1 bg-green-400 rounded-full"></div>
-                                <div className="absolute top-1 right-1 w-1 h-1 bg-red-400 rounded-full"></div>
-                                <div className="absolute bottom-1 left-2 w-3 h-0.5 bg-blue-300 rounded"></div>
-                                <div className="absolute top-2 left-0 w-2 h-0.5 bg-yellow-400 rounded"></div>
+                        <div className="activity-card">
+                          <div className="activity-content">
+                            <div className="activity-icon">
+                              <div className="activity-icon-inner">
+                                <div className="activity-icon-dot1"></div>
+                                <div className="activity-icon-dot2"></div>
+                                <div className="activity-icon-line1"></div>
+                                <div className="activity-icon-line2"></div>
                               </div>
                             </div>
                             
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-bold text-[#573E23] mb-1 text-lg">
+                            <div className="activity-text">
+                              <h4 className="activity-title">
                                 {language === 'zh' ? activity.title : activity.titleEn}
                               </h4>
-                              <p className="text-sm text-[#687949] mb-2 font-medium">
+                              <p className="activity-location">
                                 {language === 'zh' ? activity.location : activity.locationEn}
                               </p>
-                              <p className="text-sm text-gray-600 leading-relaxed">
+                              <p className="activity-description">
                                 {language === 'zh' ? activity.description : activity.descriptionEn}
                               </p>
-                              <p className="text-sm text-[#C7AA6C] mt-2 font-semibold">
+                              <p className="activity-duration">
                                 {language === 'zh' ? `预计 ${activity.duration} 分钟` : `Est. ${activity.duration} min`}
                               </p>
                             </div>
