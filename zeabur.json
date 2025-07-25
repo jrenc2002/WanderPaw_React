@@ -1,0 +1,16 @@
+{
+  "build": {
+    "commands": [
+      "npm run build"
+    ]
+  },
+  "start": {
+    "command": "npm start"
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+} 

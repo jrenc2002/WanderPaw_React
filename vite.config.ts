@@ -16,6 +16,8 @@ export default defineConfig({
     }
   },
   server: {
+    host: '0.0.0.0',
+    port: 5173,
     proxy: {
       '/api': {
         target: 'http://localhost:8080',
@@ -23,5 +25,9 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ''), // 移除/api前缀，因为后端路径不包含/api
       },
     },
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 5173,
   },
 })
