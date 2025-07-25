@@ -20,7 +20,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'https://backeenee.zeabur.app',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''), // 移除/api前缀，因为后端路径不包含/api
       },
