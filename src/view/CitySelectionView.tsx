@@ -118,7 +118,7 @@ const CitySelectionView: React.FC = () => {
       {/* 返回按钮 - 左上角 */}
       <button
         onClick={handleBack}
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-amber-800 hover:text-amber-900 transition-colors bg-transparent p-2 rounded-lg hover:bg-white/20"
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] hover:text-amber-900 transition-colors bg-transparent p-2 rounded-lg hover:bg-white/20"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -130,10 +130,10 @@ const CitySelectionView: React.FC = () => {
       <div className="px-6 py-8">
         {/* 标题和描述 */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-amber-800 dark:text-amber-200 mb-4">
-            WonderPaw
+          <h1 className="text-4xl md:text-5xl font-bold text-[#687949] dark:text-amber-200 mb-4">
+            WanderPaw
           </h1>
-          <p className="text-xl text-amber-700 dark:text-amber-300 font-medium">
+          <p className="text-xl text-[#687949] dark:text-amber-300 font-medium">
             请选择希望探索的城市
           </p>
         </div>
@@ -146,18 +146,6 @@ const CitySelectionView: React.FC = () => {
             </div>
           ) : (
             <>
-              {/* 导航按钮 */}
-              <button onClick={goToPrevious} className="carousel-nav-btn prev">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-              
-              <button onClick={goToNext} className="carousel-nav-btn next">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
 
               {getVisibleCards().map(({ city, index, position }) => {
                 const isCenter = position === 0
@@ -268,17 +256,11 @@ const CitySelectionView: React.FC = () => {
         <div className="text-center mt-8">
           <button
             onClick={handleConfirm}
-            className="mb-4 px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full font-bold text-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-lg transform hover:scale-105"
+            className="mb-4 px-8 py-3 bg-gradient-to-r from-[#687949] to-[#687949] text-white rounded-[22px] font-bold text-lg hover:from-[#505D39] hover:to-[#505D39] transition-all duration-200 shadow-lg transform hover:scale-105"
           >
             {language === 'zh' ? '确认选择' : 'Confirm Selection'}
           </button>
           
-          <p className="text-sm text-amber-700">
-            {language === 'zh' 
-              ? '✨ 点击卡片切换城市，使用左右箭头或点击确认按钮' 
-              : '✨ Click cards to switch cities, use arrow buttons or confirm button'
-            }
-          </p>
         </div>
       </div>
     </WarmBg>

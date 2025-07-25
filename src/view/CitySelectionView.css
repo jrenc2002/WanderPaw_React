@@ -177,38 +177,7 @@
   }
 }
 
-/* 导航按钮样式 */
-.carousel-nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 20;
-  background: rgba(251, 191, 36, 0.9);
-  border: none;
-  border-radius: 50%;
-  width: clamp(40px, 8vw, 50px);
-  height: clamp(40px, 8vw, 50px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: white;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
 
-.carousel-nav-btn:hover {
-  background: rgba(245, 158, 11, 0.9);
-  transform: translateY(-50%) scale(1.1);
-}
-
-.carousel-nav-btn.prev {
-  left: clamp(-60px, -10vw, -80px);
-}
-
-.carousel-nav-btn.next {
-  right: clamp(-60px, -10vw, -80px);
-}
 
 /* 中等屏幕 (平板) */
 @media (max-width: 1024px) {
@@ -308,13 +277,7 @@
     transform: translateX(clamp(-320px, -45vw, -260px)) scale(0.5) rotateY(35deg);
   }
 
-  .carousel-nav-btn.prev {
-    left: clamp(5px, 2vw, 10px);
-  }
 
-  .carousel-nav-btn.next {
-    right: clamp(5px, 2vw, 10px);
-  }
 }
 
 /* 超小屏幕 (手机竖屏) */

@@ -463,6 +463,15 @@ const TripJourneyView: React.FC = () => {
         >
           <span className="text-2xl">📝</span>
         </button>
+
+        {/* 底部线性渐变 */}
+        <div 
+          className="fixed bottom-0 left-0 w-full z-40 pointer-events-none"
+          style={{
+            height: '8.333333%', // 1/12 of screen height
+            background: 'linear-gradient(180deg, rgba(237, 232, 222, 0.00) 0%, #F4F0E7 94.71%)'
+          }}
+        />
       </div>
     </div>
   )
