@@ -11,7 +11,7 @@ export const cityActivityCoordinates: Record<string, {
     nameEn: string
   }>
 }> = {
-  'CN-beijing': {
+  'CN-BJ': { // 修复：从 CN-beijing 改为 CN-BJ
     center: [116.4074, 39.9042],
     activities: [
       {
@@ -48,154 +48,126 @@ export const cityActivityCoordinates: Record<string, {
         coordinates: [116.3889, 39.9288],
         name: '全聚德烤鸭店',
         nameEn: 'Quanjude Roast Duck'
-      },
-      {
-        id: 'houhai',
-        theme: 'nightlife',
-        coordinates: [116.3911, 39.9368],
-        name: '后海酒吧街',
-        nameEn: 'Houhai Bar Street'
       }
     ]
   },
-  'CN-shanghai': {
+  'CN-SH': { // 修复：从 CN-shanghai 改为 CN-SH
     center: [121.4737, 31.2304],
     activities: [
       {
         id: 'the-bund',
         theme: 'photography',
-        coordinates: [121.4845, 31.2396],
+        coordinates: [121.4900, 31.2397],
         name: '外滩',
         nameEn: 'The Bund'
       },
       {
         id: 'yu-garden',
         theme: 'culture',
-        coordinates: [121.4920, 31.2276],
+        coordinates: [121.4920, 31.2280],
         name: '豫园',
         nameEn: 'Yu Garden'
       },
       {
         id: 'peoples-park',
-        theme: 'relaxation',
-        coordinates: [121.4692, 31.2285],
+        theme: 'nature',
+        coordinates: [121.4650, 31.2275],
         name: '人民公园',
         nameEn: 'People\'s Park'
       },
       {
         id: 'nanjing-road',
         theme: 'shopping',
-        coordinates: [121.4692, 31.2353],
+        coordinates: [121.4758, 31.2344],
         name: '南京路步行街',
         nameEn: 'Nanjing Road'
       },
       {
         id: 'xiaolongbao',
         theme: 'food',
-        coordinates: [121.4775, 31.2232],
+        coordinates: [121.4944, 31.2267],
         name: '南翔小笼包',
         nameEn: 'Nanxiang Xiaolongbao'
-      },
-      {
-        id: 'xintiandi',
-        theme: 'nightlife',
-        coordinates: [121.4746, 31.2190],
-        name: '新天地',
-        nameEn: 'Xintiandi'
       }
     ]
   },
-  'CN-guangzhou': {
+  'CN-GD': { // 修复：从 CN-guangzhou 改为 CN-GD
     center: [113.2644, 23.1291],
     activities: [
       {
         id: 'canton-tower',
         theme: 'photography',
-        coordinates: [113.3191, 23.1059],
+        coordinates: [113.3189, 23.1059],
         name: '广州塔',
         nameEn: 'Canton Tower'
       },
       {
         id: 'chen-clan-academy',
         theme: 'culture',
-        coordinates: [113.2456, 23.1264],
+        coordinates: [113.2438, 23.1267],
         name: '陈家祠',
         nameEn: 'Chen Clan Academy'
       },
       {
         id: 'yuexiu-park',
         theme: 'nature',
-        coordinates: [113.2734, 23.1324],
+        coordinates: [113.2656, 23.1380],
         name: '越秀公园',
         nameEn: 'Yuexiu Park'
       },
       {
-        id: 'shangxiajiu',
+        id: 'beijing-road',
         theme: 'shopping',
-        coordinates: [113.2426, 23.1150],
-        name: '上下九步行街',
-        nameEn: 'Shangxiajiu Pedestrian Street'
+        coordinates: [113.2661, 23.1290],
+        name: '北京路步行街',
+        nameEn: 'Beijing Road'
       },
       {
         id: 'dim-sum',
         theme: 'food',
-        coordinates: [113.2587, 23.1167],
-        name: '广式茶楼',
-        nameEn: 'Cantonese Tea House'
-      },
-      {
-        id: 'zhujiang-night',
-        theme: 'nightlife',
-        coordinates: [113.3105, 23.1089],
-        name: '珠江夜游',
-        nameEn: 'Pearl River Night Cruise'
+        coordinates: [113.2590, 23.1163],
+        name: '点心茶楼',
+        nameEn: 'Dim Sum Restaurant'
       }
     ]
   },
-  'CN-chengdu': {
+  'CN-SC': { // 修复：从 CN-chengdu 改为 CN-SC
     center: [104.0668, 30.5728],
     activities: [
       {
-        id: 'panda-base',
-        theme: 'nature',
-        coordinates: [104.1469, 30.7378],
-        name: '大熊猫繁育研究基地',
-        nameEn: 'Giant Panda Research Base'
-      },
-      {
         id: 'jinli-street',
         theme: 'culture',
-        coordinates: [104.0434, 30.6470],
+        coordinates: [104.0433, 30.6471],
         name: '锦里古街',
         nameEn: 'Jinli Ancient Street'
       },
       {
+        id: 'tianfu-square',
+        theme: 'photography',
+        coordinates: [104.0717, 30.6598],
+        name: '天府广场',
+        nameEn: 'Tianfu Square'
+      },
+      {
         id: 'peoples-park-chengdu',
-        theme: 'relaxation',
-        coordinates: [104.0754, 30.6598],
+        theme: 'nature',
+        coordinates: [104.0589, 30.6710],
         name: '人民公园',
         nameEn: 'People\'s Park'
       },
       {
         id: 'chunxi-road',
         theme: 'shopping',
-        coordinates: [104.0861, 30.6625],
+        coordinates: [104.0813, 30.6587],
         name: '春熙路',
         nameEn: 'Chunxi Road'
       },
       {
         id: 'hotpot',
         theme: 'food',
-        coordinates: [104.0517, 30.6687],
-        name: '巴蜀大宅门火锅',
-        nameEn: 'Bashu Hotpot'
-      },
-      {
-        id: 'jiuyanqiao',
-        theme: 'nightlife',
-        coordinates: [104.1002, 30.6456],
-        name: '九眼桥酒吧街',
-        nameEn: 'Jiuyanqiao Bar Street'
+        coordinates: [104.0776, 30.6515],
+        name: '火锅店',
+        nameEn: 'Hotpot Restaurant'
       }
     ]
   }
@@ -210,8 +182,8 @@ export const generateActivityCoordinatesForCity = (
   const cityData = cityActivityCoordinates[cityId]
   
   if (!cityData) {
-    // 如果没有该城市的数据，使用默认生成逻辑
-    return generateRandomCoordinates(cityData?.center || [116.4074, 39.9042], activityIndex)
+    // 如果没有该城市的数据，抛出错误让调用方处理
+    throw new Error(`No activity data found for city: ${cityId}`)
   }
 
   // 优先使用真实的活动坐标

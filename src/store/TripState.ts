@@ -1,7 +1,8 @@
-import { atom } from 'jotai'
+import { atom, useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import type { RegionData } from './MapState'
 import type { PetInfo } from './PetState'
+import { generateActivityCoordinatesForCity } from '@/utils/tripDataGenerator'
 
 // 旅行主题类型
 export interface TripTheme {
@@ -341,8 +342,8 @@ export const generateTripRoute = (activities: TripActivity[], cityCoordinates: [
 
 // 工具函数：为活动生成坐标（使用真实城市数据）
 export const generateActivityCoordinates = (
-  cityCoordinates: [number, number], 
-  activityIndex: number, 
+  cityCoordinates: [number, number],
+  activityIndex: number,
   totalActivities: number,
   cityId?: string,
   theme?: string
@@ -350,10 +351,9 @@ export const generateActivityCoordinates = (
   // 如果有城市ID和主题，尝试使用真实坐标
   if (cityId && theme) {
     try {
-      const { generateActivityCoordinatesForCity } = require('../utils/tripDataGenerator')
       return generateActivityCoordinatesForCity(cityId, theme, activityIndex)
     } catch (error) {
-      console.warn('Failed to use real coordinates, falling back to generated ones')
+      console.warn('Failed to use real coordinates, falling back to generated ones:', error)
     }
   }
 
