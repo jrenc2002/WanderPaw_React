@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
-import { AmapMap } from '@/components/map/AmapMap'
+import { MapboxMap } from '@/components/map/MapboxMap'
 import { getPointsByZoom, getRoutesByZoom, type MapPoint, type MapRoute } from '@/data/mapData'
 import { WarmBg } from '@/components/bg/WarmBg'
 import toast from 'react-hot-toast'
@@ -102,8 +102,8 @@ const HomeView: React.FC = () => {
 
   return (
     <WarmBg className="relative w-full h-screen overflow-hidden">
-      {/* 高德地图 */}
-      <AmapMap
+      {/* Mapbox 地图 */}
+      <MapboxMap
         onRegionClick={handleRegionClick}
         onRegionHover={handleRegionHover}
         onRouteClick={handleRouteClick}

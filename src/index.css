@@ -24,8 +24,8 @@ html, body {
   box-sizing: border-box;
 }
 
-/* 高德地图自定义样式 */
-.amap-container {
+/* Mapbox 地图自定义样式 */
+.mapboxgl-map {
   font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Noto Sans CJK SC", Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   letter-spacing: 0.02em;
   font-weight: 400;
@@ -34,21 +34,29 @@ html, body {
   -moz-osx-font-smoothing: grayscale !important;
 }
 
-/* 高德地图控件样式优化 */
-.amap-controls {
+/* Mapbox 控件样式优化 */
+.mapboxgl-ctrl {
   font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
 }
 
-/* 高德地图标记点样式 */
-.amap-marker {
+/* Mapbox 标记点样式 */
+.mapboxgl-marker {
   font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
 }
 
-/* 高德地图信息窗体样式 */
-.amap-info-window {
+/* Mapbox 信息窗体样式 */
+.mapboxgl-popup-content {
   font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   border-radius: 12px !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* 自定义 popup 样式 */
+.custom-popup .mapboxgl-popup-content {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 /* 特别针对中文字体类 */
@@ -61,12 +69,12 @@ html, body {
   text-shadow: 0 0 0.1px rgba(0,0,0,0.1) !important;
 }
 
-/* 高德地图标记动画效果 */
-.amap-marker-content {
+/* Mapbox 标记动画效果 */
+.marker {
   transition: all 0.2s ease-in-out;
 }
 
-.amap-marker-content:hover {
+.marker:hover {
   transform: scale(1.1);
 }
 

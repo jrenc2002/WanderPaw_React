@@ -1,5 +1,5 @@
 import React from 'react'
-import { AmapMap } from '@/components/map/AmapMap'
+import { MapboxMap } from '@/components/map/MapboxMap'
 
 const testPoints = [
   {
@@ -58,20 +58,20 @@ export const MapTestView: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-center">高德地图测试</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Mapbox 地图测试</h1>
         
         <div className="bg-white rounded-lg shadow-lg p-4 mb-6">
           <h2 className="text-xl font-semibold mb-2">地图信息</h2>
           <p className="text-gray-600">
-            🗺️ 使用高德地图 JS API 2.0<br/>
-            🔑 API Key: 04475e3e2f3f06596d30bc50a740678d<br/>
-            🔐 安全密钥: 3fbcccdd17deb2d05f4c92255d448879<br/>
-            📍 测试点位: 北京、上海、深圳
+            🗺️ 使用 Mapbox GL JS<br/>
+            🌍 全球详细地图数据支持<br/>
+            📍 测试点位: 北京、上海、深圳<br/>
+            ✨ 支持国外地图详细数据
           </p>
         </div>
 
         <div className="h-[600px] bg-white rounded-lg shadow-lg overflow-hidden">
-          <AmapMap
+          <MapboxMap
             onRegionClick={handleRegionClick}
             onRegionHover={handleRegionHover}
             className="w-full h-full"
