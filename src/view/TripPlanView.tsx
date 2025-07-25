@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { petInfoAtom } from '@/store/PetState'
@@ -189,7 +189,7 @@ const TripPlanView: React.FC = () => {
   const location = useLocation()
   const [language] = useAtom(selectedLanguageAtom)
   const [petInfo] = useAtom(petInfoAtom)
-  const [currentTripPlan, setCurrentTripPlan] = useAtom(currentTripPlanAtom)
+  const [_currentTripPlan, setCurrentTripPlan] = useAtom(currentTripPlanAtom)
   const [, startTrip] = useAtom(startTripAtom)
   const [activities, setActivities] = useState<Omit<TripActivity, 'coordinates' | 'status'>[]>([])
   const [cityData, setCityData] = useState<any>(null)
@@ -342,7 +342,7 @@ const TripPlanView: React.FC = () => {
               <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-300"></div>
               
               <div className="space-y-6">
-                {activities.map((activity, index) => (
+                {activities.map((activity, _index) => (
                   <div key={activity.id} className="relative flex items-start gap-4">
                     <div className="relative z-10 flex-shrink-0">
                       <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">

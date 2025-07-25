@@ -57,7 +57,7 @@ const HomeView: React.FC = () => {
     }
   }
 
-  const handleRouteClick = (routeId: string, data?: any) => {
+  const handleRouteClick = (routeId: string, _data?: any) => {
     setSelectedRoute(routeId)
     setSelectedRegion(null) // 清除点选择
     

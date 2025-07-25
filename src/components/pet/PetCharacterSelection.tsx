@@ -78,12 +78,7 @@ export const PetCharacterSelection: React.FC = () => {
     }
   }
 
-  const handleSkip = () => {
-    setSkipped(true)
-    setCompleted(false)
-    toast.success('已跳过宠物信息设置，您可以稍后在设置中完成')
-    navigate('/home')
-  }
+
 
   const getPersonalityLabel = (personalityValue: string) => {
     const option = PET_PERSONALITY_OPTIONS.find(opt => opt.value === personalityValue)
