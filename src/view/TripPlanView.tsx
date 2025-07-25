@@ -545,10 +545,18 @@ const TripPlanView: React.FC = () => {
 
   if (!tripPlan || !cityData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" style={{ width: '2.22vw', height: '2.22vw' }}></div>
-          <p className="text-gray-600">{language === 'zh' ? '生成计划中...' : 'Generating plan...'}</p>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ 
+            animation: 'spin 1s linear infinite', 
+            width: '2vw', 
+            height: '2vw', 
+            border: '0.2vw solid #3b82f6', 
+            borderTop: '0.2vw solid transparent', 
+            borderRadius: '50%', 
+            margin: '0 auto 1vh auto' 
+          }}></div>
+          <p style={{ color: '#6b7280' }}>{language === 'zh' ? '生成计划中...' : 'Generating plan...'}</p>
         </div>
       </div>
     )
@@ -556,301 +564,116 @@ const TripPlanView: React.FC = () => {
 
   return (
     <WarmBg>
+      {/* 返回按钮 - 左上角 */}
+      <button
+        onClick={handleBack}
+        className="absolute top-[2.2vh] left-[2.2vh] z-20 flex items-center gap-[0.7vh] text-[#687949] bg-transparent p-[0.7vh] rounded-lg"
+      >
+        <svg width="3vh" height="3vh" viewBox="0 0 24 24" fill="none">
+          <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span style={{ fontSize: '2.5vh' }}>{language === 'zh' ? '返回' : 'Back'}</span>
+      </button>
+
+      {/* 左下角水豚装饰 */}
+      <div className="fixed bottom-0 left-[3vh] z-0">
+        <img 
+          src="/decorations/capybara.jpeg" 
+          alt="Capybara decoration"
+          className="w-[35vh] h-[35vh] object-contain transition-opacity duration-300"
+        />
+      </div>
+
       <style>{`
         .activities-scroll::-webkit-scrollbar {
-          width: 0.42vw;
+          width: 0.3vw;
         }
         .activities-scroll::-webkit-scrollbar-track {
           background: #F5F5F5;
-          border-radius: 0.21vw;
+          border-radius: 0.15vw;
         }
         .activities-scroll::-webkit-scrollbar-thumb {
           background: #D1BA9E;
-          border-radius: 0.21vw;
+          border-radius: 0.15vw;
         }
         .activities-scroll::-webkit-scrollbar-thumb:hover {
           background: #C7AA6C;
         }
-        .trip-plan-container {
-          padding: 2.22vw 1.67vw;
-          max-width: 37.5vw;
-          margin: 0 auto;
-        }
-        .main-card {
-          min-height: 77.78vh;
-          position: relative;
-        }
-        .bottom-buttons {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 1.11vw;
-          padding-top: 1.11vw;
-          border-top: 0.07vw solid #e5e7eb;
-          margin-bottom: 1.11vw;
-        }
-        .start-button {
-          padding: 0.56vw 2.22vw;
-          color: white;
-          border-radius: 0.90vw;
-          font-weight: bold;
-          font-size: 1.25vw;
-          transition: all 0.2s;
-          box-shadow: 0 0.28vw 0.42vw rgba(0,0,0,0.1);
-          transform: scale(1);
-        }
-        .start-button:hover:not(:disabled) {
-          transform: scale(1.05);
-        }
-        .start-button:disabled {
-          transform: none;
-        }
-        .regenerate-button {
-          padding: 0.56vw;
-          transition: all 0.2s;
-        }
-        .regenerate-button:hover:not(:disabled) {
-          transform: scale(1.1);
-        }
-        .regenerate-button:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-        .regenerate-icon {
-          width: 1.67vw;
-          height: 1.67vw;
-          transition: transform 0.2s;
-        }
-        .plan-title {
-          font-size: 1.67vw;
-          font-weight: bold;
-          color: #573E23;
-          margin-top: 1.11vw;
-          text-align: center;
-        }
-        .activities-container {
-          margin-top: 1.67vw;
-          display: flex;
-          flex-direction: column;
-          height: calc(100vh - 44.44vh);
-          min-height: 44.44vh;
-        }
-        .activities-title {
-          font-size: 1.25vw;
-          font-weight: 600;
-          color: #573E23;
-          margin-bottom: 1.11vw;
-          flex-shrink: 0;
-        }
-        .activities-scroll-container {
-          flex: 1;
-          overflow-y: auto;
-          padding-right: 0.56vw;
-        }
-        .activities-list {
-          height: 100%;
-        }
-        .timeline-container {
-          position: relative;
-        }
-        .timeline-svg {
-          position: absolute;
-          left: 1.11vw;
-          top: 0;
-          z-index: 0;
-          width: 2.22vw;
-          height: 100%;
-        }
-        .timeline-line {
-          stroke: #687949;
-          stroke-linecap: round;
-        }
-        .timeline-start-circle {
-          fill: #687949;
-          fill-opacity: 0.22;
-        }
-        .timeline-center-circle {
-          fill: #687949;
-        }
-        .activity-item {
-          display: flex;
-          align-items: flex-start;
-          gap: 1.67vw;
-          margin-bottom: 1.67vw;
-        }
-        .activity-time {
-          flex-shrink: 0;
-          width: 4.44vw;
-          padding-top: 1.67vw;
-        }
-        .activity-time-text {
-          font-size: 0.97vw;
-          font-weight: bold;
-          color: #687949;
-          text-align: center;
-        }
-        .activity-dot {
-          position: absolute;
-          left: 0.83vw;
-          width: 0.56vw;
-          height: 0.56vw;
-          background: #687949;
-          border-radius: 50%;
-        }
-        .activity-card {
-          flex: 1;
-          padding: 1.39vw;
-          transition: all 0.2s;
-          border-radius: 2.08vw;
-          background: #FDF9EF;
-          box-shadow: 0 0.56vw 3.17vw 0.83vw rgba(123, 66, 15, 0.11);
-        }
-        .activity-card:hover {
-          transform: scale(1.02);
-        }
-        .activity-content {
-          display: flex;
-          align-items: flex-start;
-          gap: 1.11vw;
-        }
-        .activity-icon {
-          width: 3.33vw;
-          height: 3.33vw;
-          background: #dcfce7;
-          border-radius: 0.83vw;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          position: relative;
-          overflow: hidden;
-        }
-        .activity-icon-inner {
-          width: 2.22vw;
-          height: 1.67vw;
-          background: #bbf7d0;
-          border-radius: 0.14vw;
-          position: relative;
-        }
-        .activity-icon-dot1 {
-          position: absolute;
-          top: 0;
-          left: 0.28vw;
-          width: 0.56vw;
-          height: 0.28vw;
-          background: #4ade80;
-          border-radius: 50%;
-        }
-        .activity-icon-dot2 {
-          position: absolute;
-          top: 0.28vw;
-          right: 0.28vw;
-          width: 0.28vw;
-          height: 0.28vw;
-          background: #f87171;
-          border-radius: 50%;
-        }
-        .activity-icon-line1 {
-          position: absolute;
-          bottom: 0.28vw;
-          left: 0.56vw;
-          width: 0.83vw;
-          height: 0.14vw;
-          background: #60a5fa;
-          border-radius: 0.07vw;
-        }
-        .activity-icon-line2 {
-          position: absolute;
-          top: 0.56vw;
-          left: 0;
-          width: 0.56vw;
-          height: 0.14vw;
-          background: #fbbf24;
-          border-radius: 0.07vw;
-        }
-        .activity-text {
-          flex: 1;
-          min-width: 0;
-        }
-        .activity-title {
-          font-weight: bold;
-          color: #573E23;
-          margin-bottom: 0.28vw;
-          font-size: 1.25vw;
-        }
-        .activity-location {
-          font-size: 0.97vw;
-          color: #687949;
-          margin-bottom: 0.56vw;
-          font-weight: 500;
-        }
-        .activity-description {
-          font-size: 0.97vw;
-          color: #6b7280;
-          line-height: 1.5;
-        }
-        .activity-duration {
-          font-size: 0.97vw;
-          color: #C7AA6C;
-          margin-top: 0.56vw;
-          font-weight: 600;
-        }
-        .loading-container {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-        }
-        .loading-content {
-          text-align: center;
-        }
-        .loading-spinner {
-          animation: spin 1s linear infinite;
-          width: 2.22vw;
-          height: 2.22vw;
-          border: 0.28vw solid #C7AA6C;
-          border-top-color: transparent;
-          border-radius: 50%;
-          margin: 0 auto 1.11vw;
-        }
-        .loading-text {
-          color: #6b7280;
-        }
         @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
       `}</style>
-      
-      {/* 返回按钮 - 左上角 */}
-      <button
-        onClick={handleBack}
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span>{language === 'zh' ? '返回' : 'Back'}</span>
-      </button>
-      
-      <div className="trip-plan-container">
-        <DashedCard 
-          width="100%" 
-          style={{ 
-            minHeight: '77.78vh',
-            position: 'relative'
-          }}
+      <div style={{ 
+        padding: '4vh 3vw', 
+        maxWidth: '40vw', 
+        margin: '0 auto',
+        minHeight: '100vh'
+      }}>
+        <div style={{ position: 'relative' }}>
+          {/* 右上角夹子装饰 */}
+          <img 
+            src="/decorations/clip.jpeg" 
+            alt="Clip decoration"
+            style={{
+              position: 'absolute',
+              top: '-1vh',
+              right: '-1vw',
+              width: '4vw',
+              height: '4vw',
+              objectFit: 'contain',
+              zIndex: 20,
+              transform: 'rotate(15deg)',
+              filter: 'drop-shadow(0 0.2vh 0.4vh rgba(0,0,0,0.2))',
+              background: 'transparent'
+            }}
+          />
+          
+          <DashedCard 
+            width="100%" 
+            style={{ 
+              minHeight: '80vh',
+              position: 'relative'
+            }}
           bottomElement={
-            <div className="bottom-buttons">
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '2vw', 
+              paddingTop: '2vh', 
+              marginBottom: '2vh' 
+            }}>
               <button
                 onClick={handleStartTrip}
                 disabled={isGenerating || !activities.length}
-                className={`start-button ${
-                  !isGenerating && activities.length
-                    ? 'bg-gradient-to-r from-[#687949] to-[#687949] hover:from-[#C7AA6C] hover:to-[#C7AA6C]' 
-                    : 'bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed'
-                }`}
+                style={{
+                  padding: '1vh 4vw',
+                  background: !isGenerating && activities.length
+                    ? 'linear-gradient(to right, #687949, #687949)'
+                    : 'linear-gradient(to right, #9ca3af, #6b7280)',
+                  color: 'white',
+                  borderRadius: '0.7vw',
+                  fontWeight: 'bold',
+                  fontSize: '1.2vw',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 0.5vh 1vh rgba(0,0,0,0.3)',
+                  transform: !isGenerating && activities.length ? 'scale(1)' : 'none',
+                  cursor: !isGenerating && activities.length ? 'pointer' : 'not-allowed',
+                  border: 'none'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isGenerating && activities.length) {
+                    e.currentTarget.style.background = 'linear-gradient(to right, #C7AA6C, #C7AA6C)'
+                    e.currentTarget.style.transform = 'scale(1.05)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isGenerating && activities.length) {
+                    e.currentTarget.style.background = 'linear-gradient(to right, #687949, #687949)'
+                    e.currentTarget.style.transform = 'scale(1)'
+                  }
+                }}
               >
                 {language === 'zh' ? '开始旅程' : 'Start Journey'}
               </button>
@@ -858,17 +681,40 @@ const TripPlanView: React.FC = () => {
               <button
                 onClick={handleRegeneratePlan}
                 disabled={isGenerating}
-                className="regenerate-button"
+                style={{
+                  padding: '0.5vh',
+                  transition: 'all 0.2s',
+                  opacity: isGenerating ? 0.5 : 1,
+                  cursor: isGenerating ? 'not-allowed' : 'pointer',
+                  border: 'none',
+                  background: 'transparent'
+                }}
                 title={language === 'zh' ? '重新生成计划' : 'Regenerate plan'}
+                onMouseEnter={(e) => {
+                  if (!isGenerating) {
+                    e.currentTarget.style.transform = 'scale(1.1)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isGenerating) {
+                    e.currentTarget.style.transform = 'scale(1)'
+                  }
+                }}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" fill="none" className="regenerate-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1.5vw" height="1.5vw" viewBox="0 0 48 48" fill="none" style={{ transition: 'transform 0.2s' }}>
                   <path d="M42 9.3V17.7C42 18.6 41.7 19.2 41.1 19.8C40.5 20.4 39.6 20.7 39 20.7H30.6C29.7 20.7 29.1 20.4 28.5 19.8C27.3 18.6 27.3 16.8 28.5 15.6C29.1 15 29.7 14.7 30.6 14.7H31.8C29.4 12.9 27 12 24.3 12C20.7 12 17.7 13.2 15.6 15.6C14.4 16.8 12.6 16.8 11.4 15.6C10.2 14.4 10.2 12.6 11.4 11.4C14.7 8.1 19.2 6 24.3 6C28.8 6 33 7.8 36 10.5V9.3C36 8.4 36.3 7.8 36.9 7.2C38.1 6 39.9 6 41.1 7.2C41.7 7.5 42 8.4 42 9.3ZM19.5 32.4C18.9 33 18 33.3 17.4 33.3H16.5C18.6 35.1 21 36 23.7 36C27 36 30 34.8 32.1 32.4C33.3 31.2 35.1 31.2 36.3 32.4C37.5 33.6 37.5 35.4 36.3 36.6C33.3 39.9 28.8 42 23.7 42C19.2 42 15 40.2 12 37.5V39C12 39.9 11.7 40.5 11.1 41.1C9.9 42.3 8.1 42.3 6.9 41.1C6.3 40.5 6 39.6 6 38.7V30.3C6 29.4 6.3 28.8 6.9 28.2C7.5 27.6 8.1 27.3 9 27.3H17.4C18.3 27.3 18.9 27.6 19.5 28.2C20.7 29.4 20.7 31.2 19.5 32.4Z" fill="#C7AA6C"/>
                 </svg>
               </button>
             </div>
           }
         >
-          <h2 className="plan-title">
+          <h2 style={{ 
+            fontSize: '1.5vw', 
+            fontWeight: 'bold', 
+            color: '#573E23', 
+            marginTop: '2vh', 
+            textAlign: 'center' 
+          }}>
             {language === 'zh' 
               ? `${petInfo.type === 'cat' ? '猫咪' : petInfo.type === 'dog' ? '狗狗' : '仓鼠'}的探索计划` 
               : `${petInfo.type === 'cat' ? 'Cat' : petInfo.type === 'dog' ? 'Dog' : 'Hamster'} Exploration Plan`
@@ -878,70 +724,169 @@ const TripPlanView: React.FC = () => {
           
 
           {/* 活动列表部分 */}
-          <div className="activities-container">
-            <h3 className="activities-title">
-              {language === 'zh' ? '今日计划' : 'Today\'s Plan'}
-            </h3>
+          <div style={{ 
+            marginTop: '3vh', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            height: 'calc(80vh - 20vh)', 
+            minHeight: '40vh' 
+          }}>
+            
             
             {/* 固定高度的活动容器 */}
-            <div className="activities-scroll-container">
+            <div style={{ flex: 1, overflowY: 'auto', paddingRight: '1vw' }} className="activities-scroll">
                 {isGenerating ? (
-                  <div className="loading-container">
-                    <div className="loading-content">
-                      <div className="loading-spinner"></div>
-                      <p className="loading-text">{language === 'zh' ? '生成计划中...' : 'Generating plan...'}</p>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    height: '100%' 
+                  }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ 
+                        animation: 'spin 1s linear infinite', 
+                        width: '2vw', 
+                        height: '2vw', 
+                        border: '0.2vw solid #C7AA6C', 
+                        borderTop: '0.2vw solid transparent', 
+                        borderRadius: '50%', 
+                        margin: '0 auto 2vh auto' 
+                      }}></div>
+                      <p style={{ color: '#6b7280' }}>{language === 'zh' ? '生成计划中...' : 'Generating plan...'}</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="activities-list">
-                <div className="timeline-container">
+                  <div style={{ height: '100%' }}>
+                <div style={{ position: 'relative' }}>
                   {/* 左侧时间线SVG背景 */}
-                  <div className="timeline-svg" style={{ height: `${activities.length * 13.33}vh` }}>
-                    <svg width="32" height="100%" viewBox="0 0 32 238" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full">
-                      <line x1="16.5" y1="48.5" x2="16.5" y2="100%" className="timeline-line"/>
-                      <path d="M16 0C7.13846 0 0 7.13846 0 16C0 24.8615 7.13846 32 16 32C24.8615 32 32 24.8615 32 16C32 7.13846 24.8615 0 16 0ZM16 29.5385C8.49231 29.5385 2.46154 23.5077 2.46154 16C2.46154 8.49231 8.49231 2.46154 16 2.46154C23.5077 2.46154 29.5385 8.49231 29.5385 16C29.5385 23.5077 23.5077 29.5385 16 29.5385Z" className="timeline-start-circle"/>
-                      <circle cx="16" cy="16" r="9" className="timeline-center-circle"/>
+                  <div 
+                    style={{ 
+                      position: 'absolute', 
+                      left: '1.5vw', 
+                      top: 0, 
+                      zIndex: 0, 
+                      height: `${activities.length * 12}vh` 
+                    }}
+                  >
+                    <svg width="2.5vw" height="100%" viewBox="0 0 32 238" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ height: '100%' }}>
+                      <line x1="16.5" y1="48.5" x2="16.5" y2="100%" stroke="#687949" strokeLinecap="round"/>
+                      <path d="M16 0C7.13846 0 0 7.13846 0 16C0 24.8615 7.13846 32 16 32C24.8615 32 32 24.8615 32 16C32 7.13846 24.8615 0 16 0ZM16 29.5385C8.49231 29.5385 2.46154 23.5077 2.46154 16C2.46154 8.49231 8.49231 2.46154 16 2.46154C23.5077 2.46154 29.5385 8.49231 29.5385 16C29.5385 23.5077 23.5077 29.5385 16 29.5385Z" fill="#687949" fillOpacity="0.22"/>
+                      <circle cx="16" cy="16" r="9" fill="#687949"/>
                     </svg>
                   </div>
 
                   <div style={{ position: 'relative', zIndex: 10 }}>
                     {activities.map((activity, index) => (
-                      <div key={activity.id} className="activity-item">
-                        {/* 时间显示 */}
-                        <div className="activity-time">
-                          <div className="activity-time-text">
-                            {activity.time}
-                          </div>
-                          {/* 在每个时间点添加一个小圆点标记 */}
-                          {index > 0 && (
-                            <div className="activity-dot" style={{ top: `${index * 13.33 + 2.67}vh` }}></div>
-                          )}
+                      <div key={activity.id} style={{ 
+                        marginBottom: index < activities.length - 1 ? '4vh' : '0',
+                        marginLeft: '4vw'
+                      }}>
+                        {/* 时间显示在卡片上方 */}
+                        <div style={{ 
+                          fontSize: '0.9vw', 
+                          fontWeight: 'bold', 
+                          color: '#687949', 
+                          marginBottom: '1vh'
+                        }}>
+                          {activity.time}
                         </div>
                         
                         {/* 活动内容卡片 */}
-                        <div className="activity-card">
-                          <div className="activity-content">
-                            <div className="activity-icon">
-                              <div className="activity-icon-inner">
-                                <div className="activity-icon-dot1"></div>
-                                <div className="activity-icon-dot2"></div>
-                                <div className="activity-icon-line1"></div>
-                                <div className="activity-icon-line2"></div>
+                        <div 
+                          style={{
+                            padding: '1.5vh 2vw',
+                            transition: 'all 0.2s',
+                            borderRadius: '1vw',
+                            background: '#FDF9EF',
+                            boxShadow: '0 0.2vh 0.6vh 0.15vh rgba(123, 66, 15, 0.11)',
+                            cursor: 'pointer',
+                            maxWidth: '25vw'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.02)'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)'
+                          }}
+                        >
+                          <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'flex-start', 
+                            gap: '2vw' 
+                          }}>
+                            <div style={{ 
+                              width: '3vw', 
+                              height: '3vw', 
+                              backgroundColor: '#dcfce7', 
+                              borderRadius: '0.5vw', 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'center', 
+                              flexShrink: 0, 
+                              position: 'relative', 
+                              overflow: 'hidden' 
+                            }}>
+                              <div style={{ 
+                                width: '2vw', 
+                                height: '1.5vh', 
+                                backgroundColor: '#bbf7d0', 
+                                borderRadius: '0.2vw', 
+                                position: 'relative' 
+                              }}>
+                                <div style={{ 
+                                  position: 'absolute', 
+                                  top: 0, 
+                                  left: '0.2vw', 
+                                  width: '0.4vw', 
+                                  height: '0.2vh', 
+                                  backgroundColor: '#4ade80', 
+                                  borderRadius: '50%' 
+                                }}></div>
+                                <div style={{ 
+                                  position: 'absolute', 
+                                  top: '0.2vh', 
+                                  right: '0.2vw', 
+                                  width: '0.2vw', 
+                                  height: '0.2vh', 
+                                  backgroundColor: '#f87171', 
+                                  borderRadius: '50%' 
+                                }}></div>
+                                <div style={{ 
+                                  position: 'absolute', 
+                                  bottom: '0.2vh', 
+                                  left: '0.4vw', 
+                                  width: '0.6vw', 
+                                  height: '0.1vh', 
+                                  backgroundColor: '#93c5fd', 
+                                  borderRadius: '0.05vh' 
+                                }}></div>
+                                <div style={{ 
+                                  position: 'absolute', 
+                                  top: '0.4vh', 
+                                  left: 0, 
+                                  width: '0.4vw', 
+                                  height: '0.1vh', 
+                                  backgroundColor: '#fbbf24', 
+                                  borderRadius: '0.05vh' 
+                                }}></div>
                               </div>
                             </div>
                             
-                            <div className="activity-text">
-                              <h4 className="activity-title">
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <h4 style={{ 
+                                fontWeight: 'bold', 
+                                color: '#573E23', 
+                                marginBottom: '0.5vh', 
+                                fontSize: '1.1vw' 
+                              }}>
                                 {language === 'zh' ? activity.title : activity.titleEn}
                               </h4>
-                              <p className="activity-location">
-                                {language === 'zh' ? activity.location : activity.locationEn}
-                              </p>
-                              <p className="activity-description">
+                              <p style={{ 
+                                fontSize: '0.9vw', 
+                                color: '#6b7280', 
+                                lineHeight: '1.6' 
+                              }}>
                                 {language === 'zh' ? activity.description : activity.descriptionEn}
-                              </p>
-                              <p className="activity-duration">
-                                {language === 'zh' ? `预计 ${activity.duration} 分钟` : `Est. ${activity.duration} min`}
                               </p>
                             </div>
                           </div>
@@ -955,6 +900,7 @@ const TripPlanView: React.FC = () => {
               </div>
             </div>
         </DashedCard>
+        </div>
       </div>
     </WarmBg>
   )
