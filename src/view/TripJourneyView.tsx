@@ -234,82 +234,160 @@ const TripJourneyView: React.FC = () => {
 
         {/* 旅行状态卡片 */}
         <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20">
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-3 shadow-lg max-w-3xl w-full border border-white/30">
-            {/* 主要信息行 */}
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center">
-                  <span className="text-sm">
+          <div 
+            className="backdrop-blur-sm p-3 w-[44vw] w-full"
+            style={{
+              borderRadius: '1.5vw',
+              background: '#FEFDF9',
+              boxShadow: '0 2px 34.9px 3px rgba(123, 66, 15, 0.11)'
+            }}
+          >
+                        {/* 上层：头像、姓名、事情、时间、地点 */}
+            <div className="flex items-start justify-between mb-1">
+              {/* 左侧：宠物头像、名称和当前活动 */}
+              <div className="flex items-start gap-4">
+                <div className="w-[5vw] h-[5vw] bg-orange-200 rounded-full flex items-center justify-center">
+                  <span className="text-[2vw]">
                     {currentTripPlan.petCompanion.type === 'cat' ? '🐱' : 
                      currentTripPlan.petCompanion.type === 'dog' ? '🐶' : '🐹'}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-800 text-sm">
+                
+                {/* 宠物名称和当前活动 */}
+                <div className="flex flex-col">
+                  <h2 
+                    style={{
+                      color: '#687949',
+                      fontFamily: 'PingFang SC',
+                      fontSize: '1.7vw',
+                      fontStyle: 'normal',
+                      fontWeight: 600,
+                      lineHeight: 'normal'
+                    }}
+                  >
                     {currentTripPlan.petCompanion.name || (language === 'zh' ? '豚豚君' : 'Pig-kun')}
-                  </span>
-                  <span className="text-sm">
-                    {petTravelState.mood === 'excited' ? '😆' :
-                     petTravelState.mood === 'happy' ? '😊' :
-                     petTravelState.mood === 'tired' ? '😴' :
-                     petTravelState.mood === 'curious' ? '🤔' : '😌'}
-                  </span>
-                </div>
-                {currentActivity && (
-                  <div className="ml-4">
-                    <span className="text-sm text-gray-600">
-                      {language === 'zh' ? '正在：' : 'Currently: '}
-                    </span>
-                    <span className="text-sm text-gray-800">
+                  </h2>
+                  
+                  {currentActivity && (
+                    <p 
+                      style={{
+                        color: '#B1C192',
+                        fontFamily: 'PingFang SC',
+                        fontSize: '1vw',
+                        fontStyle: 'normal',
+                        fontWeight: 400,
+                        lineHeight: 'normal',
+                        margin: '8px 0'
+                      }}
+                    >
                       {language === 'zh' ? currentActivity.title : currentActivity.titleEn}
-                    </span>
-                  </div>
-                )}
+                    </p>
+                  )}
+                </div>
               </div>
               
-              <div className="text-right">
-                <div className="text-xl font-bold text-gray-800">{currentTime}</div>
-                <div className="text-xs text-gray-600">
-                  {currentTripPlan.cityName}
+              {/* 右侧：时间和地点 */}
+              <div className="flex flex-col items-end">
+                <div 
+                  style={{
+                    color: '#687949',
+                    fontFamily: 'PingFang SC',
+                    fontSize: '2.5vw',
+                    fontStyle: 'normal',
+                    fontWeight: 600,
+                    lineHeight: 'normal'
+                  }}
+                >
+                  {currentTime}
+                </div>
+                <div 
+                  style={{
+                    borderRadius: '4vw',
+                    background: '#F3E2B6',
+                    padding: '2px 10px',
+                    marginTop: '4px'
+                  }}
+                >
+                  <span className="text-s font-medium text-gray-700">
+                    {currentTripPlan.cityName}
+                  </span>
                 </div>
               </div>
             </div>
             
-            {/* 行程进度条 */}
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-medium text-gray-700">
-                  {language === 'zh' ? '行程进度' : 'Trip Progress'}
-                </span>
-                <span className="text-xs text-gray-600">
-                  {tripProgress.completedActivities.length}/{tripProgress.totalActivities}
+            {/* 下层：行程状态和进度条 */}
+            <div className="flex items-center gap-2">
+              {/* 行程状态 */}
+              <div className="flex top-[2vh] gap-2">
+                <span className="text-s text-gray-600">
+                  {tripProgress.currentActivityIndex < currentTripPlan.activities.length - 1 ? 
+                    (language === 'zh' ? '行程中' : 'In Progress') : 
+                    (language === 'zh' ? '行程结束' : 'Trip Completed')
+                  }
                 </span>
               </div>
-              <div className="flex items-center justify-between relative">
+              
+                             {/* 进度条 */}
+              <div className="flex-1 relative"
+                style={{ minWidth: '20vw', marginLeft: '1vw' }}
+              >
+                <div className="flex items-center justify-between relative">
                 {/* 连接线 */}
-                <div className="absolute top-1.5 left-0 right-0 h-0.5 bg-gray-300"></div>
+                <div className="absolute top-[13px] left-[13px] right-[13px] h-0.5" style={{ backgroundColor: '#E5E5E5' }}></div>
                 <div 
-                  className="absolute top-1.5 left-0 h-0.5 bg-green-500 transition-all duration-500"
-                  style={{ width: `${((tripProgress.currentActivityIndex + 1) / tripProgress.totalActivities) * 100}%` }}
+                  className="absolute top-[13px] left-[13px] h-0.5 transition-all duration-500"
+                  style={{ 
+                    width: `${((tripProgress.currentActivityIndex + 1) / tripProgress.totalActivities) * 85}%`,
+                    backgroundColor: '#B1C192'
+                  }}
                 ></div>
                 
                 {currentTripPlan.activities.map((activity, index) => (
                   <div key={activity.id} className="flex flex-col items-center relative z-10">
-                    <div className={`w-3 h-3 rounded-full border ${
-                      index <= tripProgress.currentActivityIndex 
-                        ? 'bg-green-500 border-green-500' 
-                        : 'bg-white border-gray-300'
-                    }`}></div>
-                    <span className="text-xs text-gray-600 mt-0.5">{activity.time}</span>
+                    <svg 
+                      width="26" 
+                      height="26" 
+                      viewBox="0 0 26 26" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-[26px] h-[26px]"
+                    >
+                      <circle 
+                        cx="13" 
+                        cy="13" 
+                        r="13" 
+                        fill={index <= tripProgress.currentActivityIndex ? '#B1C192' : '#E5E5E5'}
+                      />
+                    </svg>
+                    <span 
+                      className="mt-1"
+                      style={{
+                        color: '#687949',
+                        fontFamily: 'PingFang SC',
+                        fontSize: '14px',
+                        fontWeight: 400
+                      }}
+                    >
+                      {activity.time}
+                                                            </span>
                   </div>
                 ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* 左侧计划列表 */}
-        <div className="absolute top-32 left-6 w-80 bg-amber-50/95 backdrop-blur-sm rounded-2xl p-4 border-2 border-dashed border-amber-200 shadow-lg z-20">
+        <div 
+          className="absolute top-[32vh] left-8 w-[23vw] backdrop-blur-sm p-4 z-20 h-[60vh]"
+          style={{
+            borderRadius: '1vw',
+            border: '2px dashed #D1BA9E',
+            background: '#FEFDF9',
+            boxShadow: '0 1.8px 6.48px 2.7px rgba(194, 100, 18, 0.12)'
+          }}
+        >
           <div className="absolute -top-3 -right-1 w-6 h-10 bg-green-400 rounded-full transform rotate-12"></div>
           <div className="absolute -top-1 right-1 w-4 h-6 bg-green-500 rounded-full transform -rotate-12"></div>
           
@@ -384,51 +462,7 @@ const TripJourneyView: React.FC = () => {
           </button>
         </div>
 
-        {/* 宠物能量和经验条 */}
-        <div className="absolute top-32 right-6 w-64 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg z-20">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-2xl">
-              {currentTripPlan.petCompanion.type === 'cat' ? '🐱' : 
-               currentTripPlan.petCompanion.type === 'dog' ? '🐶' : '🐹'}
-            </span>
-            <div>
-              <h4 className="font-bold text-gray-800">
-                {currentTripPlan.petCompanion.name || (language === 'zh' ? '宠物伙伴' : 'Pet Companion')}
-              </h4>
-              <p className="text-xs text-gray-600">
-                {language === 'zh' ? '能量' : 'Energy'}: {petTravelState.energy}/100
-              </p>
-            </div>
-          </div>
-
-          {/* 能量条 */}
-          <div className="mb-3">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm text-gray-600">{language === 'zh' ? '体力' : 'Energy'}</span>
-              <span className="text-sm text-gray-800">{petTravelState.energy}%</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${petTravelState.energy}%` }}
-              />
-            </div>
-          </div>
-
-          {/* 经验条 */}
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm text-gray-600">{language === 'zh' ? '经验' : 'Experience'}</span>
-              <span className="text-sm text-gray-800">{petTravelState.experience}</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                className="bg-purple-500 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${Math.min((petTravelState.experience % 100), 100)}%` }}
-              />
-            </div>
-          </div>
-        </div>
+        
         
         {/* 小动物区域 */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
@@ -459,9 +493,13 @@ const TripJourneyView: React.FC = () => {
         {/* 手帐按钮 */}
         <button
           onClick={handleJournalClick}
-          className="fixed bottom-8 right-8 w-16 h-16 bg-amber-400/90 hover:bg-amber-500/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transition-colors z-50 border border-white/30"
+          className="fixed bottom-8 right-8 w-16 h-16 hover:scale-110 transition-transform z-50"
         >
-          <span className="text-2xl">📝</span>
+          <img 
+            src="/decorations/book.jpeg" 
+            alt={language === 'zh' ? '旅行手帐' : 'Travel Journal'} 
+            className="w-full h-full object-contain"
+          />
         </button>
       </div>
     </WarmBg>
