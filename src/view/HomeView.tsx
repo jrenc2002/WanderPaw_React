@@ -3,6 +3,7 @@ import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { AmapMap } from '@/components/map/AmapMap'
 import { getPointsByZoom, getRoutesByZoom, type MapPoint, type MapRoute } from '@/data/mapData'
+import { WarmBg } from '@/components/bg/WarmBg'
 import toast from 'react-hot-toast'
 
 const HomeView: React.FC = () => {
@@ -100,7 +101,7 @@ const HomeView: React.FC = () => {
 
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <WarmBg className="relative w-full h-screen overflow-hidden">
       {/* 高德地图 */}
       <AmapMap
         onRegionClick={handleRegionClick}
@@ -251,7 +252,7 @@ const HomeView: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </WarmBg>
   )
 }
 

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { mockRegionsData } from '@/data/mockData'
+import { WarmBg } from '@/components/bg/WarmBg'
 import toast from 'react-hot-toast'
 
 interface TripTheme {
@@ -149,7 +150,7 @@ const TripThemesView: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+    <WarmBg>
       {/* 头部导航 */}
       <div className="relative z-10 flex items-center justify-between p-6 bg-white/80 backdrop-blur-sm">
         <button
@@ -232,7 +233,7 @@ const TripThemesView: React.FC = () => {
           </p>
         </div>
       </div>
-    </div>
+    </WarmBg>
   )
 }
 

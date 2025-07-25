@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { LoginForm } from '@/components/auth/LoginForm'
 import { RegisterForm } from '@/components/auth/RegisterForm'
+import { WarmBg } from '@/components/bg/WarmBg'
 
 export const AuthView: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true)
@@ -9,16 +10,8 @@ export const AuthView: React.FC = () => {
   const switchToRegister = () => setIsLogin(false)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* 背景装饰 */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-4 -right-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-48 left-1/2 transform -translate-x-1/2 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      {/* 主要内容 */}
-      <div className="relative flex flex-col justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <WarmBg>
+      <div className="flex flex-col justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         
         {/* 顶部品牌区域 */}
         <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
@@ -127,6 +120,6 @@ export const AuthView: React.FC = () => {
           animation-delay: 4s;
         }
       `}</style>
-    </div>
+    </WarmBg>
   )
 } 

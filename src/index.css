@@ -3,6 +3,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 全屏布局基础样式 */
+html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+html, body {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* 高德地图自定义样式 */
 .amap-container {
   font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Noto Sans CJK SC", Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -77,12 +98,12 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
   font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Inter, system-ui, sans-serif;
   font-weight: 400;
+  overflow: hidden;
 }
 
 h1 {

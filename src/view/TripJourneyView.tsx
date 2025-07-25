@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
+import { WarmBg } from '@/components/bg/WarmBg'
 import toast from 'react-hot-toast'
 
 interface TripActivity {
@@ -143,7 +144,7 @@ const TripJourneyView: React.FC = () => {
   const upcomingActivities = activities.slice(currentActivityIndex + 1)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-100 via-yellow-50 to-green-50 relative overflow-hidden">
+    <WarmBg className="relative overflow-hidden">
       {/* 返回按钮 - 左上角 */}
       <button
         onClick={() => navigate(-1)}
@@ -362,7 +363,7 @@ const TripJourneyView: React.FC = () => {
       </button>
 
 
-    </div>
+    </WarmBg>
   )
 }
 

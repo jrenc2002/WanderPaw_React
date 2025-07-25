@@ -183,6 +183,7 @@ export const PRESET_PET_CHARACTERS: PresetPetCharacter[] = [
     personality: ['calm', 'gentle', 'independent'],
     age: 'adult',
     emoji: '🐹',
+    avatar: '/decorations/capybara.jpeg',
     description: '水豚君走得很慢，但看得多，他喜欢凝视傍晚的小卷，坐在路边喝一杯手冲咖啡，他总能发现不经意的风景，并写成一段柔软的碎念寄给你。',
     quote: '慢一点，看得多一点',
     bgColor: 'from-orange-100 to-amber-50',

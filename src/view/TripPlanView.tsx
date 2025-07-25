@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { mockRegionsData } from '@/data/mockData'
+import { WarmBg } from '@/components/bg/WarmBg'
 import toast from 'react-hot-toast'
 
 interface TripActivity {
@@ -238,7 +239,7 @@ const TripPlanView: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
+    <WarmBg>
       <div className="relative z-10 flex items-center justify-between p-6 bg-white/80 backdrop-blur-sm">
         <button
           onClick={handleBack}
@@ -343,7 +344,7 @@ const TripPlanView: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </WarmBg>
   )
 }
 

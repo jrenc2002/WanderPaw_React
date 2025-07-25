@@ -1,6 +1,7 @@
 import React from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getAllGenesisSamples } from '@/data/genesisSamples'
+import { WarmBg } from '@/components/bg/WarmBg'
 
 export const SampleDetailView: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -9,26 +10,26 @@ export const SampleDetailView: React.FC = () => {
 
   if (!sample) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center">
+      <WarmBg className="flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">生活样本未找到</h1>
-          <Link to="/test" className="text-blue-400 hover:text-blue-300">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">生活样本未找到</h1>
+          <Link to="/test" className="text-amber-600 hover:text-amber-800">
             返回地图
           </Link>
         </div>
-      </div>
+      </WarmBg>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
+    <WarmBg>
       {/* 头部导航 */}
-      <div className="p-6 bg-black/50 backdrop-blur-sm border-b border-gray-800">
+      <div className="p-6 bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div className="flex items-center justify-between">
-          <Link to="/test" className="text-blue-400 hover:text-blue-300 flex items-center gap-2">
+          <Link to="/test" className="text-amber-600 hover:text-amber-800 flex items-center gap-2">
             ← 返回地图
           </Link>
-          <div className="flex items-center gap-4 text-sm text-gray-400">
+          <div className="flex items-center gap-4 text-sm text-gray-600">
             <span>👁️ {sample.viewCount}</span>
             <span>❤️ {sample.likeCount}</span>
             <span>📤 {sample.shareCount}</span>
@@ -389,6 +390,6 @@ export const SampleDetailView: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </WarmBg>
   )
 } 

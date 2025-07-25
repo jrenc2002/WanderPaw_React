@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AmapMap } from '@/components/map/AmapMap'
 import { getAllGenesisSamples } from '@/data/genesisSamples'
+import { WarmBg } from '@/components/bg/WarmBg'
 
 export const SampleTestView: React.FC = () => {
   const navigate = useNavigate()
@@ -40,13 +41,13 @@ export const SampleTestView: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
+    <WarmBg>
       {/* 头部信息 */}
-      <div className="p-6 bg-black/50 backdrop-blur-sm">
-        <h1 className="text-3xl font-bold text-white mb-2">
+      <div className="p-6 bg-white/80 backdrop-blur-sm">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
           🌍 躺平网 - 全球生活样本地图
         </h1>
-        <p className="text-gray-300 mb-4">
+        <p className="text-gray-600 mb-4">
           探索真实的生活样本，发现属于你的躺平方式
         </p>
         
@@ -95,6 +96,6 @@ export const SampleTestView: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </WarmBg>
   )
 } 

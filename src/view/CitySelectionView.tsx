@@ -4,6 +4,7 @@ import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { getTopCountries } from '@/data/mockData'
 import type { RegionData } from '@/store/MapState'
+import { WarmBg } from '@/components/bg/WarmBg'
 import './CitySelectionView.css'
 
 const CitySelectionView: React.FC = () => {
@@ -113,7 +114,7 @@ const CitySelectionView: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: '#FFF6E4' }}>
+    <WarmBg showDecorations={false} className="relative">
       {/* 返回按钮 - 左上角 */}
       <button
         onClick={handleBack}
@@ -280,7 +281,7 @@ const CitySelectionView: React.FC = () => {
           </p>
         </div>
       </div>
-    </div>
+    </WarmBg>
   )
 }
 

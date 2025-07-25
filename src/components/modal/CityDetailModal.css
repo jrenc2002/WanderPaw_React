@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
 :root {
-  --city-gap: 85px;
+  --city-gap: clamp(35px, 12vw, 85px);
 }
 
 /* 弹窗背景 */
@@ -24,31 +24,29 @@
 /* 弹窗容器 */
 .city-modal-container {
   position: relative;
-  width: 90vw;
-  max-width: 900px;
-  height: 80vh;
-  max-height: 700px;
+  width: clamp(300px, 95vw, 900px);
+  height: clamp(500px, 85vh, 700px);
   background-color: #eeeced;
-  border-radius: 30px;
+  border-radius: clamp(20px, 4vw, 30px);
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: clamp(20px, 5vw, 40px);
 }
 
 /* 关闭按钮 */
 .city-modal-close {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: clamp(15px, 3vw, 20px);
+  right: clamp(15px, 3vw, 20px);
   background: white;
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: clamp(35px, 8vw, 40px);
+  height: clamp(35px, 8vw, 40px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,23 +68,23 @@
 /* 卡片区域 */
 .city-modal-cards {
   position: relative;
-  width: 400px;
-  height: 200px;
-  margin-bottom: 40px;
+  width: clamp(250px, 60vw, 400px);
+  height: clamp(120px, 30vw, 200px);
+  margin-bottom: clamp(20px, 5vh, 40px);
 }
 
 .city-card {
   position: absolute;
-  width: 200px;
+  width: clamp(100px, 25vw, 200px);
   aspect-ratio: 1;
-  border: 8px solid #fff;
-  border-radius: 30px;
+  border: clamp(4px, 1.5vw, 8px) solid #fff;
+  border-radius: clamp(20px, 4vw, 30px);
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   left: 50%;
   top: 50%;
-  margin-left: -100px; /* -width/2 to center */
-  margin-top: -100px;  /* -height/2 to center */
+  margin-left: calc(clamp(100px, 25vw, 200px) / -2); /* -width/2 to center */
+  margin-top: calc(clamp(100px, 25vw, 200px) / -2);  /* -height/2 to center */
   transform-origin: center center;
 }
 
@@ -99,26 +97,26 @@
 /* 城市信息区域 */
 .city-modal-info {
   width: 100%;
-  max-width: 600px;
-  margin-bottom: 30px;
+  max-width: clamp(400px, 90vw, 600px);
+  margin-bottom: clamp(20px, 4vh, 30px);
 }
 
 .city-info-main {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: clamp(20px, 4vh, 30px);
 }
 
 .city-title {
-  font-size: 2.5rem;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
   font-weight: 700;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: clamp(8px, 2vh, 10px);
 }
 
 .city-description {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
   color: #666;
-  margin-bottom: 20px;
+  margin-bottom: clamp(15px, 3vh, 20px);
   line-height: 1.5;
 }
 
@@ -126,8 +124,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  font-size: 1.2rem;
+  gap: clamp(8px, 2vw, 10px);
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
 }
 
 .tangping-label {
@@ -137,42 +135,43 @@
 
 .tangping-value {
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: clamp(1.3rem, 3vw, 1.5rem);
 }
 
 /* 数据网格 */
 .city-data-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  gap: clamp(10px, 2vw, 15px);
+  margin-top: clamp(15px, 3vh, 20px);
 }
 
 .city-data-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: clamp(8px, 2vw, 10px);
   background: white;
-  padding: 15px;
-  border-radius: 15px;
+  padding: clamp(12px, 3vw, 15px);
+  border-radius: clamp(10px, 2.5vw, 15px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .data-icon {
-  font-size: 1.2rem;
-  min-width: 24px;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  min-width: clamp(20px, 4vw, 24px);
 }
 
 .data-label {
   color: #666;
-  font-size: 0.9rem;
-  min-width: 80px;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  min-width: clamp(60px, 15vw, 80px);
 }
 
 .data-value {
   color: #333;
   font-weight: 600;
   margin-left: auto;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
 }
 
 /* 底部操作区域 */
@@ -181,23 +180,25 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 600px;
+  max-width: clamp(400px, 90vw, 600px);
   margin-top: auto;
+  gap: clamp(10px, 2vw, 20px);
 }
 
 .city-modal-links {
   display: flex;
-  gap: 10px;
+  gap: clamp(8px, 2vw, 10px);
+  flex-wrap: wrap;
 }
 
 .city-btn {
-  padding: 8px 12px;
+  padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 12px);
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: clamp(4px, 1vw, 5px);
   background-color: #fff;
-  border-radius: 10px;
+  border-radius: clamp(8px, 2vw, 10px);
   box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
   text-decoration: none;
   color: rgba(0, 0, 0, 0.6);
@@ -205,7 +206,7 @@
   cursor: pointer;
   border: none;
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
 }
 
 .city-btn:hover {
@@ -221,56 +222,65 @@
 }
 
 .city-btn-icon {
-  height: 16px;
-  width: 16px;
+  height: clamp(14px, 3vw, 16px);
+  width: clamp(14px, 3vw, 16px);
 }
 
 .city-replay-btn {
   margin-left: auto;
 }
 
-/* 响应式设计 */
+/* 平板屏幕 */
+@media (max-width: 1024px) {
+  .city-modal-container {
+    width: clamp(350px, 90vw, 800px);
+    height: clamp(450px, 80vh, 650px);
+  }
+  
+  .city-data-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+/* 手机横屏 */
 @media (max-width: 768px) {
   .city-modal-container {
-    width: 95vw;
-    height: 85vh;
-    padding: 20px;
+    width: clamp(320px, 95vw, 600px);
+    height: clamp(450px, 85vh, 600px);
+    padding: clamp(15px, 4vw, 25px);
   }
 
   .city-modal-cards {
-    width: 300px;
-    height: 150px;
-    margin-bottom: 30px;
+    width: clamp(200px, 50vw, 300px);
+    height: clamp(100px, 25vw, 150px);
+    margin-bottom: clamp(15px, 4vh, 25px);
   }
 
   .city-card {
-    width: 120px;
-  }
-
-  .city-modal-cards {
-    --city-gap: 50px;
+    width: clamp(80px, 20vw, 120px);
+    border: clamp(3px, 1vw, 6px) solid #fff;
   }
 
   .city-title {
-    font-size: 2rem;
+    font-size: clamp(1.6rem, 4vw, 2rem);
   }
 
   .city-description {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 2.2vw, 1rem);
   }
 
   .city-data-grid {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: clamp(8px, 2vw, 12px);
   }
 
   .city-data-item {
-    padding: 12px;
+    padding: clamp(10px, 2.5vw, 12px);
   }
 
   .city-modal-actions {
     flex-direction: column;
-    gap: 15px;
+    gap: clamp(12px, 3vw, 15px);
     align-items: stretch;
   }
 
@@ -284,29 +294,70 @@
   }
 }
 
+/* 手机竖屏 */
 @media (max-width: 480px) {
+  .city-modal-container {
+    width: clamp(280px, 98vw, 400px);
+    height: clamp(400px, 90vh, 550px);
+    padding: clamp(12px, 3vw, 20px);
+  }
+
   .city-modal-cards {
-    width: 250px;
-    height: 120px;
+    width: clamp(180px, 45vw, 250px);
+    height: clamp(90px, 20vw, 120px);
+    margin-bottom: clamp(12px, 3vh, 20px);
   }
 
   .city-card {
-    width: 100px;
-  }
-
-  .city-modal-cards {
-    --city-gap: 35px;
+    width: clamp(70px, 18vw, 100px);
+    border: clamp(2px, 0.8vw, 4px) solid #fff;
+    margin-left: calc(clamp(70px, 18vw, 100px) / -2);
+    margin-top: calc(clamp(70px, 18vw, 100px) / -2);
   }
 
   .city-title {
-    font-size: 1.8rem;
+    font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+  }
+
+  .city-description {
+    font-size: clamp(0.85rem, 2vw, 1rem);
   }
 
   .city-tangping {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 2.2vw, 1rem);
   }
 
   .tangping-value {
-    font-size: 1.3rem;
+    font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+  }
+
+  .city-data-item {
+    padding: clamp(8px, 2vw, 10px);
+  }
+
+  .data-label {
+    min-width: clamp(50px, 12vw, 70px);
+    font-size: clamp(0.75rem, 1.8vw, 0.8rem);
+  }
+
+  .data-value {
+    font-size: clamp(0.75rem, 1.8vw, 0.8rem);
+  }
+
+  .city-btn {
+    padding: clamp(5px, 1.2vw, 6px) clamp(8px, 2vw, 10px);
+    font-size: clamp(0.75rem, 1.8vw, 0.8rem);
+  }
+
+  .city-btn-icon {
+    height: clamp(12px, 2.5vw, 14px);
+    width: clamp(12px, 2.5vw, 14px);
+  }
+
+  .city-modal-close {
+    width: clamp(30px, 6vw, 35px);
+    height: clamp(30px, 6vw, 35px);
+    top: clamp(10px, 2vw, 15px);
+    right: clamp(10px, 2vw, 15px);
   }
 } 
