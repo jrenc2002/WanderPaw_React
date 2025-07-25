@@ -100,7 +100,7 @@ export const accessTokenAtom = atom(
 // 登出操作atom
 export const logoutAtom = atom(
   null,
-  (get, set) => {
+  (_get, set) => {
     set(authStateAtom, {
       isAuthenticated: false,
       user: null,
@@ -117,7 +117,7 @@ export const logoutAtom = atom(
 // 设置认证数据atom
 export const setAuthDataAtom = atom(
   null,
-  (get, set, authData: { user: User; accessToken: string; refreshToken: string }) => {
+  (_get, set, authData: { user: User; accessToken: string; refreshToken: string }) => {
     set(authStateAtom, {
       isAuthenticated: true,
       user: authData.user,

@@ -11,7 +11,7 @@ const TravelJournalView: React.FC = () => {
   const [isLiked, setIsLiked] = useState(false)
   const [isBookmarked, setIsBookmarked] = useState(false)
 
-  const { tripPlan, currentActivity } = location.state || {}
+  const { tripPlan, currentActivity: _currentActivity } = location.state || {}
 
   const handleBack = () => {
     navigate(-1)

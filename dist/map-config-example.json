@@ -1,0 +1,144 @@
+{
+  "center": [35.0, 110.0],
+  "zoom": 5,
+  "points": [
+    {
+      "id": "beijing",
+      "position": [39.9042, 116.4074],
+      "title": "北京",
+      "description": "中国首都，政治文化中心",
+      "tangpingIndex": 25,
+      "data": {
+        "averageSalary": 12000,
+        "rentPrice": 4500,
+        "currency": "CNY",
+        "workLifeBalance": "较差",
+        "costOfLiving": 95,
+        "qualityOfLife": 75
+      }
+    },
+    {
+      "id": "shanghai",
+      "position": [31.2304, 121.4737],
+      "title": "上海",
+      "description": "经济金融中心",
+      "tangpingIndex": 20,
+      "data": {
+        "averageSalary": 13500,
+        "rentPrice": 5200,
+        "currency": "CNY",
+        "workLifeBalance": "很差",
+        "costOfLiving": 98,
+        "qualityOfLife": 72
+      }
+    },
+    {
+      "id": "shenzhen",
+      "position": [22.5431, 114.0579],
+      "title": "深圳",
+      "description": "科技创新之都",
+      "tangpingIndex": 30,
+      "data": {
+        "averageSalary": 11800,
+        "rentPrice": 4800,
+        "currency": "CNY",
+        "workLifeBalance": "较差",
+        "costOfLiving": 92,
+        "qualityOfLife": 78
+      }
+    },
+    {
+      "id": "chengdu",
+      "position": [30.5728, 104.0668],
+      "title": "成都",
+      "description": "天府之国，生活悠闲",
+      "tangpingIndex": 75,
+      "data": {
+        "averageSalary": 7800,
+        "rentPrice": 2200,
+        "currency": "CNY",
+        "workLifeBalance": "很好",
+        "costOfLiving": 68,
+        "qualityOfLife": 88
+      }
+    }
+  ],
+  "routes": [
+    {
+      "id": "beijing-shanghai",
+      "name": "京沪高铁",
+      "description": "连接北京和上海的高速铁路，全程约4.5小时",
+      "waypoints": [
+        { "position": [39.9042, 116.4074], "name": "北京南站" },
+        { "position": [34.8114, 117.1175], "name": "徐州东站" },
+        { "position": [32.0603, 118.7969], "name": "南京南站" },
+        { "position": [31.2304, 121.4737], "name": "上海虹桥站" }
+      ],
+      "style": {
+        "color": "#ff4444",
+        "weight": 6,
+        "opacity": 0.9
+      },
+      "travelMode": "transit"
+    },
+    {
+      "id": "beijing-shenzhen",
+      "name": "京深高速",
+      "description": "从北京到深圳的高速公路，全程约2200公里",
+      "waypoints": [
+        { "position": [39.9042, 116.4074], "name": "北京" },
+        { "position": [36.6512, 117.1201], "name": "济南" },
+        { "position": [30.5928, 114.3055], "name": "武汉" },
+        { "position": [28.2282, 112.9388], "name": "长沙" },
+        { "position": [23.1291, 113.2644], "name": "广州" },
+        { "position": [22.5431, 114.0579], "name": "深圳" }
+      ],
+      "style": {
+        "color": "#44ff44",
+        "weight": 5,
+        "opacity": 0.8
+      },
+      "travelMode": "driving"
+    },
+    {
+      "id": "coastal-route",
+      "name": "东部沿海路线",
+      "description": "沿着中国东部海岸线的旅游路线",
+      "waypoints": [
+        { "position": [39.9042, 116.4074], "name": "北京" },
+        { "position": [39.0458, 121.5986], "name": "大连" },
+        { "position": [36.0986, 120.3719], "name": "青岛" },
+        { "position": [31.2304, 121.4737], "name": "上海" },
+        { "position": [29.8683, 121.5440], "name": "宁波" },
+        { "position": [26.0745, 119.2965], "name": "福州" },
+        { "position": [22.5431, 114.0579], "name": "深圳" }
+      ],
+      "style": {
+        "color": "#4444ff",
+        "weight": 4,
+        "opacity": 0.7,
+        "dashArray": "10,5"
+      },
+      "travelMode": "driving"
+    },
+    {
+      "id": "western-circuit",
+      "name": "西部大环线",
+      "description": "穿越中国西部的文化旅游路线",
+      "waypoints": [
+        { "position": [30.5728, 104.0668], "name": "成都" },
+        { "position": [34.3416, 108.9398], "name": "西安" },
+        { "position": [36.0611, 103.8343], "name": "兰州" },
+        { "position": [36.6203, 101.7581], "name": "西宁" },
+        { "position": [43.8256, 87.6168], "name": "乌鲁木齐" }
+      ],
+      "style": {
+        "color": "#ff8800",
+        "weight": 5,
+        "opacity": 0.8,
+        "dashArray": "15,10"
+      },
+      "travelMode": "driving"
+    }
+  ]
+} 

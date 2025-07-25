@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai'
+import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import type { RegionData } from './MapState'
 import type { PetInfo } from './PetState'
@@ -157,7 +157,7 @@ export const tripCompletionPercentageAtom = atom((get) => {
 // 操作 atoms
 export const startTripAtom = atom(
   null,
-  (get, set, tripPlan: TripPlan) => {
+  (_get, set, tripPlan: TripPlan) => {
     // 设置当前旅行计划
     set(currentTripPlanAtom, {
       ...tripPlan,
@@ -295,7 +295,7 @@ export const generateTripRoute = (activities: TripActivity[], cityCoordinates: [
       estimatedTime: '09:00'
     },
     // 活动点
-    ...activities.map((activity, index) => ({
+    ...activities.map((activity, _index) => ({
       id: activity.id,
       name: activity.location,
       nameEn: activity.locationEn,

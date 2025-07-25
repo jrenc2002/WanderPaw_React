@@ -365,7 +365,7 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
       const uniqueId = 'infowindow-' + point.id + '-' + Date.now()
       const popupContent = createPointInfoWindowContent(point, uniqueId)
       
-      const popup = new mapboxgl.Popup({
+      new mapboxgl.Popup({
         offset: [0, -size-8],
         className: 'custom-popup'
       })
@@ -477,7 +477,7 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
     if (!map.current || !isMapLoaded) return
 
     // 清除旧路线
-    routes.forEach((route, index) => {
+    routes.forEach((_route, index) => {
       const sourceId = `route-${index}`
       const layerId = `route-${index}-layer`
       
@@ -528,7 +528,7 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
       map.current!.on('click', layerId, (e) => {
         onRouteClick?.(route.id, route)
         
-        const popup = new mapboxgl.Popup()
+        new mapboxgl.Popup()
           .setLngLat(e.lngLat)
           .setHTML(`
             <div class="p-3 max-w-sm bg-white rounded-lg shadow-lg">

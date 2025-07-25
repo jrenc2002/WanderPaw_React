@@ -81,7 +81,7 @@ export const isInitializationSkippedAtom = atom(
 // 重置初始化状态atom
 export const resetPetInitializationAtom = atom(
   null,
-  (get, set) => {
+  (_get, set) => {
     set(petStateAtom, {
       currentStep: 'type',
       petInfo: {},

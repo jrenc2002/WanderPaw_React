@@ -318,21 +318,7 @@ export const generateActivityCoordinatesForCity = (
   return randomActivity.coordinates
 }
 
-// 随机生成坐标的辅助函数
-const generateRandomCoordinates = (
-  center: [number, number],
-  index: number
-): [number, number] => {
-  const [baseLng, baseLat] = center
-  const radius = 0.05 // 大约5公里范围
-  const angle = (index / 6) * 2 * Math.PI // 将活动均匀分布在圆周上
-  const distance = 0.02 + Math.random() * (radius - 0.02)
-  
-  const lng = baseLng + distance * Math.cos(angle)
-  const lat = baseLat + distance * Math.sin(angle)
-  
-  return [lng, lat]
-}
+
 
 // 为活动生成带有真实坐标的完整数据
 export const enhanceActivitiesWithCoordinates = (
@@ -371,7 +357,7 @@ export const generateRealisticCityActivities = (
   themes.forEach(theme => {
     const themeActivities = cityData.activities.filter(activity => activity.theme === theme)
     
-    themeActivities.forEach((realActivity, index) => {
+    themeActivities.forEach((realActivity, _index) => {
       const baseTime = 9 + activities.length * 2 // 从9点开始，每个活动间隔2小时
       const timeStr = `${baseTime.toString().padStart(2, '0')}:00`
       
