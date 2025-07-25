@@ -95,8 +95,18 @@ const CitySelectionView: React.FC = () => {
       position = diff > 0 ? diff - totalCards : diff + totalCards
     }
     
-    // 圆弧轮播只显示5张卡片：限制位置范围 -2 到 2
+    // 扇形轮播只显示5张卡片：限制位置范围 -2 到 2
     return Math.max(-2, Math.min(2, position))
+  }
+
+  // 根据位置获取透明度
+  const getCardOpacity = (position: number) => {
+    switch (Math.abs(position)) {
+      case 0: return 1.0      // 中心卡片：完全不透明
+      case 1: return 0.7      // 第一层：70%透明度
+      case 2: return 0.4      // 第二层：40%透明度
+      default: return 0.2     // 其他：20%透明度
+    }
   }
 
   // 获取可见的卡片索引
@@ -114,11 +124,11 @@ const CitySelectionView: React.FC = () => {
   }
 
   return (
-    <WarmBg showDecorations={false} className="relative">
+    <WarmBg showDecorations={true} className="relative">
       {/* 返回按钮 - 左上角 */}
       <button
         onClick={handleBack}
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] hover:text-amber-900 transition-colors bg-transparent p-2 rounded-lg hover:bg-white/20"
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -149,18 +159,23 @@ const CitySelectionView: React.FC = () => {
 
               {getVisibleCards().map(({ city, index, position }) => {
                 const isCenter = position === 0
+                const cardOpacity = getCardOpacity(position)
                 
                 return (
                   <div
                     key={city.id}
                     onClick={() => handleCitySelect(index)}
                     tabIndex={0}
-                    className="city-card arc-card"
+                    className="city-card fan-card"
                     data-position={position}
+                    style={{ 
+                      opacity: cardOpacity 
+                    } as React.CSSProperties}
                   >
                     <div className="city-card-content">
                       {/* 背景渐变 */}
-                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${getTangpingColor(city.tangpingIndex)} opacity-90`} />
+                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${getTangpingColor(city.tangpingIndex)}`} 
+                           style={{ opacity: 0.95 - (Math.abs(position) * 0.1) }} />
                       
                       {/* 装饰性图案 */}
                       <div className="absolute top-4 right-4 w-16 h-16 bg-white/20 rounded-full" />
