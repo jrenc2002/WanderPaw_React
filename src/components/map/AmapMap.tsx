@@ -23,6 +23,8 @@ interface AmapMapProps {
   zoom?: number
   points?: MapPoint[]
   routes?: MapRoute[]
+  disableZoom?: boolean // 新增：禁用缩放
+  disableInteraction?: boolean // 新增：禁用所有交互
 }
 
 export const AmapMap: React.FC<AmapMapProps> = ({
@@ -33,7 +35,9 @@ export const AmapMap: React.FC<AmapMapProps> = ({
   center = [39.9042, 116.4074], // 默认北京
   zoom = 5,
   points = [],
-  routes = []
+  routes = [],
+  disableZoom = false,
+  disableInteraction = false
 }) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
@@ -225,7 +229,14 @@ export const AmapMap: React.FC<AmapMapProps> = ({
         lang: language === 'zh' ? 'zh_cn' : 'en',
         mapStyle: 'amap://styles/fresh', // 固定使用草色青样式
         features: ['bg', 'point', 'road', 'building'], // 显示地图要素
-        showLabel: true // 显示地名标注
+        showLabel: true, // 显示地名标注
+        zoomEnable: !disableZoom, // 根据disableZoom控制缩放功能
+        scrollWheel: !disableZoom && !disableInteraction, // 根据配置控制滚轮缩放
+        doubleClickZoom: !disableZoom && !disableInteraction, // 根据配置控制双击缩放
+        touchZoom: !disableZoom && !disableInteraction, // 根据配置控制触摸缩放
+        pinchToZoom: !disableZoom && !disableInteraction, // 根据配置控制捏合缩放
+        dragEnable: !disableInteraction, // 根据disableInteraction控制拖拽
+        keyboardEnable: !disableInteraction // 根据disableInteraction控制键盘
       })
 
       mapInstanceRef.current = map
@@ -248,7 +259,7 @@ export const AmapMap: React.FC<AmapMapProps> = ({
         mapInstanceRef.current = null
       }
     }
-  }, [])
+  }, [center, zoom, language, disableZoom, disableInteraction])
 
   // 创建自定义标记
   const createCustomMarker = (point: MapPoint) => {

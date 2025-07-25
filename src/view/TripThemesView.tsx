@@ -3,18 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { mockRegionsData } from '@/data/mockData'
+import type { TripTheme } from '@/store/TripState'
 import toast from 'react-hot-toast'
-
-interface TripTheme {
-  id: string
-  name: string
-  nameEn: string
-  icon: string
-  description: string
-  descriptionEn: string
-  gradient: string
-  popularity: number
-}
 
 const tripThemes: TripTheme[] = [
   {
@@ -112,11 +102,16 @@ const TripThemesView: React.FC = () => {
     }
   }, [cityId])
 
-  const handleThemeToggle = (themeId: string) => {
-    // 直接跳转到计划页面，传递单个主题
+  const handleThemeSelect = (themeId: string) => {
+    if (!cityData) {
+      toast.error(language === 'zh' ? '城市数据未加载' : 'City data not loaded')
+      return
+    }
+
+    // 创建简化的旅行计划数据，传递给计划页面
     const tripPlan = {
       cityId,
-      cityName: cityData ? (language === 'zh' ? cityData.name : cityData.nameEn) : '',
+      cityName: language === 'zh' ? cityData.name : cityData.nameEn,
       themes: [themeId], // 只选择单个主题
       selectedThemeNames: [
         (() => {
@@ -130,8 +125,6 @@ const TripThemesView: React.FC = () => {
       state: { tripPlan } 
     })
   }
-
-
 
   const handleBack = () => {
     navigate(-1)
@@ -193,7 +186,7 @@ const TripThemesView: React.FC = () => {
             return (
               <div
                 key={theme.id}
-                onClick={() => handleThemeToggle(theme.id)}
+                onClick={() => handleThemeSelect(theme.id)}
                 className="relative overflow-hidden rounded-2xl cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
                 {/* 背景渐变 */}
