@@ -2,7 +2,7 @@ import axios, { type AxiosResponse } from 'axios'
 import type { LoginForm, RegisterForm } from '@/store/AuthState'
 
 // API基础配置
-const API_BASE_URL = 'http://localhost:8080' // 直接请求方式（已修复CORS）
+const API_BASE_URL = 'https://backeenee.zeabur.app' // 直接请求方式（已修复CORS）
 // const API_BASE_URL = '' // 使用代理方式
 const API_PREFIX = '/auth' // 后端实际路径
 
