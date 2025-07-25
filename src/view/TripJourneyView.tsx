@@ -12,7 +12,7 @@ import {
   updatePetMoodAtom,
   completeTripAtom
 } from '@/store/TripState'
-import { AmapMap } from '@/components/map/AmapMap'
+import { MapboxMap } from '@/components/map/MapboxMap'
 import toast from 'react-hot-toast'
 
 const TripJourneyView: React.FC = () => {
@@ -207,7 +207,7 @@ const TripJourneyView: React.FC = () => {
     <div className="min-h-screen relative overflow-hidden">
       {/* 全屏地图背景 */}
       <div className="fixed inset-0 w-full h-full">
-        <AmapMap
+        <MapboxMap
           className="w-full h-full"
           center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]] as [number, number]} // 转换 [lng, lat] -> [lat, lng]
           zoom={12}

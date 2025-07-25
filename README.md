@@ -1,76 +1,98 @@
-# 网易云歌单分类器
+# WanderPaw 🐾
 
-一个优雅的网易云音乐歌单分类工具，帮助你更好地管理和筛选歌单中的歌曲。支持按照曲风、标签、语种和 BPM 进行智能分类和筛选。
-
-## 体验地址
-yysp.jrenc.com
-
-## 项目截图
-<img width="1680" alt="22a9b58eb06f41b75c3ce605b3c9c86b" src="https://github.com/user-attachments/assets/91784cb6-dbb1-48cc-88c0-8c7e0afedc21" />
-<img width="1680" alt="8388c4130ce5ca94b5a8bdbd01e9952d" src="https://github.com/user-attachments/assets/12b513e6-ad59-4ea8-8922-faa93ba714fe" />
+一个智能的旅行规划和地图探索应用，帮助用户发现全球最佳的"躺平"城市和旅行目的地。
 
 ## 🌟 特性
 
-- 🎵 支持网易云音乐歌单链接/ID导入
-- 🏷️ 智能识别歌曲曲风、标签和语种
-- 🎨 美观的用户界面
-- 🔍 强大的筛选功能
-- 📋 支持筛选结果导出
-- 💻 响应式设计，支持各种设备
+- 🗺️ **全球地图支持**: 使用 Mapbox GL JS，支持全球详细地图数据
+- 🏙️ **城市评分系统**: 基于躺平指数的智能城市推荐
+- 🎯 **交互式地图**: 丰富的标记点、路线规划和信息窗体
+- 🌍 **多语言支持**: 支持中文、英文等多种语言
+- 📱 **响应式设计**: 适配桌面端和移动端设备
+- ✨ **动画效果**: 流畅的 GSAP 动画和交互体验
 
-## 🚀 部署指南
+## 🚀 快速开始
 
-### 后端部署
+### 环境要求
+- Node.js 18+
+- pnpm (推荐) 或 npm
 
-本项目后端使用 [NeteaseCloudMusicApi](https://gitlab.com/Binaryify/neteasecloudmusicapi)，你可以选择以下方式部署：
+### 安装依赖
+```bash
+pnpm install
+```
 
-1. 使用 Vercel 一键部署（推荐）：
-   - 访问 [NeteaseCloudMusicApi](https://gitlab.com/Binaryify/neteasecloudmusicapi)
-   - 点击仓库中的 "Deploy with Vercel" 按钮
-   - 按照提示完成部署
+### 配置 Mapbox Token
+1. 访问 [Mapbox 官网](https://www.mapbox.com/) 注册账号
+2. 获取 Access Token
+3. 参考 [MAPBOX_SETUP.md](./MAPBOX_SETUP.md) 进行配置
 
-2. 本地部署：
-   ```bash
-   # 克隆仓库
-   git clone https://gitlab.com/Binaryify/neteasecloudmusicapi.git
-   
-   # 安装依赖
-   npm install
-   
-   # 启动服务
-   npm start
-   ```
+### 启动开发服务器
+```bash
+pnpm dev
+```
 
-### 前端配置
+## 📦 技术栈
 
-1. 找到 `src/view/HomeView.tsx` 文件
-2. 修改 `apiUrl` 变量为你的后端服务地址：
-   ```typescript
-   const apiUrl = 'https://你的后端服务地址'  // 例如：https://your-netease-api.vercel.app
-   ```
+- **前端框架**: React 18 + TypeScript
+- **状态管理**: Jotai
+- **地图服务**: Mapbox GL JS (替代高德地图)
+- **UI组件**: Tailwind CSS + DaisyUI
+- **动画库**: GSAP + Framer Motion
+- **路由**: React Router DOM
+- **构建工具**: Vite
 
-## 📖 使用说明
+## 🗺️ 地图功能
 
-1. 输入歌单
-   - 复制网易云音乐歌单链接或 ID
-   - 粘贴到输入框中
-   - 点击"获取歌单"按钮
+### Mapbox 优势
+- ✅ **全球覆盖**: 支持全球详细地图数据，包括国外地图
+- ✅ **高质量**: 矢量地图，缩放清晰
+- ✅ **自定义样式**: 丰富的地图样式选择
+- ✅ **现代化**: WebGL 渲染，性能优秀
+- ✅ **国际化**: 支持多语言标注
 
-2. 分析歌曲
-   - 歌单加载完成后，点击"分析曲风"按钮
-   - 等待分析完成（分析时间取决于歌单大小）
+### 功能特色
+- 🏠 城市躺平指数可视化
+- 💰 生活成本数据展示
+- 🛣️ 智能路线规划
+- 📍 个性化标记点
+- 🖼️ 动态信息窗体
 
-3. 筛选功能
-   - 曲风筛选：选择一个或多个曲风标签
-   - 标签筛选：选择一个或多个音乐标签
-   - 语种筛选：选择特定语种
-   - BPM范围：通过滑块选择速度范围
-   - 点击"重置筛选"可清除所有筛选条件
+## 📁 项目结构
 
-4. 导出结果
-   - 筛选完成后，点击"复制歌曲列表"
-   - 筛选后的歌曲列表将被复制到剪贴板
+```
+src/
+├── components/          # 组件库
+│   ├── map/            # 地图相关组件
+│   │   └── MapboxMap.tsx  # Mapbox 地图组件
+│   ├── auth/           # 认证组件
+│   ├── pet/            # 宠物相关组件
+│   └── ...
+├── view/               # 页面视图
+├── store/              # 状态管理
+├── data/               # 数据文件
+└── services/           # 服务层
+```
 
+## 🔧 开发说明
+
+### 地图组件使用
+```tsx
+import { MapboxMap } from '@/components/map/MapboxMap'
+
+<MapboxMap
+  center={[39.9042, 116.4074]}
+  zoom={5}
+  points={mapPoints}
+  routes={mapRoutes}
+  onRegionClick={handleClick}
+/>
+```
+
+### 部署配置
+1. 配置 Mapbox Access Token
+2. 构建生产版本：`pnpm build`
+3. 部署到服务器或 CDN
 
 ## 🤝 贡献
 
