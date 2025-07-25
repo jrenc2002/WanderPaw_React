@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
-// import { WarmBg } from '@/components/bg/WarmBg'
+import { WarmBg } from '@/components/bg/WarmBg'
 import { 
   currentTripPlanAtom, 
   tripProgressAtom, 
