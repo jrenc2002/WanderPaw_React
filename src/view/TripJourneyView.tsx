@@ -46,10 +46,24 @@ const TripJourneyView: React.FC = () => {
   // 检查是否有当前旅行计划
   useEffect(() => {
     if (!currentTripPlan) {
+      console.log('TripJourneyView: No current trip plan, redirecting to home')
       navigate('/home')
       return
     }
+    
+    // 调试信息：打印旅行计划数据
+    console.log('TripJourneyView: Current trip plan:', currentTripPlan)
+    console.log('TripJourneyView: Trip progress:', tripProgress)
+    console.log('TripJourneyView: Pet travel state:', petTravelState)
   }, [currentTripPlan, navigate])
+
+  // 添加地图数据调试
+  useEffect(() => {
+    if (currentTripPlan) {
+      console.log('TripJourneyView: Map center coordinates:', [currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]])
+      console.log('TripJourneyView: Route waypoints:', currentTripPlan.route.waypoints)
+    }
+  }, [currentTripPlan])
 
   const generateMoodText = () => {
     if (!currentActivity) return ''
@@ -155,7 +169,7 @@ const TripJourneyView: React.FC = () => {
   // 准备地图数据：将旅行数据转换为地图组件格式
   const mapPoints = currentTripPlan.route.waypoints.map(waypoint => ({
     id: waypoint.id,
-    position: [waypoint.coordinates[1], waypoint.coordinates[0]] as [number, number], // 转换为 [lat, lng]
+    position: [waypoint.coordinates[1], waypoint.coordinates[0]] as [number, number], // 转换 [lng, lat] -> [lat, lng]
     title: language === 'zh' ? waypoint.name : waypoint.nameEn,
     description: waypoint.description || '',
     tangpingIndex: waypoint.type === 'start' ? 90 : waypoint.type === 'end' ? 85 : 75, // 根据类型设置躺平指数
@@ -174,7 +188,7 @@ const TripJourneyView: React.FC = () => {
     name: language === 'zh' ? '旅行路线' : 'Travel Route',
     description: language === 'zh' ? '今日探索路线' : 'Today\'s exploration route',
     waypoints: currentTripPlan.route.waypoints.map(wp => ({
-      position: [wp.coordinates[1], wp.coordinates[0]] as [number, number], // 转换为 [lat, lng]
+      position: [wp.coordinates[1], wp.coordinates[0]] as [number, number], // 转换 [lng, lat] -> [lat, lng]
       name: language === 'zh' ? wp.name : wp.nameEn
     })),
     style: {
@@ -195,7 +209,7 @@ const TripJourneyView: React.FC = () => {
       <div className="fixed inset-0 w-full h-full">
         <AmapMap
           className="w-full h-full"
-          center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]]} // 转换为 [lat, lng]
+          center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]] as [number, number]} // 转换 [lng, lat] -> [lat, lng]
           zoom={12}
           disableZoom={false}
           disableInteraction={false}

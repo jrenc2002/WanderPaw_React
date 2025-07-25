@@ -224,7 +224,7 @@ export const AmapMap: React.FC<AmapMapProps> = ({
       // 创建地图实例
       const map = new window.AMap.Map(mapRef.current, {
         zoom: zoom,
-        center: [center[1], center[0]], // 高德地图使用 [lng, lat]
+        center: [center[1], center[0]], // 转换 [lat, lng] -> [lng, lat] (高德地图API格式)
         viewMode: '2D',
         lang: language === 'zh' ? 'zh_cn' : 'en',
         mapStyle: 'amap://styles/fresh', // 固定使用草色青样式

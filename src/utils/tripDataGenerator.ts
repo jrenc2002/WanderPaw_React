@@ -170,6 +170,127 @@ export const cityActivityCoordinates: Record<string, {
         nameEn: 'Hotpot Restaurant'
       }
     ]
+  },
+  // 国际城市数据
+  'DK': { // 丹麦 - 哥本哈根
+    center: [12.5683, 55.6761],
+    activities: [
+      {
+        id: 'little-mermaid',
+        theme: 'photography',
+        coordinates: [12.5993, 55.6928],
+        name: '小美人鱼雕像',
+        nameEn: 'The Little Mermaid'
+      },
+      {
+        id: 'nyhavn',
+        theme: 'culture',
+        coordinates: [12.5913, 55.6798],
+        name: '新港',
+        nameEn: 'Nyhavn'
+      },
+      {
+        id: 'tivoli-gardens',
+        theme: 'nature',
+        coordinates: [12.5681, 55.6736],
+        name: '蒂沃利花园',
+        nameEn: 'Tivoli Gardens'
+      },
+      {
+        id: 'stroget',
+        theme: 'shopping',
+        coordinates: [12.5707, 55.6783],
+        name: '步行街',
+        nameEn: 'Strøget'
+      },
+      {
+        id: 'danish-pastry',
+        theme: 'food',
+        coordinates: [12.5725, 55.6805],
+        name: '丹麦糕点店',
+        nameEn: 'Danish Pastry Shop'
+      }
+    ]
+  },
+  'US': { // 美国 - 纽约
+    center: [-74.0060, 40.7128],
+    activities: [
+      {
+        id: 'statue-of-liberty',
+        theme: 'photography',
+        coordinates: [-74.0445, 40.6892],
+        name: '自由女神像',
+        nameEn: 'Statue of Liberty'
+      },
+      {
+        id: 'times-square',
+        theme: 'culture',
+        coordinates: [-73.9857, 40.7580],
+        name: '时代广场',
+        nameEn: 'Times Square'
+      },
+      {
+        id: 'central-park',
+        theme: 'nature',
+        coordinates: [-73.9654, 40.7829],
+        name: '中央公园',
+        nameEn: 'Central Park'
+      },
+      {
+        id: 'fifth-avenue',
+        theme: 'shopping',
+        coordinates: [-73.9776, 40.7614],
+        name: '第五大道',
+        nameEn: 'Fifth Avenue'
+      },
+      {
+        id: 'pizza-slice',
+        theme: 'food',
+        coordinates: [-73.9969, 40.7505],
+        name: '纽约披萨',
+        nameEn: 'New York Pizza'
+      }
+    ]
+  },
+  'JP': { // 日本 - 东京
+    center: [139.6917, 35.6895],
+    activities: [
+      {
+        id: 'tokyo-tower',
+        theme: 'photography',
+        coordinates: [139.7454, 35.6586],
+        name: '东京塔',
+        nameEn: 'Tokyo Tower'
+      },
+      {
+        id: 'sensoji-temple',
+        theme: 'culture',
+        coordinates: [139.7967, 35.7148],
+        name: '浅草寺',
+        nameEn: 'Sensoji Temple'
+      },
+      {
+        id: 'ueno-park',
+        theme: 'nature',
+        coordinates: [139.7744, 35.7153],
+        name: '上野公园',
+        nameEn: 'Ueno Park'
+      },
+      {
+        id: 'ginza',
+        theme: 'shopping',
+        coordinates: [139.7671, 35.6719],
+        name: '银座',
+        nameEn: 'Ginza'
+      },
+      {
+        id: 'ramen-shop',
+        theme: 'food',
+        coordinates: [139.7005, 35.6762],
+        name: '拉面店',
+        nameEn: 'Ramen Shop'
+      }
+    ]
   }
 }
 

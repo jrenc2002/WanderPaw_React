@@ -353,7 +353,8 @@ export const generateActivityCoordinates = (
     try {
       return generateActivityCoordinatesForCity(cityId, theme, activityIndex)
     } catch (error) {
-      console.warn('Failed to use real coordinates, falling back to generated ones:', error)
+      // 如果没有该城市的真实数据，这是正常情况，不需要警告
+      console.log(`Using generated coordinates for city ${cityId} (no real data available)`)
     }
   }
 
