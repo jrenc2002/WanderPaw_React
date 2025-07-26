@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { MapboxMap } from '@/components/map/MapboxMap'
-import { getPointsByZoom, getRoutesByZoom, type MapPoint, type MapRoute } from '@/data/mapData'
+import { MapBorderMask } from '@/components/decorations'
 import { WarmBg } from '@/components/bg/WarmBg'
+import { RegionInfo } from '@/components/data/RegionInfo'
+import { getPointsByZoom, getRoutesByZoom, type MapPoint, type MapRoute } from '@/data/mapData'
 import toast from 'react-hot-toast'
 
 const HomeView: React.FC = () => {
@@ -109,6 +111,8 @@ const HomeView: React.FC = () => {
         routes={mapRoutes}
       />
       
+      {/* 地图边界遮罩 */}
+      <MapBorderMask maskWidth="30px" />
 
 
       {/* 选中路线详细信息 */}

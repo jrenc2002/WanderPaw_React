@@ -4,7 +4,7 @@ import { useAtom } from 'jotai'
 import { motion, AnimatePresence } from 'framer-motion'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { WarmBg } from '@/components/bg/WarmBg'
-import { EarthWithCapybara, BottomGradientMask } from '@/components/decorations'
+import { EarthWithCapybara, BottomGradientMask, MapBorderMask } from '@/components/decorations'
 import { 
   currentTripPlanAtom, 
   tripProgressAtom, 
@@ -270,6 +270,9 @@ ${petName} 💕`
           points={mapPoints}
           routes={mapRoutes}
         />
+        
+        {/* 地图边界遮罩 */}
+        <MapBorderMask variant="subtle" maskWidth="50px" />
       </div>
 
       {/* 所有UI元素悬浮在地图上层 */}
