@@ -445,20 +445,20 @@ const TripPlanView: React.FC = () => {
       
       setIsGenerating(true)
       
-      // 优先使用真实城市数据，否则使用默认生成器
-      const realisticActivities = generateRealisticCityActivities(
-        tripPlan.cityId, 
-        tripPlan.themes, 
-        language
-      )
+      // 优先使用丰富的mock数据
+      const cityName = language === 'zh' ? city?.name : city?.nameEn
+      const generatedActivities = generateActivitiesForThemes(tripPlan.themes, cityName || '')
       
-      if (realisticActivities.length > 0) {
-        setActivities(realisticActivities)
-      } else {
-        // 回退到默认生成器
-        const cityName = language === 'zh' ? city?.name : city?.nameEn
-        const generatedActivities = generateActivitiesForThemes(tripPlan.themes, cityName || '')
+      if (generatedActivities.length > 0) {
         setActivities(generatedActivities)
+      } else {
+        // 回退到真实城市数据
+        const realisticActivities = generateRealisticCityActivities(
+          tripPlan.cityId, 
+          tripPlan.themes, 
+          language
+        )
+        setActivities(realisticActivities)
       }
       
       setIsGenerating(false)
@@ -511,20 +511,20 @@ const TripPlanView: React.FC = () => {
     setIsGenerating(true)
     
     setTimeout(() => {
-      // 重新生成活动
-      const realisticActivities = generateRealisticCityActivities(
-        tripPlan.cityId, 
-        tripPlan.themes, 
-        language
-      )
+      // 优先使用丰富的mock数据重新生成活动
+      const cityName = language === 'zh' ? cityData?.name : cityData?.nameEn
+      const generatedActivities = generateActivitiesForThemes(tripPlan.themes, cityName || '')
       
-      if (realisticActivities.length > 0) {
-        setActivities(realisticActivities)
-      } else {
-        // 回退到默认生成器
-        const cityName = language === 'zh' ? cityData?.name : cityData?.nameEn
-        const generatedActivities = generateActivitiesForThemes(tripPlan.themes, cityName || '')
+      if (generatedActivities.length > 0) {
         setActivities(generatedActivities)
+      } else {
+        // 回退到真实城市数据
+        const realisticActivities = generateRealisticCityActivities(
+          tripPlan.cityId, 
+          tripPlan.themes, 
+          language
+        )
+        setActivities(realisticActivities)
       }
       
       setIsGenerating(false)
@@ -589,15 +589,15 @@ const TripPlanView: React.FC = () => {
           width: 0.3vw;
         }
         .activities-scroll::-webkit-scrollbar-track {
-          background: #F5F5F5;
+          background: #EADDC7;
           border-radius: 0.15vw;
         }
         .activities-scroll::-webkit-scrollbar-thumb {
-          background: #D1BA9E;
+          background: #597466;
           border-radius: 0.15vw;
         }
         .activities-scroll::-webkit-scrollbar-thumb:hover {
-          background: #C7AA6C;
+          background: #4a5f54;
         }
         @keyframes spin {
           0% { transform: rotate(0deg); }
@@ -613,14 +613,14 @@ const TripPlanView: React.FC = () => {
         <div style={{ position: 'relative' }}>
           {/* 右上角夹子装饰 */}
           <img 
-            src="/decorations/clip.jpeg" 
+            src="/src/assets/%E5%A4%B9%E5%AD%90.jpg" 
             alt="Clip decoration"
             style={{
               position: 'absolute',
-              top: '-1vh',
-              right: '-1vw',
-              width: '4vw',
-              height: '4vw',
+              top: '-4vh',
+              right: '-2vw',
+              width: '9vw',
+              height: '9vw',
               objectFit: 'contain',
               zIndex: 20,
               transform: 'rotate(15deg)',
@@ -726,10 +726,13 @@ const TripPlanView: React.FC = () => {
           {/* 活动列表部分 */}
           <div style={{ 
             marginTop: '3vh', 
+            marginLeft: '2px',
+            marginRight: '2px',
             display: 'flex', 
             flexDirection: 'column', 
             height: 'calc(80vh - 20vh)', 
-            minHeight: '40vh' 
+            minHeight: '40vh',
+            position: 'relative'
           }}>
             
             
@@ -898,7 +901,19 @@ const TripPlanView: React.FC = () => {
                   </div>
                 )}
               </div>
-            </div>
+            
+            {/* 底部渐变遮罩 */}
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '6vh',
+              background: 'linear-gradient(to bottom, rgba(253, 248, 243, 0) 0%, rgba(253, 248, 243, 0.8) 50%, rgba(253, 248, 243, 1) 100%)',
+              pointerEvents: 'none',
+              zIndex: 10,
+            }} />
+          </div>
         </DashedCard>
         </div>
       </div>
