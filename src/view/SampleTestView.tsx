@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MapboxMap } from '@/components/map/MapboxMap'
+import { MapBorderMask } from '@/components/decorations'
 import { getAllGenesisSamples } from '@/data/genesisSamples'
 import { WarmBg } from '@/components/bg/WarmBg'
 
@@ -67,7 +68,7 @@ export const SampleTestView: React.FC = () => {
 
       {/* 地图主体 */}
       <div className="h-[calc(100vh-200px)] p-6">
-        <div className="h-full bg-black/30 rounded-lg backdrop-blur-sm border border-gray-800 overflow-hidden">
+        <div className="h-full bg-black/30 rounded-lg backdrop-blur-sm border border-gray-800 overflow-hidden relative">
           <MapboxMap
             onRegionClick={handleRegionClick}
             onRegionHover={handleRegionHover}
@@ -77,6 +78,9 @@ export const SampleTestView: React.FC = () => {
             maxZoom={12}
             points={mapPoints}
           />
+          
+          {/* 地图边界遮罩 */}
+          <MapBorderMask variant="subtle" maskWidth="35px" backgroundColor="#1F2937" />
         </div>
       </div>
 

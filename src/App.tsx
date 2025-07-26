@@ -20,11 +20,11 @@ import { SampleDetailView } from '@/view/SampleDetailView';
 import { AuthView } from '@/view/AuthView';
 import { PetInitializationView } from '@/view/PetInitializationView';
 import { MapTestView } from '@/view/MapTestView';
-import CitySelectionView from '@/view/CitySelectionView';
 import TripThemesView from '@/view/TripThemesView';
 import TripPlanView from '@/view/TripPlanView';
 import TripJourneyView from '@/view/TripJourneyView';
 import TravelJournalView from '@/view/TravelJournalView';
+import CitySelectionView from '@/view/CitySelectionView';
 
 // 开始旅行按钮组件
 const StartTripButton = () => {
@@ -132,7 +132,11 @@ const MainContent = () => {
                         } />
                         
                         {/* 旅行规划路由 */}
-                        <Route path="/city-selection" element={<CitySelectionView />} />
+                        <Route path="/city-selection" element={
+                            <ProtectedRoute>
+                                <CitySelectionView />
+                            </ProtectedRoute>
+                        } />
                         <Route path="/trip-themes/:cityId" element={
                             <ProtectedRoute>
                                 <TripThemesView />
@@ -205,7 +209,11 @@ const MainContent = () => {
                                 } />
                                 
                                 {/* 旅行规划路由 */}
-                                <Route path="/city-selection" element={<CitySelectionView />} />
+                                <Route path="/city-selection" element={
+                                    <ProtectedRoute>
+                                        <CitySelectionView />
+                                    </ProtectedRoute>
+                                } />
                                 <Route path="/trip-themes/:cityId" element={
                                     <ProtectedRoute>
                                         <TripThemesView />

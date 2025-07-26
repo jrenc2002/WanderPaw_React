@@ -1,285 +1,183 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
-import { getTopCountries } from '@/data/mockData'
-import type { RegionData } from '@/store/MapState'
+import { authStateAtom } from '@/store/AuthState'
+import { mockRegionsData } from '@/data/mockData'
+import { EarthWithCapybara } from '@/components/decorations'
+import toast from 'react-hot-toast'
 import { WarmBg } from '@/components/bg/WarmBg'
-import './CitySelectionView.css'
-import { getUnifiedButtonStyle, handleButtonHover } from '@/utils/buttonStyles'
+
+// 精选五个城市
+const selectedCities = [
+  'CN-ZJ',  // 杭州
+  'CN-SC',  // 成都
+  'JP',     // 日本 (京都)
+  'SG',     // 新加坡
+  'CN-QD'   // 广东 (用青岛图片暂代)
+]
+
+// 城市图片映射
+const cityImages: Record<string, string> = {
+  'CN-ZJ': '/city-images/杭州.jpg',
+  'CN-SC': '/city-images/成都.jpg', 
+  'JP': '/city-images/京都.jpg',
+  'SG': '/city-images/新加坡.jpg',
+  'CN-QD': '/city-images/青岛.jpg' // 用青岛图片暂代广东
+}
+
+// 城市在画面中的位置和大小配置
+const slotStyles: Record<string, React.CSSProperties> = {
+  center:      { top: '50%', left: '50%', zIndex: 10 },
+  bottomLeft:  { top: '80%', left: '18%', zIndex: 5 },
+  bottomRight: { top: '85%', left: '82%', zIndex: 5 },
+  topRight:    { top: '45%', left: '88%', zIndex: 5 },
+  topLeft:     { top: '45%', left: '15%', zIndex: 5 },
+}
 
 const CitySelectionView: React.FC = () => {
   const navigate = useNavigate()
   const [language] = useAtom(selectedLanguageAtom)
-  const [cities, setCities] = useState<RegionData[]>([])
-  const [currentCenterIndex, setCurrentCenterIndex] = useState(0)
+  const [authState] = useAtom(authStateAtom)
+  
+  // 默认选中杭州
+  const [selectedCityId, setSelectedCityId] = useState<string>('CN-ZJ')
+
+  // 城市与位置槽的对应关系
+  const [citySlots, setCitySlots] = useState<Record<string, string>>({
+    'CN-ZJ': 'center',
+    'CN-SC': 'bottomLeft',
+    'SG': 'bottomRight',
+    'JP': 'topRight',
+    'CN-GD': 'topLeft',
+  })
+
+  const petInfo = authState.user?.petInfo
+
+  // 获取精选城市数据
+  const destinations = useMemo(() => {
+    return selectedCities.map(cityId => mockRegionsData[cityId]).filter(Boolean)
+  }, [])
+
+  const handleCitySelect = (cityId: string) => {
+    const selectedCity = mockRegionsData[cityId]
+    if (!selectedCity) {
+      toast.error(language === 'zh' ? '城市数据未找到' : 'City data not found')
+      return
+    }
+
+    const isCenter = citySlots[cityId] === 'center'
+
+    if (isCenter) {
+      // 确认操作：如果点击的城市已经在中间，则导航
+      toast.success(
+        `${language === 'zh' ? '准备出发！' : 'Ready to go!'}`,
+        {
+          duration: 1500,
+          position: 'top-center',
+        }
+      )
+  
+      // 延迟跳转，让用户看到选择效果
+      setTimeout(() => {
+        navigate(`/trip-themes/${cityId}`)
+      }, 1000)
+
+    } else {
+      // 选择操作：将点击的城市移动到中心
+      const currentCenterCityId = Object.keys(citySlots).find(key => citySlots[key] === 'center')!
+      const clickedCitySlot = citySlots[cityId]
+
+      // 交换位置
+      setCitySlots(prev => ({
+        ...prev,
+        [currentCenterCityId]: clickedCitySlot,
+        [cityId]: 'center'
+      }))
+      
+      // 更新当前选中的城市ID
+      setSelectedCityId(cityId)
+    }
+  }
 
   const handleBack = () => {
     navigate(-1)
   }
 
-  const getPetFriendlyColor = (index: number) => {
-    if (index >= 80) return 'from-green-400 to-emerald-500'
-    if (index >= 60) return 'from-blue-400 to-cyan-500'
-    if (index >= 40) return 'from-yellow-400 to-orange-500'
-    return 'from-red-400 to-pink-500'
-  }
-
-  const getPetFriendlyText = (index: number) => {
-    if (index >= 80) return language === 'zh' ? '超级躺平' : 'Super Chill'
-    if (index >= 60) return language === 'zh' ? '很躺平' : 'Very Chill'
-    if (index >= 40) return language === 'zh' ? '适度躺平' : 'Moderately Chill'
-    return language === 'zh' ? '需要奋斗' : 'Need Hustle'
-  }
-
-  // 定义函数
-  const handleCitySelect = useCallback((cityIndex: number) => {
-    setCurrentCenterIndex(cityIndex)
-  }, [])
-
-  const handleConfirm = useCallback(() => {
-    const selectedCity = cities[currentCenterIndex]
-    if (selectedCity) {
-      navigate(`/trip-themes/${selectedCity.id}`)
-    }
-  }, [cities, currentCenterIndex, navigate])
-
-  const goToPrevious = useCallback(() => {
-    setCurrentCenterIndex((prev) => (prev - 1 + cities.length) % cities.length)
-  }, [cities.length])
-
-  const goToNext = useCallback(() => {
-    setCurrentCenterIndex((prev) => (prev + 1) % cities.length)
-  }, [cities.length])
-
-  useEffect(() => {
-    try {
-      // 获取热门城市数据
-      const popularCities = getTopCountries().slice(0, 12) // 取前12个热门目的地
-      setCities(popularCities)
-    } catch (error) {
-      console.error('Error loading cities:', error)
-    }
-  }, [])
-
-  useEffect(() => {
-    // 键盘导航支持
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault()
-        goToPrevious()
-      } else if (event.key === 'ArrowRight') {
-        event.preventDefault()
-        goToNext()
-      } else if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault()
-        handleConfirm()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [goToPrevious, goToNext, handleConfirm])
-
-  const getCardPosition = (cardIndex: number) => {
-    // 如果没有城市数据，返回0
-    if (cities.length === 0) return 0
-    
-    const diff = cardIndex - currentCenterIndex
-    if (diff === 0) return 0
-    
-    // 处理环绕情况
-    const totalCards = cities.length
-    let position = diff
-    
-    if (Math.abs(diff) > totalCards / 2) {
-      position = diff > 0 ? diff - totalCards : diff + totalCards
-    }
-    
-    // 扇形轮播只显示5张卡片：限制位置范围 -2 到 2
-    return Math.max(-2, Math.min(2, position))
-  }
-
-  // 根据位置获取透明度
-  const getCardOpacity = (position: number) => {
-    switch (Math.abs(position)) {
-      case 0: return 1.0      // 中心卡片：完全不透明
-      case 1: return 0.7      // 第一层：70%透明度
-      case 2: return 0.4      // 第二层：40%透明度
-      default: return 0.2     // 其他：20%透明度
-    }
-  }
-
-  // 获取可见的卡片索引
-  const getVisibleCards = () => {
-    if (cities.length === 0) return []
-    
-    const visibleCards = []
-    for (let i = 0; i < cities.length; i++) {
-      const position = getCardPosition(i)
-      if (Math.abs(position) <= 2) {
-        visibleCards.push({ city: cities[i], index: i, position })
-      }
-    }
-    return visibleCards
-  }
-
   return (
-    <WarmBg showDecorations={true} className="relative">
-      {/* 返回按钮 - 左上角 */}
-      <div
-        onClick={handleBack}
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg cursor-pointer transform transition-transform duration-200 hover:scale-110"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <span>{language === 'zh' ? '返回' : 'Back'}</span>
-      </div>
+    <WarmBg>
+      <div className="min-h-screen relative overflow-hidden flex flex-col">
+        {/* 返回按钮 */}
+        <button
+          onClick={handleBack}
+          title={language === 'zh' ? '返回' : 'Back'}
+          className="fixed top-8 left-8 z-40 bg-white/80 backdrop-blur-sm rounded-full p-3 text-gray-600 hover:bg-white/90 transition-colors shadow-lg"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
 
-      {/* 主要内容 */}
-      <div className="px-6 py-8">
-        {/* 标题和描述 */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#687949] dark:text-amber-200 mb-4">
-            WanderPaw
-          </h1>
-          <p className="text-xl text-[#687949] dark:text-amber-300 font-medium">
-            请选择希望探索的城市
-          </p>
+        <div className="relative z-20 flex flex-col items-center flex-grow p-6 pt-16">
+          {/* 标题区域 */}
+          <div className="text-center mb-8">
+            <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{
+              background: 'linear-gradient(135deg, #4a7c59 0%, #8b9dc3 50%, #7b68ee 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              WanderPaw
+            </h1>
+            <p className="text-gray-600 text-lg mb-2">
+              {language === 'zh' ? '请选择希望探索的城市' : 'Choose the city you wish to explore'}
+            </p>
+            {/* Selected city name tag */}
+            {selectedCityId && mockRegionsData[selectedCityId] && (
+              <div className="inline-block mt-2">
+                <div className="px-5 py-1.5 bg-green-600/90 text-white rounded-full text-md font-semibold shadow-lg">
+                  {language === 'zh' ? mockRegionsData[selectedCityId].name : mockRegionsData[selectedCityId].nameEn}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 城市选择布局 */}
+          <div className="relative w-full flex-grow mb-20">
+            {destinations.map((destination) => {
+              const slotName = citySlots[destination.id]
+              if (!slotName) return null
+
+              const styles = slotStyles[slotName]
+              const isCenter = slotName === 'center'
+              
+              return (
+                <div
+                  key={destination.id}
+                  className="absolute cursor-pointer transition-all duration-700 ease-in-out transform-gpu"
+                  style={{
+                    ...styles,
+                    width: isCenter ? '320px' : '280px',
+                    height: isCenter ? '320px' : '280px',
+                    transform: 'translate(-50%, -50%)',
+                    filter: isCenter ? 'none' : 'saturate(0.7) blur(1px)',
+                    opacity: isCenter ? 1 : 0.6,
+                  }}
+                  onClick={() => handleCitySelect(destination.id)}
+                >
+                  <img
+                    src={cityImages[destination.id] || '/city-images/杭州.jpg'}
+                    alt={language === 'zh' ? destination.name : destination.nameEn}
+                    className="w-full h-full object-contain drop-shadow-xl hover:drop-shadow-2xl transition-all"
+                  />
+                </div>
+              )
+            })}
+          </div>
         </div>
 
-        {/* 城市卡片轮播 */}
-        <div className="city-cards-carousel">
-          {cities.length === 0 ? (
-            <div className="text-center text-amber-700">
-              <p>正在加载城市数据...</p>
-            </div>
-          ) : (
-            <>
-
-              {getVisibleCards().map(({ city, index, position }) => {
-                const isCenter = position === 0
-                const cardOpacity = getCardOpacity(position)
-                
-                return (
-                  <div
-                    key={city.id}
-                    onClick={() => handleCitySelect(index)}
-                    tabIndex={0}
-                    className="city-card fan-card"
-                    data-position={position}
-                    style={{ 
-                      opacity: cardOpacity 
-                    } as React.CSSProperties}
-                  >
-                    <div className="city-card-content">
-                      {/* 背景渐变 */}
-                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${getPetFriendlyColor(city.petFriendlyIndex)}`} 
-                           style={{ opacity: 0.95 - (Math.abs(position) * 0.1) }} />
-                      
-                      {/* 装饰性图案 */}
-                      <div className="absolute top-4 right-4 w-16 h-16 bg-white/20 rounded-full" />
-                      <div className="absolute bottom-8 left-4 w-8 h-8 bg-white/20 rounded-full" />
-                      
-                      {/* 内容 */}
-                      <div className="relative p-6 h-full flex flex-col justify-between text-white">
-                        {/* 顶部信息 */}
-                        <div>
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-sm bg-white/20 px-3 py-1 rounded-full">
-                              {city.countryCode}
-                            </span>
-                            <span className="text-2xl">
-                              {isCenter ? '✈️' : '🏙️'}
-                            </span>
-                          </div>
-                          
-                          <h3 className="text-2xl font-bold mb-2">
-                            {language === 'zh' ? city.name : city.nameEn}
-                          </h3>
-                          
-                          <div className="space-y-2 text-sm text-white/90">
-                            <div className="flex items-center gap-2">
-                              <span>💰</span>
-                              <span>
-                                {language === 'zh' ? '月薪' : 'Salary'}: {city.averageSalary.toLocaleString()} {city.currency}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span>🏠</span>
-                              <span>
-                                {language === 'zh' ? '房租' : 'Rent'}: {city.rentPrice.toLocaleString()} {city.currency}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span>⚖️</span>
-                              <span>
-                                {language === 'zh' ? '工作平衡' : 'Work-Life'}: {city.workLifeBalance}/100
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* 底部宠物友好度 */}
-                        <div className="mt-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium">
-                              {language === 'zh' ? '宠物友好度' : 'Chill Index'}
-                            </span>
-                            <span className="text-lg font-bold">{city.petFriendlyIndex}</span>
-                          </div>
-                          
-                          <div className="w-full bg-white/20 rounded-full h-2 mb-2">
-                            <div 
-                              className="bg-white h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${city.petFriendlyIndex}%` }}
-                            />
-                          </div>
-                          
-                          <span className="text-xs text-white/80">
-                            {getPetFriendlyText(city.petFriendlyIndex)}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      {/* 选中状态指示器 - 飞机图标 */}
-                      {isCenter && (
-                        <div className="absolute top-2 right-2 selected-indicator">
-                          <svg 
-                            xmlns='http://www.w3.org/2000/svg' 
-                            width='36' 
-                            height='36' 
-                            viewBox='0 0 24 24'
-                            className="text-emerald-600 opacity-70 transform rotate-12 drop-shadow-lg"
-                          >
-                            <path 
-                              fill='currentColor' 
-                              d="M21 16v-2l-8-5V3.5A1.5 1.5 0 0 0 11.5 2A1.5 1.5 0 0 0 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1L15 22v-1.5L13 19v-5.5L21 16Z"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </>
-          )}
-        </div>
-
-        {/* 底部确认按钮和提示 */}
-        <div className="text-center mt-8">
-          <button
-            onClick={handleConfirm}
-            style={getUnifiedButtonStyle()}
-            onMouseEnter={(e) => handleButtonHover(e, true)}
-            onMouseLeave={(e) => handleButtonHover(e, false)}
-          >
-            {language === 'zh' ? '确认选择' : 'Confirm Selection'}
-          </button>
-          
-        </div>
+        {/* 底部水豚地球组件 */}
+        <EarthWithCapybara />
       </div>
     </WarmBg>
   )
