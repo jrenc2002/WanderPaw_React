@@ -2,74 +2,132 @@ import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
-import { authStateAtom } from '@/store/AuthState'
+
 import { mockRegionsData } from '@/data/mockData'
 import { EarthWithCapybara } from '@/components/decorations'
 import toast from 'react-hot-toast'
 import { WarmBg } from '@/components/bg/WarmBg'
 
-// 精选五个城市
+// 引入城市图片
+import hangzhouImg from '@/assets/杭州.png'
+import chengduImg from '@/assets/成都.jpg'
+import kyotoImg from '@/assets/京都.jpg'
+import singaporeImg from '@/assets/新加坡.jpg'
+import qingdaoImg from '@/assets/青岛.jpg'
+
+// 精选五个城市配置
 const selectedCities = [
-  'CN-ZJ',  // 杭州
-  'CN-SC',  // 成都
-  'JP',     // 日本 (京都)
-  'SG',     // 新加坡
-  'CN-QD'   // 广东 (用青岛图片暂代)
+  {
+    id: 'CN-ZJ',
+    cityName: '杭州',
+    cityNameEn: 'Hangzhou',
+    image: hangzhouImg
+  },
+  {
+    id: 'CN-SC', 
+    cityName: '成都',
+    cityNameEn: 'Chengdu',
+    image: chengduImg
+  },
+  {
+    id: 'JP',
+    cityName: '京都',
+    cityNameEn: 'Kyoto', 
+    image: kyotoImg
+  },
+  {
+    id: 'SG',
+    cityName: '新加坡',
+    cityNameEn: 'Singapore',
+    image: singaporeImg
+  },
+  {
+    id: 'CN-QD',
+    cityName: '青岛',
+    cityNameEn: 'Qingdao',
+    image: qingdaoImg
+  }
 ]
-
-// 城市图片映射
-const cityImages: Record<string, string> = {
-  'CN-ZJ': '/city-images/杭州.jpg',
-  'CN-SC': '/city-images/成都.jpg', 
-  'JP': '/city-images/京都.jpg',
-  'SG': '/city-images/新加坡.jpg',
-  'CN-QD': '/city-images/青岛.jpg' // 用青岛图片暂代广东
-}
-
-// 城市在画面中的位置和大小配置
-const slotStyles: Record<string, React.CSSProperties> = {
-  center:      { top: '50%', left: '50%', zIndex: 10 },
-  bottomLeft:  { top: '80%', left: '18%', zIndex: 5 },
-  bottomRight: { top: '85%', left: '82%', zIndex: 5 },
-  topRight:    { top: '45%', left: '88%', zIndex: 5 },
-  topLeft:     { top: '45%', left: '15%', zIndex: 5 },
-}
 
 const CitySelectionView: React.FC = () => {
   const navigate = useNavigate()
   const [language] = useAtom(selectedLanguageAtom)
-  const [authState] = useAtom(authStateAtom)
+
   
   // 默认选中杭州
-  const [selectedCityId, setSelectedCityId] = useState<string>('CN-ZJ')
+  const [selectedCityIndex, setSelectedCityIndex] = useState<number>(0)
 
-  // 城市与位置槽的对应关系
-  const [citySlots, setCitySlots] = useState<Record<string, string>>({
-    'CN-ZJ': 'center',
-    'CN-SC': 'bottomLeft',
-    'SG': 'bottomRight',
-    'JP': 'topRight',
-    'CN-GD': 'topLeft',
-  })
 
-  const petInfo = authState.user?.petInfo
 
   // 获取精选城市数据
   const destinations = useMemo(() => {
-    return selectedCities.map(cityId => mockRegionsData[cityId]).filter(Boolean)
+    return selectedCities.map(city => ({
+      ...city,
+      regionData: mockRegionsData[city.id]
+    })).filter(city => city.regionData)
   }, [])
 
-  const handleCitySelect = (cityId: string) => {
-    const selectedCity = mockRegionsData[cityId]
+  // 计算围绕地球组件的圆形排布位置
+  const calculateCirclePosition = (index: number, total: number, isSelected: boolean) => {
+    if (isSelected) {
+      // 选中的城市在屏幕上方中央，突出显示
+      return {
+        top: '25%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 20
+      }
+    }
+
+    // 其他城市围绕地球组件排布
+    // 地球组件位置：bottom-[-15vw]，即从底部向下15vw，大小50vw
+    // 我们在地球周围形成一个圆弧
+    const totalOtherCities = total - 1 // 排除选中的城市
+    let adjustedIndex = index
+    if (index > selectedCityIndex) {
+      adjustedIndex = index - 1
+    }
+    
+    // 创建围绕地球的圆弧（从左下到右下，经过地球周围）
+    // 角度范围：-135度 到 -45度，形成地球上方的圆弧
+    const startAngle = -135 * (Math.PI / 180) // 左上
+    const endAngle = -45 * (Math.PI / 180)    // 右上
+    const angleRange = endAngle - startAngle
+    
+    let angle = startAngle
+    if (totalOtherCities > 1) {
+      angle = startAngle + (adjustedIndex / (totalOtherCities - 1)) * angleRange
+    }
+    
+    // 地球中心大约在屏幕底部30%的位置，水平居中
+    const earthCenterX = 50
+    const earthCenterY = 70 // 地球在屏幕下方70%位置
+    
+    // 圆弧半径（相对于屏幕大小）
+    const radiusX = 35 // 水平半径
+    const radiusY = 25 // 垂直半径（椭圆形，适应屏幕比例）
+    
+    // 计算位置
+    const x = earthCenterX + radiusX * Math.cos(angle)
+    const y = earthCenterY + radiusY * Math.sin(angle)
+    
+    return {
+      top: `${Math.max(5, Math.min(80, y))}%`,
+      left: `${Math.max(10, Math.min(90, x))}%`,
+      transform: 'translate(-50%, -50%)',
+      zIndex: 10
+    }
+  }
+
+  const handleCitySelect = (index: number) => {
+    const selectedCity = destinations[index]
     if (!selectedCity) {
       toast.error(language === 'zh' ? '城市数据未找到' : 'City data not found')
       return
     }
 
-    const isCenter = citySlots[cityId] === 'center'
-
-    if (isCenter) {
-      // 确认操作：如果点击的城市已经在中间，则导航
+    if (index === selectedCityIndex) {
+      // 确认操作：如果点击的城市已经被选中，则导航
       toast.success(
         `${language === 'zh' ? '准备出发！' : 'Ready to go!'}`,
         {
@@ -80,23 +138,12 @@ const CitySelectionView: React.FC = () => {
   
       // 延迟跳转，让用户看到选择效果
       setTimeout(() => {
-        navigate(`/trip-themes/${cityId}`)
+        navigate(`/trip-themes/${selectedCity.id}`)
       }, 1000)
 
     } else {
-      // 选择操作：将点击的城市移动到中心
-      const currentCenterCityId = Object.keys(citySlots).find(key => citySlots[key] === 'center')!
-      const clickedCitySlot = citySlots[cityId]
-
-      // 交换位置
-      setCitySlots(prev => ({
-        ...prev,
-        [currentCenterCityId]: clickedCitySlot,
-        [cityId]: 'center'
-      }))
-      
-      // 更新当前选中的城市ID
-      setSelectedCityId(cityId)
+      // 选择操作：更新选中的城市
+      setSelectedCityIndex(index)
     }
   }
 
@@ -133,43 +180,56 @@ const CitySelectionView: React.FC = () => {
               {language === 'zh' ? '请选择希望探索的城市' : 'Choose the city you wish to explore'}
             </p>
             {/* Selected city name tag */}
-            {selectedCityId && mockRegionsData[selectedCityId] && (
+            {destinations[selectedCityIndex] && (
               <div className="inline-block mt-2">
                 <div className="px-5 py-1.5 bg-green-600/90 text-white rounded-full text-md font-semibold shadow-lg">
-                  {language === 'zh' ? mockRegionsData[selectedCityId].name : mockRegionsData[selectedCityId].nameEn}
+                  {language === 'zh' ? destinations[selectedCityIndex].cityName : destinations[selectedCityIndex].cityNameEn}
                 </div>
               </div>
             )}
           </div>
 
-          {/* 城市选择布局 */}
-          <div className="relative w-full flex-grow mb-20">
-            {destinations.map((destination) => {
-              const slotName = citySlots[destination.id]
-              if (!slotName) return null
-
-              const styles = slotStyles[slotName]
-              const isCenter = slotName === 'center'
+          {/* 城市选择布局 - 围绕地球的圆形排布 */}
+          <div className="relative w-full flex-grow mb-0">
+            {destinations.map((destination, index) => {
+              const isSelected = index === selectedCityIndex
+              const position = calculateCirclePosition(index, destinations.length, isSelected)
               
               return (
                 <div
                   key={destination.id}
-                  className="absolute cursor-pointer transition-all duration-700 ease-in-out transform-gpu"
+                  className="absolute cursor-pointer transition-all duration-700 ease-in-out transform-gpu hover:scale-105"
                   style={{
-                    ...styles,
-                    width: isCenter ? '320px' : '280px',
-                    height: isCenter ? '320px' : '280px',
-                    transform: 'translate(-50%, -50%)',
-                    filter: isCenter ? 'none' : 'saturate(0.7) blur(1px)',
-                    opacity: isCenter ? 1 : 0.6,
+                    ...position,
+                    width: isSelected ? '280px' : '200px',
+                    height: isSelected ? '280px' : '200px',
                   }}
-                  onClick={() => handleCitySelect(destination.id)}
+                  onClick={() => handleCitySelect(index)}
                 >
-                  <img
-                    src={cityImages[destination.id] || '/city-images/杭州.jpg'}
-                    alt={language === 'zh' ? destination.name : destination.nameEn}
-                    className="w-full h-full object-contain drop-shadow-xl hover:drop-shadow-2xl transition-all"
-                  />
+                  <div className="relative w-full h-full">
+                    {/* 城市图片 */}
+                    <img
+                      src={destination.image}
+                      alt={language === 'zh' ? destination.cityName : destination.cityNameEn}
+                      className={`w-full h-full object-cover rounded-full shadow-2xl transition-all duration-500 ${
+                        isSelected 
+                          ? 'ring-4 ring-green-400 ring-opacity-60' 
+                          : 'ring-2 ring-white/30 opacity-80 hover:opacity-100'
+                      }`}
+                      style={{
+                        filter: isSelected ? 'none' : 'saturate(0.8) brightness(0.9)',
+                      }}
+                    />
+                    
+                    {/* 城市名称标签 */}
+                    <div className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 transition-all duration-300 ${
+                      isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                    }`}>
+                      <div className="px-3 py-1 bg-black/70 text-white rounded-full text-sm font-medium backdrop-blur-sm">
+                        {language === 'zh' ? destination.cityName : destination.cityNameEn}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )
             })}
