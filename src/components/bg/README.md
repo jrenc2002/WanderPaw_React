@@ -25,7 +25,60 @@ import { WarmBg } from '@/components/bg/WarmBg'
 ### 2. GirdBg
 网格背景组件，提供网格图案的背景。
 
-### 3. PetOnEarth ⭐ 新组件
+### 3. GlassBg ⭐ 毛玻璃渐变背景
+现代化的毛玻璃渐变背景组件，提供多种风格的毛玻璃效果。
+
+**特点：**
+- 5种预设主题：warm（暖色调）、cool（冷色调）、neutral（中性）、sunset（日落）、ocean（海洋）
+- 可调节毛玻璃模糊强度（sm到3xl）
+- 支持4种渐变方向：垂直、水平、对角线、径向
+- 多层次渐变效果：主渐变 + 毛玻璃层 + 细节纹理层
+- 可选装饰元素（叶子装饰）
+- 完全响应式设计
+
+**Props：**
+```tsx
+interface GlassBgProps {
+  children?: React.ReactNode
+  className?: string
+  variant?: 'warm' | 'cool' | 'neutral' | 'sunset' | 'ocean'  // 主题风格，默认warm
+  blurIntensity?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'   // 模糊强度，默认lg  
+  opacity?: number                                             // 透明度，默认0.8
+  showDecorations?: boolean                                    // 是否显示装饰，默认true
+  gradientDirection?: 'vertical' | 'horizontal' | 'diagonal' | 'radial' // 渐变方向，默认diagonal
+}
+```
+
+**使用示例：**
+```tsx
+import { GlassBg } from '@/components/bg/GlassBg'
+
+// 基础暖色调毛玻璃背景
+<GlassBg>
+  <div>你的内容</div>
+</GlassBg>
+
+// 自定义冷色调，高模糊度
+<GlassBg 
+  variant="cool" 
+  blurIntensity="xl"
+  gradientDirection="radial"
+  opacity={0.9}
+>
+  <div>你的内容</div>
+</GlassBg>
+
+// 日落主题，垂直渐变
+<GlassBg 
+  variant="sunset"
+  gradientDirection="vertical"
+  showDecorations={false}
+>
+  <div>你的内容</div>
+</GlassBg>
+```
+
+### 4. PetOnEarth
 宠物站在地球上的主题背景组件，非常适合WanderPaw的主题。
 
 **特点：**

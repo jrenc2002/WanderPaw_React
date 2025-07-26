@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { MapboxMap } from '@/components/map/MapboxMap'
-import { getPointsByZoom, getRoutesByZoom, type MapPoint, type MapRoute } from '@/data/mapData'
+import { MapBorderMask } from '@/components/decorations'
 import { WarmBg } from '@/components/bg/WarmBg'
+import { RegionInfo } from '@/components/data/RegionInfo'
+import { getPointsByZoom, getRoutesByZoom, type MapPoint, type MapRoute } from '@/data/mapData'
 import toast from 'react-hot-toast'
 
 const HomeView: React.FC = () => {
   const [language] = useAtom(selectedLanguageAtom)
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
-  const [selectedData, setSelectedData] = useState<any>(null)
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null)
   const [mapCenter, setMapCenter] = useState<[number, number]>([35.0, 110.0]) // 中国中心
   const [mapZoom, setMapZoom] = useState<number>(4)
@@ -24,7 +24,7 @@ const HomeView: React.FC = () => {
     setMapRoutes(routes)
   }, [mapZoom])
 
-  const handleRegionClick = (regionId: string, data?: any) => {
+  const handleRegionClick = (regionId: string, _data?: any) => {
     const point = mapPoints.find(p => p.id === regionId)
     if (point) {
       // 显示点击通知
@@ -41,9 +41,6 @@ const HomeView: React.FC = () => {
       setMapZoom(Math.max(mapZoom, 8))
     }
     
-    // 保留原有的侧边栏显示逻辑
-    setSelectedRegion(regionId)
-    setSelectedData(data)
     setSelectedRoute(null) // 清除路线选择
   }
 
@@ -59,7 +56,6 @@ const HomeView: React.FC = () => {
 
   const handleRouteClick = (routeId: string, _data?: any) => {
     setSelectedRoute(routeId)
-    setSelectedRegion(null) // 清除点选择
     
     // 显示路线点击通知
     const route = mapRoutes.find(r => r.id === routeId)
@@ -115,6 +111,8 @@ const HomeView: React.FC = () => {
         routes={mapRoutes}
       />
       
+      {/* 地图边界遮罩 */}
+      <MapBorderMask maskWidth="30px" />
 
 
       {/* 选中路线详细信息 */}

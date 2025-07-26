@@ -45,23 +45,54 @@ const EarthWithCapybara: React.FC<EarthWithCapybaraProps> = ({ className = '', p
   }
 
   return (
-    <div className={`fixed bottom-[-15vw] left-1/2 transform -translate-x-1/2 z-20 w-[50vw] h-[50vw] pointer-events-none relative ${className}`}>
-      <img 
-        src="/decorations/earth.jpeg" 
-        alt={language === 'zh' ? '地球装饰' : 'Earth decoration'} 
-        className="w-full h-full object-contain drop-shadow-lg"
-      />
-      {/* 宠物在地球上 */}
-      <div className={`absolute top-[-15%] left-1/2 transform -translate-x-1/2 animate-pulse ${
-        petType === 'cat' || petType === 'dog' ? 'w-[12vw] h-[12vw]' : 'w-[15vw] h-[15vw]'
-      }`}>
+    <>
+      {/* 动画样式定义 */}
+      <style>{`
+        @keyframes earthRotate {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+        
+        @keyframes petSwing {
+          0%, 100% {
+            transform: translate(-50%, 0) rotate(-3deg);
+          }
+          50% {
+            transform: translate(-50%, 0) rotate(3deg);
+          }
+        }
+        
+        .earth-rotating {
+          animation: earthRotate 60s linear infinite;
+        }
+        
+        .pet-swinging {
+          animation: petSwing 4s ease-in-out infinite;
+        }
+      `}</style>
+      
+      <div className={`fixed bottom-[-15vw] left-1/2 transform -translate-x-1/2 z-30 w-[50vw] h-[50vw] pointer-events-none relative ${className}`}>
         <img 
-          src={getPetImage()}
-          alt={getPetAlt()} 
-          className="w-full h-full object-contain drop-shadow-md"
+          src="/decorations/earth.jpeg" 
+          alt={language === 'zh' ? '地球装饰' : 'Earth decoration'} 
+          className="w-full h-full object-contain drop-shadow-lg earth-rotating"
         />
+        {/* 宠物在地球上 */}
+        <div className={`absolute top-[-15%] left-1/2 animate-pulse pet-swinging ${
+          petType === 'cat' || petType === 'dog' ? 'w-[12vw] h-[12vw]' : 'w-[15vw] h-[15vw]'
+        }`}>
+          <img 
+            src={getPetImage()}
+            alt={getPetAlt()} 
+            className="w-full h-full object-contain drop-shadow-md"
+          />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

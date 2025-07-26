@@ -1,5 +1,6 @@
 import React from 'react'
 import { MapboxMap } from '@/components/map/MapboxMap'
+import { MapBorderMask } from '@/components/decorations'
 
 const testPoints = [
   {
@@ -70,7 +71,7 @@ export const MapTestView: React.FC = () => {
           </p>
         </div>
 
-        <div className="h-[600px] bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="h-[600px] bg-white rounded-lg shadow-lg overflow-hidden relative">
           <MapboxMap
             onRegionClick={handleRegionClick}
             onRegionHover={handleRegionHover}
@@ -80,6 +81,9 @@ export const MapTestView: React.FC = () => {
             maxZoom={14}
             points={testPoints}
           />
+          
+          {/* 地图边界遮罩 */}
+          <MapBorderMask variant="soft" maskWidth="25px" />
         </div>
 
 

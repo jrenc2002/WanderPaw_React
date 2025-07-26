@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { WarmBg } from '@/components/bg/WarmBg'
 import { EarthWithCapybara, BottomGradientMask } from '@/components/decorations'
@@ -10,12 +10,9 @@ const TravelJournalView: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [language] = useAtom(selectedLanguageAtom)
-  const [journalInput, setJournalInput] = useState('')
-  const [isLiked, setIsLiked] = useState(false)
-  const [isBookmarked, setIsBookmarked] = useState(false)
   const [isExiting, setIsExiting] = useState(false)
 
-  const { tripPlan, currentActivity: _currentActivity } = location.state || {}
+  const { currentActivity: _currentActivity } = location.state || {}
 
   const handleBack = () => {
     setIsExiting(true)
@@ -24,20 +21,6 @@ const TravelJournalView: React.FC = () => {
       navigate(-1)
     }, 800) // 800ms 动画持续时间
   }
-
-  const handleLike = () => {
-    setIsLiked(!isLiked)
-  }
-
-  const handleBookmark = () => {
-    setIsBookmarked(!isBookmarked)
-  }
-
-  const getCurrentDate = () => {
-    const now = new Date()
-    return `${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}`
-  }
-
 
   // 页面动画变体
   const pageVariants = {
@@ -75,10 +58,10 @@ const TravelJournalView: React.FC = () => {
         
 
         
-
-             {/* 地球装饰和水豚 */}
-       <EarthWithCapybara />
-
+    {/* 地球装饰和水豚 */}
+    <div className='absolute bottom-[-60vh] '>
+        <EarthWithCapybara />
+      </div>
        {/* 底部渐变遮罩 */}
        <BottomGradientMask />
 
