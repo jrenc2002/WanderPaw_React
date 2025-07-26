@@ -20,7 +20,6 @@ import { SampleDetailView } from '@/view/SampleDetailView';
 import { AuthView } from '@/view/AuthView';
 import { PetInitializationView } from '@/view/PetInitializationView';
 import { MapTestView } from '@/view/MapTestView';
-import CitySelectionView from '@/view/CitySelectionView';
 import TripThemesView from '@/view/TripThemesView';
 import TripPlanView from '@/view/TripPlanView';
 import TripJourneyView from '@/view/TripJourneyView';
@@ -31,8 +30,8 @@ const StartTripButton = () => {
     const navigate = useNavigate()
     
     const handleStartTrip = () => {
-        // 导航到城市选择页面
-        navigate('/city-selection')
+        // 直接导航到旅行主题页面（使用默认城市ID）
+        navigate('/trip-themes/1')
     };
 
     return (
@@ -79,7 +78,7 @@ const MainContent = () => {
     const location = useLocation()
     const isAuthPage = location.pathname === '/auth'
     const isPetInitPage = location.pathname === '/pet-initialization'
-    const isTripPlanningPage = location.pathname === '/city-selection' || location.pathname.startsWith('/trip-themes/') || location.pathname === '/trip-plan' || location.pathname === '/trip-journey' || location.pathname === '/travel-journal'
+    const isTripPlanningPage = location.pathname.startsWith('/trip-themes/') || location.pathname === '/trip-plan' || location.pathname === '/trip-journey' || location.pathname === '/travel-journal'
 
     return (
         <main className="h-screen w-screen grow">
@@ -132,7 +131,6 @@ const MainContent = () => {
                         } />
                         
                         {/* 旅行规划路由 */}
-                        <Route path="/city-selection" element={<CitySelectionView />} />
                         <Route path="/trip-themes/:cityId" element={
                             <ProtectedRoute>
                                 <TripThemesView />
@@ -205,7 +203,6 @@ const MainContent = () => {
                                 } />
                                 
                                 {/* 旅行规划路由 */}
-                                <Route path="/city-selection" element={<CitySelectionView />} />
                                 <Route path="/trip-themes/:cityId" element={
                                     <ProtectedRoute>
                                         <TripThemesView />

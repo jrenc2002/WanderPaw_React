@@ -4,16 +4,12 @@ import { useAtom } from 'jotai'
 import { motion, AnimatePresence } from 'framer-motion'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { WarmBg } from '@/components/bg/WarmBg'
-import DashedCard from '@/components/common/DashedCard'
 import { EarthWithCapybara, BottomGradientMask } from '@/components/decorations'
 import { 
   currentTripPlanAtom, 
   tripProgressAtom, 
   petTravelStateAtom,
   currentActivityAtom,
-  upcomingActivitiesAtom,
-  completeCurrentActivityAtom,
-  updatePetMoodAtom,
   completeTripAtom
 } from '@/store/TripState'
 import { MapboxMap } from '@/components/map/MapboxMap'
@@ -23,12 +19,9 @@ const TripJourneyView: React.FC = () => {
   const navigate = useNavigate()
   const [language] = useAtom(selectedLanguageAtom)
   const [currentTime, setCurrentTime] = useState<string>('12:45')
-  const [showMoodDialog, setShowMoodDialog] = useState<boolean>(false)
   const [showLetterModal, setShowLetterModal] = useState<boolean>(false)
-  const [showLetter, setShowLetter] = useState<boolean>(false)
   const [isJournalAnimating, setIsJournalAnimating] = useState<boolean>(false)
   const [letterAnimationStage, setLetterAnimationStage] = useState<'hidden' | 'appearing' | 'moving' | 'final'>('hidden')
-  const [hasReadLetter, setHasReadLetter] = useState<boolean>(false)
 
   // 自定义虚线卡片样式已通过CSS类实现
 
@@ -37,9 +30,6 @@ const TripJourneyView: React.FC = () => {
   const [tripProgress] = useAtom(tripProgressAtom)
   const [petTravelState] = useAtom(petTravelStateAtom)
   const [currentActivity] = useAtom(currentActivityAtom)
-  const [upcomingActivities] = useAtom(upcomingActivitiesAtom)
-  const [, completeCurrentActivity] = useAtom(completeCurrentActivityAtom)
-  const [, updatePetMood] = useAtom(updatePetMoodAtom)
   const [, completeTrip] = useAtom(completeTripAtom)
 
   useEffect(() => {
@@ -92,7 +82,6 @@ const TripJourneyView: React.FC = () => {
     // 移动动画完成后设置为最终状态
     setTimeout(() => {
       setLetterAnimationStage('final')
-      setShowLetter(true)
     }, 4000)
   }
 
@@ -124,69 +113,6 @@ const TripJourneyView: React.FC = () => {
     }
   }, [currentTripPlan])
 
-  const generateMoodText = () => {
-    if (!currentActivity) return ''
-    
-    const moodTexts = {
-      photography: [
-        language === 'zh' ? '哇！这里的光线好棒，我要拍一百张照片！📸' : 'Wow! The lighting here is amazing, I want to take a hundred photos! 📸',
-        language === 'zh' ? '咔嚓咔嚓～是不是把我拍得很可爱？' : 'Click click~ Did you capture how cute I am?',
-        language === 'zh' ? '这个角度...嗯...再来一张！' : 'This angle... hmm... one more shot!'
-      ],
-      food: [
-        language === 'zh' ? '好香啊～我的小肚子已经咕咕叫了！🍜' : 'Smells so good~ My little tummy is growling! 🍜',
-        language === 'zh' ? '这个看起来就很好吃！我可以尝一口吗？' : 'This looks delicious! Can I have a taste?',
-        language === 'zh' ? '嗯嗯嗯！太好吃了，我要打包带走！' : 'Mmm mmm! So tasty, I want to take some home!'
-      ],
-      culture: [
-        language === 'zh' ? '哇～历史好深奥，我有点晕了...' : 'Wow~ History is so profound, I\'m getting a bit dizzy...',
-        language === 'zh' ? '这些古老的东西让我想起了我爷爷的爷爷！' : 'These ancient things remind me of my grandpa\'s grandpa!',
-        language === 'zh' ? '学到了很多呢，我觉得自己变聪明了！' : 'Learned so much, I feel smarter!'
-      ],
-      nature: [
-        language === 'zh' ? '好清新的空气！深呼吸～ ahhhh' : 'Such fresh air! Deep breath~ ahhhh',
-        language === 'zh' ? '看到这么美的风景，心情都变好了！' : 'Seeing such beautiful scenery makes me feel so good!',
-        language === 'zh' ? '我想在这里打个滚...可以吗？' : 'I want to roll around here... may I?'
-      ],
-      nightlife: [
-        language === 'zh' ? '夜生活开始啦！虽然我有点困了...' : 'Nightlife begins! Though I\'m getting a bit sleepy...',
-        language === 'zh' ? '灯光好炫！我的眼睛都要闪瞎了！' : 'The lights are so dazzling! My eyes are getting blinded!',
-        language === 'zh' ? '音乐太大声了，我的小耳朵受不了...' : 'The music is too loud, my little ears can\'t handle it...'
-      ],
-      shopping: [
-        language === 'zh' ? '这个可爱！那个也可爱！都想要...' : 'This is cute! That\'s cute too! I want everything...',
-        language === 'zh' ? '钱包君，对不起了...今天要让你减肥！' : 'Sorry wallet-kun... you\'re going on a diet today!',
-        language === 'zh' ? '买买买！快乐就是这么简单！' : 'Buy buy buy! Happiness is that simple!'
-      ],
-      adventure: [
-        language === 'zh' ? '刺激！但是...有点害怕...' : 'Exciting! But... a little scary...',
-        language === 'zh' ? '冒险万岁！我是勇敢的小豚豚！' : 'Long live adventure! I\'m a brave little pig!',
-        language === 'zh' ? '哇！这个太高了，我恐高...' : 'Wow! This is too high, I\'m afraid of heights...'
-      ],
-      relaxation: [
-        language === 'zh' ? '啊～好舒服，我要融化了...' : 'Ahh~ so comfortable, I\'m melting...',
-        language === 'zh' ? '这就是传说中的躺平生活吗？我爱了！' : 'Is this the legendary lying flat life? I love it!',
-        language === 'zh' ? 'zzZ...等等，我不是在睡觉！' : 'zzZ... wait, I\'m not sleeping!'
-      ]
-    }
-
-    const themeMoods = moodTexts[currentActivity.theme as keyof typeof moodTexts] || [
-      language === 'zh' ? '今天的心情不错呢～' : 'I\'m in a good mood today~'
-    ]
-    
-    return themeMoods[Math.floor(Math.random() * themeMoods.length)]
-  }
-
-  const handlePetClick = () => {
-    const moodText = generateMoodText()
-    updatePetMood(petTravelState.mood, moodText)
-    setShowMoodDialog(true)
-    
-    setTimeout(() => {
-      setShowMoodDialog(false)
-    }, 3000)
-  }
-
   const handleJournalClick = () => {
     setIsJournalAnimating(true)
     // 等待展开动画完成后再导航
@@ -200,27 +126,8 @@ const TripJourneyView: React.FC = () => {
     }, 600) // 600ms 动画持续时间
   }
 
-  const handleNextActivity = () => {
-    if (!currentTripPlan) return
-
-    if (tripProgress.currentActivityIndex < currentTripPlan.activities.length - 1) {
-      completeCurrentActivity()
-      toast.success(
-        language === 'zh' ? '进入下一个活动！' : 'Moving to next activity!'
-      )
-    } else {
-      // 完成整个旅行
-      completeTrip()
-      toast.success(
-        language === 'zh' ? '今天的行程全部完成！' : 'All activities completed for today!'
-      )
-      // 不再立即跳转到 home，等待用户读完信件后再跳转
-    }
-  }
-
   const handleLetterClick = () => {
     setShowLetterModal(true)
-    setHasReadLetter(true) // 标记用户已读信件
   }
 
   const handleCloseLetterModal = () => {
@@ -603,7 +510,6 @@ ${petName} 💕`
             {currentTripPlan.activities.map((activity, index) => {
               const isCompleted = index < tripProgress.currentActivityIndex
               const isCurrent = index === tripProgress.currentActivityIndex
-              const isUpcoming = index > tripProgress.currentActivityIndex
               const isLast = index === currentTripPlan.activities.length - 1
 
               return (
@@ -963,6 +869,7 @@ ${petName} 💕`
               <button
                 onClick={handleCloseLetterModal}
                 className="absolute top-4 right-4 w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors"
+                aria-label={language === 'zh' ? '关闭信件' : 'Close letter'}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
