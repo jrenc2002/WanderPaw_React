@@ -11,11 +11,17 @@ export const SampleDetailView: React.FC = () => {
   if (!sample) {
     return (
       <WarmBg className="flex items-center justify-center">
+        <Link 
+          to="/test" 
+          className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg cursor-pointer transform transition-transform duration-200 hover:scale-110"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span>返回</span>
+        </Link>
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">生活样本未找到</h1>
-          <Link to="/test" className="text-amber-600 hover:text-amber-800">
-            返回地图
-          </Link>
         </div>
       </WarmBg>
     )
@@ -23,12 +29,20 @@ export const SampleDetailView: React.FC = () => {
 
   return (
     <WarmBg>
+      {/* 返回按钮 - 左上角 */}
+      <Link 
+        to="/test" 
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg cursor-pointer transform transition-transform duration-200 hover:scale-110"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <span>返回</span>
+      </Link>
+      
       {/* 头部导航 */}
       <div className="p-6 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="flex items-center justify-between">
-          <Link to="/test" className="text-amber-600 hover:text-amber-800 flex items-center gap-2">
-            ← 返回地图
-          </Link>
+        <div className="flex items-center justify-end">
           <div className="flex items-center gap-4 text-sm text-gray-600">
             <span>👁️ {sample.viewCount}</span>
             <span>❤️ {sample.likeCount}</span>

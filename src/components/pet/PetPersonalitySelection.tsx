@@ -106,7 +106,13 @@ export const PetPersonalitySelection: React.FC = () => {
               return (
                 <span
                   key={personality}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200"
+                  className="inline-flex items-center px-3 py-1 text-xs font-medium"
+                  style={{
+                    borderRadius: '19.5px',
+                    border: '1px solid #BBA084',
+                    background: '#FDF5E8',
+                    color: '#BBA084'
+                  }}
                 >
                   <span className="mr-1">{option?.emoji}</span>
                   {option?.label}

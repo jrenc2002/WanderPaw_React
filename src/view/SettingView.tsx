@@ -11,6 +11,7 @@ import {
   type PetInfo 
 } from '@/store/PetState'
 import { PetService } from '@/services/petService'
+import { getUnifiedButtonStyle, getSecondaryButtonStyle, handleButtonHover, handleSecondaryButtonHover } from '@/utils/buttonStyles'
 
 const SettingView: React.FC = () => {
   const [authState] = useAtom(authStateAtom)
@@ -276,7 +277,9 @@ const PetSettingsTab: React.FC<{
         <button
           onClick={onSave}
           disabled={loading}
-          className="w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          style={getUnifiedButtonStyle(loading)}
+          onMouseEnter={(e) => handleButtonHover(e, true, loading)}
+          onMouseLeave={(e) => handleButtonHover(e, false, loading)}
         >
           {loading ? '保存中...' : '保存设置'}
         </button>
@@ -338,7 +341,9 @@ const AccountSettingsTab: React.FC<{
       <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
         <button
           onClick={onLogout}
-          className="w-full md:w-auto px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          style={getSecondaryButtonStyle()}
+          onMouseEnter={(e) => handleSecondaryButtonHover(e, true)}
+          onMouseLeave={(e) => handleSecondaryButtonHover(e, false)}
         >
           退出登录
         </button>

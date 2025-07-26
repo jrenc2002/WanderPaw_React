@@ -204,13 +204,14 @@ export const PRESET_PET_CHARACTERS: PresetPetCharacter[] = [
     accentColor: 'pink-500'
   },
   {
-    id: 'wangzai',
-    name: '旺仔',
+    id: 'ali',
+    name: '阿狸',
     type: 'dog',
     gender: 'male',
     personality: ['active', 'clingy', 'playful'],
     age: 'adult',
-    emoji: '🐶',
+    emoji: '🦊',
+    avatar: '/decorations/fox.png',
     description: '旺仔是最忠诚的伙伴，他会在你回家时热烈欢迎，陪你散步看日落，用无条件的爱温暖你的每一天。',
     quote: '陪伴是最长情的告白',
     bgColor: 'from-blue-100 to-sky-50',

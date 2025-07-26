@@ -6,6 +6,7 @@ import { getTopCountries } from '@/data/mockData'
 import type { RegionData } from '@/store/MapState'
 import { WarmBg } from '@/components/bg/WarmBg'
 import './CitySelectionView.css'
+import { getUnifiedButtonStyle, handleButtonHover } from '@/utils/buttonStyles'
 
 const CitySelectionView: React.FC = () => {
   const navigate = useNavigate()
@@ -126,15 +127,15 @@ const CitySelectionView: React.FC = () => {
   return (
     <WarmBg showDecorations={true} className="relative">
       {/* 返回按钮 - 左上角 */}
-      <button
+      <div
         onClick={handleBack}
-        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg"
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg cursor-pointer transform transition-transform duration-200 hover:scale-110"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <span>{language === 'zh' ? '返回' : 'Back'}</span>
-      </button>
+      </div>
 
       {/* 主要内容 */}
       <div className="px-6 py-8">
@@ -271,7 +272,9 @@ const CitySelectionView: React.FC = () => {
         <div className="text-center mt-8">
           <button
             onClick={handleConfirm}
-            className="mb-4 px-8 py-3 bg-gradient-to-r from-[#687949] to-[#687949] text-white rounded-[22px] font-bold text-lg hover:from-[#505D39] hover:to-[#505D39] transition-all duration-200 shadow-lg transform hover:scale-105"
+            style={getUnifiedButtonStyle()}
+            onMouseEnter={(e) => handleButtonHover(e, true)}
+            onMouseLeave={(e) => handleButtonHover(e, false)}
           >
             {language === 'zh' ? '确认选择' : 'Confirm Selection'}
           </button>

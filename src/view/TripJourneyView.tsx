@@ -14,10 +14,12 @@ import {
   upcomingActivitiesAtom,
   completeCurrentActivityAtom,
   updatePetMoodAtom,
-  completeTripAtom
+  completeTripAtom,
+  clearCurrentTripAtom
 } from '@/store/TripState'
 import { MapboxMap } from '@/components/map/MapboxMap'
 import toast from 'react-hot-toast'
+import { getUnifiedButtonStyle, getSecondaryButtonStyle, handleButtonHover, handleSecondaryButtonHover } from '@/utils/buttonStyles'
 
 const TripJourneyView: React.FC = () => {
   const navigate = useNavigate()
@@ -27,7 +29,7 @@ const TripJourneyView: React.FC = () => {
   const [showLetterModal, setShowLetterModal] = useState<boolean>(false)
   const [showLetter, setShowLetter] = useState<boolean>(false)
   const [isJournalAnimating, setIsJournalAnimating] = useState<boolean>(false)
-  const [letterAnimationStage, setLetterAnimationStage] = useState<'hidden' | 'appearing' | 'moving' | 'final'>('hidden')
+  const [letterAnimationStage, setLetterAnimationStage] = useState<'hidden' | 'appearing' | 'disappearing' | 'reappearing' | 'final'>('hidden')
   const [hasReadLetter, setHasReadLetter] = useState<boolean>(false)
 
   // 自定义虚线卡片样式已通过CSS类实现
@@ -41,6 +43,7 @@ const TripJourneyView: React.FC = () => {
   const [, completeCurrentActivity] = useAtom(completeCurrentActivityAtom)
   const [, updatePetMood] = useAtom(updatePetMoodAtom)
   const [, completeTrip] = useAtom(completeTripAtom)
+  const [, clearCurrentTrip] = useAtom(clearCurrentTripAtom)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -70,7 +73,10 @@ const TripJourneyView: React.FC = () => {
 
   // 检查行程是否结束，决定是否显示信件
   useEffect(() => {
-    if (currentTripPlan && tripProgress.currentActivityIndex >= currentTripPlan.activities.length) {
+    if (currentTripPlan && (
+      tripProgress.currentActivityIndex >= currentTripPlan.activities.length ||
+      currentTripPlan.status === 'completed'
+    )) {
       // 延迟2秒显示信件，让用户先看到"行程结束"状态
       const timer = setTimeout(() => {
         startLetterAnimation()
@@ -84,16 +90,21 @@ const TripJourneyView: React.FC = () => {
     // 第一阶段：从屏幕中间出现
     setLetterAnimationStage('appearing')
     
-    // 2秒后开始移动和缩小
+    // 2秒后在中间消失
     setTimeout(() => {
-      setLetterAnimationStage('moving')
+      setLetterAnimationStage('disappearing')
     }, 2000)
     
-    // 移动动画完成后设置为最终状态
+    // 3.5秒后在宠物右边重新出现
+    setTimeout(() => {
+      setLetterAnimationStage('reappearing')
+    }, 3500)
+    
+    // 5秒后设置为最终状态
     setTimeout(() => {
       setLetterAnimationStage('final')
       setShowLetter(true)
-    }, 4000)
+    }, 5000)
   }
 
   // 处理行程卡片点击 - 直接结束行程
@@ -227,6 +238,24 @@ const TripJourneyView: React.FC = () => {
     setShowLetterModal(false)
   }
 
+  const handleAdjustPlan = () => {
+    if (!currentTripPlan) return
+    
+    // 构造TripPlanView期望的tripPlan数据格式
+    const tripPlanData = {
+      cityId: currentTripPlan.cityId,
+      themes: currentTripPlan.selectedThemes,
+      selectedThemeNames: currentTripPlan.selectedThemeNames
+    }
+    
+    // 导航到计划页面，传递当前计划数据
+    navigate('/trip-plan', {
+      state: {
+        tripPlan: tripPlanData
+      }
+    })
+  }
+
   // 时间格式转换函数
   const formatTimeToAMPM = (timeString: string) => {
     // 假设输入格式是 "HH:MM" 例如 "14:30"
@@ -327,7 +356,10 @@ ${petName} 💕`
   }]
 
   // 检查是否行程已结束
-  const isTripsCompleted = currentTripPlan && tripProgress.currentActivityIndex >= currentTripPlan.activities.length
+  const isTripsCompleted = currentTripPlan && (
+    tripProgress.currentActivityIndex >= currentTripPlan.activities.length || 
+    currentTripPlan.status === 'completed'
+  )
 
   return (
     <WarmBg>
@@ -368,20 +400,20 @@ ${petName} 💕`
       {/* 所有UI元素悬浮在地图上层 */}
       <div className="relative z-10">
         {/* 返回按钮 - 左上角 */}
-        <button
+        <div
           onClick={() => navigate(-1)}
-          className="absolute top-6 left-6 z-20 flex items-center gap-2 text-white hover:text-gray-200 transition-colors bg-black/30 backdrop-blur-sm p-2 rounded-lg hover:bg-black/40"
+          className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg cursor-pointer transform transition-transform duration-200 hover:scale-110"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <span>{language === 'zh' ? '返回' : 'Back'}</span>
-        </button>
+        </div>
 
         {/* 旅行状态卡片 */}
         <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20">
           <div 
-            className={`backdrop-blur-sm p-5 w-[47vw] w-full transition-all duration-300 ${
+            className={`backdrop-blur-sm p-5 w-[47vw] transition-all duration-300 ${
               !isTripsCompleted && letterAnimationStage === 'hidden' 
                 ? 'cursor-pointer hover:scale-105 hover:shadow-lg' 
                 : 'cursor-default'
@@ -400,22 +432,28 @@ ${petName} 💕`
               : ''
             }
           >
-            {/* 点击提示 */}
-            {!isTripsCompleted && letterAnimationStage === 'hidden' && (
-              <div className="absolute top-2 right-3 text-xs text-gray-500 opacity-70">
-                {language === 'zh' ? '点击结束' : 'Click to end'}
-              </div>
-            )}
+            
             
             {/* 上层：头像、姓名、事情、时间、地点 */}
             <div className="flex items-start justify-between mb-1">
               {/* 左侧：宠物头像、名称和当前活动 */}
               <div className="flex items-start gap-4">
-                <div className="w-[5vw] h-[5vw] bg-orange-200 rounded-full flex items-center justify-center">
-                  <span className="text-[2vw]">
-                    {currentTripPlan.petCompanion.type === 'cat' ? '🐱' : 
-                     currentTripPlan.petCompanion.type === 'dog' ? '🐶' : '🐹'}
-                  </span>
+                <div className="w-[8vw] h-[6vw] flex items-center justify-center overflow-hidden">
+                  <img 
+                    src={
+                      currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat1.jpeg' :
+                      currentTripPlan.petCompanion.type === 'dog' ? '/decorations/fox1.jpeg' :
+                      currentTripPlan.petCompanion.type === 'other' ? '/decorations/capybara1.jpeg' :
+                      '/decorations/fox1.jpeg'
+                    }
+                    alt={
+                      currentTripPlan.petCompanion.type === 'cat' ? 'Cat' :
+                      currentTripPlan.petCompanion.type === 'dog' ? 'Dog' :
+                      currentTripPlan.petCompanion.type === 'other' ? 'Capybara' :
+                      'Pet'
+                    }
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 
                 {/* 宠物名称和当前活动 */}
@@ -704,11 +742,22 @@ ${petName} 💕`
                        {/* 上部分：头像、地点和心情 */}
                        <div className="flex items-start gap-3 m-2 relative z-10">
                          {/* 左侧头像 */}
-                         <div className="w-[3.5vw] h-[3.5vw] bg-orange-200 rounded-full flex items-center justify-center flex-shrink-0">
-                           <span className="text-lg">
-                             {currentTripPlan.petCompanion.type === 'cat' ? '🐱' : 
-                              currentTripPlan.petCompanion.type === 'dog' ? '🐶' : '🐹'}
-                           </span>
+                         <div className="w-[3.5vw] h-[3.5vw] bg-[#F4EDE0] rounded-full flex items-center flex-shrink-0 overflow-hidden">
+                           <img 
+                             src={
+                               currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat1.jpeg' :
+                               currentTripPlan.petCompanion.type === 'dog' ? '/decorations/fox1.jpeg' :
+                               currentTripPlan.petCompanion.type === 'other' ? '/decorations/capybara1.jpeg' :
+                               '/decorations/fox1.jpeg'
+                             }
+                             alt={
+                               currentTripPlan.petCompanion.type === 'cat' ? 'Cat' :
+                               currentTripPlan.petCompanion.type === 'dog' ? 'Dog' :
+                               currentTripPlan.petCompanion.type === 'other' ? 'Capybara' :
+                               'Pet'
+                             }
+                             className="w-[120%] h-[120%] object-cover transform -translate-x-2 scale-110"
+                           />
                          </div>
                          
                                                     {/* 右侧地点和心情 */}
@@ -823,60 +872,39 @@ ${petName} 💕`
           {/* 固定在探索计划底部的按钮 */}
           <div className="mt-4 flex justify-center">
             {!isTripsCompleted && (
-                              <button className="w-[10vw] bg-[#687949] hover:bg-green-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
-                  <span className="flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1.2vw" height="1.2vw" viewBox="0 0 31 32" fill="none">
-                      <path d="M11.7993 22.7033C11.6848 22.8178 11.5431 22.9014 11.3874 22.9461L4.44681 24.9423C4.08559 25.0462 3.75126 24.7118 3.85516 24.3506L5.85128 17.41C5.89604 17.2544 5.97959 17.1127 6.0941 16.9982L20.2248 2.86746C20.5982 2.49405 21.2037 2.49405 21.5771 2.86746L25.9299 7.22037C26.3034 7.59379 26.3034 8.19928 25.9299 8.57272L11.7993 22.7033ZM19.2105 7.2626L21.5348 9.58694L23.2253 7.8965L20.9009 5.57216L19.2105 7.2626ZM17.6891 8.78396L8.04641 18.4267L7.10806 21.6894L10.3707 20.751L20.0135 11.1083L17.6891 8.78396ZM3.95608 27.2658H26.9061V29.4173H3.95608V27.2658Z" fill="white"/>
-                    </svg>
-                    <span>{language === 'zh' ? '调整计划' : 'Adjust Plan'}</span>
-                  </span>
-                </button>
-            )}
-
-            {/* 行程完成后提示查看信件 */}
-            {isTripsCompleted && letterAnimationStage === 'final' && (
               <button 
-                onClick={handleLetterClick}
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-xl font-medium transition-colors"
+                onClick={handleAdjustPlan}
+                style={getUnifiedButtonStyle()}
+                onMouseEnter={(e) => handleButtonHover(e, true)}
+                onMouseLeave={(e) => handleButtonHover(e, false)}
               >
                 <span className="flex items-center justify-center gap-2">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7813 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1.2vw" height="1.2vw" viewBox="0 0 31 32" fill="none">
+                    <path d="M11.7993 22.7033C11.6848 22.8178 11.5431 22.9014 11.3874 22.9461L4.44681 24.9423C4.08559 25.0462 3.75126 24.7118 3.85516 24.3506L5.85128 17.41C5.89604 17.2544 5.97959 17.1127 6.0941 16.9982L20.2248 2.86746C20.5982 2.49405 21.2037 2.49405 21.5771 2.86746L25.9299 7.22037C26.3034 7.59379 26.3034 8.19928 25.9299 8.57272L11.7993 22.7033ZM19.2105 7.2626L21.5348 9.58694L23.2253 7.8965L20.9009 5.57216L19.2105 7.2626ZM17.6891 8.78396L8.04641 18.4267L7.10806 21.6894L10.3707 20.751L20.0135 11.1083L17.6891 8.78396ZM3.95608 27.2658H26.9061V29.4173H3.95608V27.2658Z" fill="white"/>
                   </svg>
-                  <span>{language === 'zh' ? '查看信件' : 'Read Letter'}</span>
+                  <span>{language === 'zh' ? '调整计划' : 'Adjust Plan'}</span>
                 </span>
               </button>
             )}
 
-            {/* 行程完成但信件动画未完成时的等待提示 */}
-            {isTripsCompleted && letterAnimationStage !== 'final' && letterAnimationStage !== 'hidden' && (
-              <div className="w-full text-center py-2 px-4 text-gray-500 bg-amber-50 rounded-lg border border-amber-200">
-                <span className="flex items-center justify-center gap-2 mb-1">
-                  <div className="animate-spin w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full"></div>
-                  <span className="font-medium">{language === 'zh' ? '信件送达中...' : 'Letter arriving...'}</span>
+            {/* 行程完成后显示结束按钮 */}
+            {isTripsCompleted && (
+              <button 
+                style={getUnifiedButtonStyle()}
+                onMouseEnter={(e) => handleButtonHover(e, true)}
+                onMouseLeave={(e) => handleButtonHover(e, false)}
+                disabled
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  <span>{language === 'zh' ? '结束咯！' : 'Finished!'}</span>
                 </span>
-                <p className="text-xs text-amber-600">
-                  {language === 'zh' ? '请等待信件送达后查看' : 'Please wait for the letter to arrive'}
-                </p>
-              </div>
+              </button>
             )}
 
-            {/* 行程刚结束但信件动画还未开始时的提示 */}
-            {isTripsCompleted && letterAnimationStage === 'hidden' && (
-              <div className="w-full text-center py-2 px-4 text-gray-500 bg-blue-50 rounded-lg border border-blue-200">
-                <span className="flex items-center justify-center gap-2 mb-1">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-blue-500">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span className="font-medium">{language === 'zh' ? '行程已完成' : 'Trip Completed'}</span>
-                </span>
-                <p className="text-xs text-blue-600">
-                  {language === 'zh' ? '小伙伴正在准备信件...' : 'Your companion is preparing a letter...'}
-                </p>
-              </div>
-            )}
+
           </div>
         </div>
 
@@ -902,18 +930,28 @@ ${petName} 💕`
                   opacity: 1,
                   x: '-50%',
                   y: '-50%',
-                  transition: { duration: 1, ease: "easeOut" }
-                } : letterAnimationStage === 'moving' ? {
-                  left: '35vw', // 移动到水豚右方（水豚在左下角，向右偏移）
-                  top: '85vh', // 移动到底部区域
-                  scale: 0.4,
+                  transition: { duration: 1.5, ease: "easeOut" }
+                } : letterAnimationStage === 'disappearing' ? {
+                  left: '50%',
+                  top: '50%',
+                  scale: 0,
+                  opacity: 0,
                   x: '-50%',
                   y: '-50%',
-                  transition: { duration: 2, ease: "easeInOut" }
-                } : {
-                  left: '35vw',
+                  transition: { duration: 0.5, ease: "easeIn" }
+                } : letterAnimationStage === 'reappearing' ? {
+                  left: '60vw',
                   top: '85vh',
                   scale: 0.4,
+                  opacity: 1,
+                  x: '-50%',
+                  y: '-50%',
+                  transition: { duration: 0.8, ease: "easeOut" }
+                } : {
+                  left: '60vw',
+                  top: '85vh',
+                  scale: 0.4,
+                  opacity: 1,
                   x: '-50%',
                   y: '-50%'
                 }
@@ -923,12 +961,13 @@ ${petName} 💕`
                 transformOrigin: 'center'
               }}
             >
-              <motion.button
-                onClick={handleLetterClick}
-                className="w-20 h-20 hover:scale-110 transition-transform cursor-pointer"
+              <motion.div
+                onClick={letterAnimationStage === 'final' ? handleLetterClick : undefined}
+                className="w-[8vw] h-[8vw] transition-transform cursor-pointer bg-transparent"
                 aria-label={language === 'zh' ? '查看信件' : 'View Letter'}
-                disabled={letterAnimationStage !== 'final'}
-                whileHover={letterAnimationStage === 'final' ? { scale: 1.1 } : {}}
+                role="button"
+                tabIndex={letterAnimationStage === 'final' ? 0 : -1}
+                whileHover={letterAnimationStage === 'final' ? { scale: 1.15 } : {}}
                 animate={letterAnimationStage === 'final' ? {
                   y: [0, -5, 0],
                   transition: {
@@ -937,13 +976,18 @@ ${petName} 💕`
                     ease: "easeInOut"
                   }
                 } : {}}
+                style={{
+                  backgroundColor: 'transparent',
+                  pointerEvents: letterAnimationStage === 'final' ? 'auto' : 'none'
+                }}
               >
                 <img 
                   src="/decorations/letter.jpeg" 
                   alt={language === 'zh' ? '来自宠物的信件' : 'Letter from Pet'} 
-                  className="w-full h-full object-contain drop-shadow-lg"
+                  className="w-full h-full object-contain drop-shadow-lg transition-transform duration-200"
+                  style={{ backgroundColor: 'transparent' }}
                 />
-              </motion.button>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -971,11 +1015,22 @@ ${petName} 💕`
 
               {/* 信件标题 */}
               <div className="text-center mb-6">
-                <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-3xl">
-                    {currentTripPlan.petCompanion.type === 'cat' ? '🐱' : 
-                     currentTripPlan.petCompanion.type === 'dog' ? '🐶' : '🐹'}
-                  </span>
+                <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center overflow-hidden">
+                  <img 
+                    src={
+                      currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat1.jpeg' :
+                      currentTripPlan.petCompanion.type === 'dog' ? '/decorations/fox1.jpeg' :
+                      currentTripPlan.petCompanion.type === 'other' ? '/decorations/capybara1.jpeg' :
+                      '/decorations/fox1.jpeg'
+                    }
+                    alt={
+                      currentTripPlan.petCompanion.type === 'cat' ? 'Cat' :
+                      currentTripPlan.petCompanion.type === 'dog' ? 'Dog' :
+                      currentTripPlan.petCompanion.type === 'other' ? 'Capybara' :
+                      'Pet'
+                    }
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <h3 className="text-xl font-bold text-gray-800">
                   {language === 'zh' ? '来自小伙伴的信' : 'Letter from Your Companion'}
@@ -1002,16 +1057,21 @@ ${petName} 💕`
               <div className="flex gap-3 mt-6">
                 <button
                   onClick={handleCloseLetterModal}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded-xl font-medium transition-colors"
+                  style={{...getSecondaryButtonStyle(), flex: 1}}
+                  onMouseEnter={(e) => handleSecondaryButtonHover(e, true)}
+                  onMouseLeave={(e) => handleSecondaryButtonHover(e, false)}
                 >
                   {language === 'zh' ? '稍后再看' : 'Read Later'}
                 </button>
                 <button
                   onClick={() => {
                     handleCloseLetterModal()
+                    clearCurrentTrip() // 清除当前旅行计划
                     navigate('/home')
                   }}
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-xl font-medium transition-colors"
+                  style={{...getUnifiedButtonStyle(), flex: 1}}
+                  onMouseEnter={(e) => handleButtonHover(e, true)}
+                  onMouseLeave={(e) => handleButtonHover(e, false)}
                 >
                   {language === 'zh' ? '读完了，回主页' : 'Finished, Go Home'}
                 </button>

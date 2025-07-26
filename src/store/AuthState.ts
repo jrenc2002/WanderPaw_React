@@ -54,7 +54,6 @@ export const loginFormAtom = atom<LoginForm>({
 export const registerFormAtom = atom<RegisterForm>({
   username: '',
   password: '',
-  phoneNumber: '',
 })
 
 // 认证加载状态atom
