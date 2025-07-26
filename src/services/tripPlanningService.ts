@@ -2,7 +2,7 @@ import axios, { type AxiosResponse } from 'axios'
 import type { PetInfo } from '@/store/PetState'
 import type { XhsSearchResponse } from './xhsService'
 import { XhsService } from './xhsService'
-import { parseAITripResponse, type AIRawResponse } from '@/utils/aiResponseParser'
+import { parseAITripResponse, parseAITripResponseWithCoordinates, type AIRawResponse } from '@/utils/aiResponseParser'
 
 // WanderPaw Fastify后端API配置 - 使用vite代理 [[memory:4342674]]
 const TRIP_API_BASE_URL = '/api' // 使用vite代理访问后端API
@@ -92,15 +92,15 @@ export class TripPlanningService {
    * @param language 语言设置
    * @returns 标准化的旅行计划响应
    */
-  static parseAITripPlanResponse(
+  static async parseAITripPlanResponse(
     aiResponse: AIRawResponse,
     language: 'zh' | 'en' = 'zh'
-  ): TripPlanningResponse {
+  ): Promise<TripPlanningResponse> {
     try {
       console.log('开始解析AI旅行计划响应...')
       
-      // 使用专用解析器解析AI响应
-      const parseResult = parseAITripResponse(aiResponse)
+      // 使用带坐标的专用解析器解析AI响应
+      const parseResult = await parseAITripResponseWithCoordinates(aiResponse, true)
       
       if (!parseResult.success || !parseResult.data) {
         return {
@@ -126,7 +126,7 @@ export class TripPlanningService {
       const summaryEn = `A carefully planned ${data.travelStyle} in ${data.city} with ${data.activities.length} selected activities.`
       
       // 计算总时长
-      const totalDuration = data.activities.reduce((total, activity) => total + activity.duration, 0)
+      const totalDuration = data.activities.reduce((total: number, activity: any) => total + activity.duration, 0)
       
       // 生成旅行提示
       const notes = language === 'zh' ? [

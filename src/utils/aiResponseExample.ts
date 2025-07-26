@@ -45,7 +45,7 @@ export function exampleUsage() {
 export async function serviceIntegrationExample(aiResponse: AIRawResponse) {
   try {
     // 使用TripPlanningService的新方法解析AI响应
-    const planningResponse = TripPlanningService.parseAITripPlanResponse(aiResponse, 'zh')
+    const planningResponse = await TripPlanningService.parseAITripPlanResponse(aiResponse, 'zh')
     
     if (planningResponse.success && planningResponse.data) {
       console.log('服务解析成功:', {

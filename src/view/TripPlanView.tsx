@@ -471,7 +471,8 @@ const TripPlanView: React.FC = () => {
           theme: activity.theme,
           duration: activity.duration,
           description: language === 'zh' ? activity.description : activity.descriptionEn,
-          descriptionEn: activity.descriptionEn
+          descriptionEn: activity.descriptionEn,
+          tips: activity.tips || [] // 保留 tips 字段
         }))
         
         setActivities(aiActivities)
@@ -605,8 +606,8 @@ const TripPlanView: React.FC = () => {
   const convertToMapActivities = (activities: Omit<TripActivity, 'coordinates' | 'status'>[]): GeneratedTripActivity[] => {
     return activities.map(activity => ({
       ...activity,
-      coordinates: activity.coordinates as [number, number] | undefined,
-      tips: [], // TripActivity没有tips字段，使用空数组
+      coordinates: undefined, // 本地活动暂时没有坐标
+      tips: activity.tips || [], // 使用活动的 tips 字段
       estimatedCost: undefined,
       difficulty: 'easy' as const
     }))
@@ -810,41 +811,7 @@ const TripPlanView: React.FC = () => {
               )}
             </h2>
             
-            {/* AI生成计划的标识和摘要 */}
-            {isAiGenerated && (
-              <div style={{ 
-                background: 'linear-gradient(135deg, rgba(199, 170, 108, 0.1), rgba(104, 121, 73, 0.1))',
-                border: '1px solid rgba(199, 170, 108, 0.3)',
-                borderRadius: '0.5vw',
-                padding: '1vh 1.5vw',
-                margin: '1vh 2vw 0 2vw',
-                fontSize: '0.9vw',
-                color: '#573E23'
-              }}>
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  gap: '0.5vw',
-                  marginBottom: planSummary ? '0.5vh' : '0'
-                }}>
-                  <span style={{ fontSize: '1.1vw' }}>✨</span>
-                  <span style={{ fontWeight: '500' }}>
-                    {language === 'zh' ? 'AI专属定制' : 'AI Customized'}
-                  </span>
-                </div>
-                {planSummary && (
-                  <p style={{ 
-                    fontSize: '0.8vw', 
-                    lineHeight: '1.4',
-                    margin: '0',
-                    opacity: 0.8
-                  }}>
-                    {planSummary}
-                  </p>
-                )}
-              </div>
-            )}
+            
           </div>
           
           
@@ -930,44 +897,48 @@ const TripPlanView: React.FC = () => {
                               style={{
                                 borderRadius: '0.8vw',
                                 background: '#FDF9EF',
-                                boxShadow: '0 1.8px 8px 2.7px rgba(123, 66, 15, 0.1)',
-                                transition: 'all 0.2s',
-                                cursor: 'pointer'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = 'scale(1.02)'
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'scale(1)'
+                                boxShadow: '0 1.8px 8px 2.7px rgba(123, 66, 15, 0.1)'
                               }}
                             >
                               {/* 上部分：头像、地点和描述 */}
                               <div className="flex items-center gap-3 m-2 relative z-10">
                                 {/* 左侧头像 */}
-                                <div className="w-[3.5vw] h-[3.5vw] bg-orange-200 rounded-full flex items-center justify-center flex-shrink-0">
-                                  <span className="text-lg">
-                                    {petInfo.type === 'cat' ? '🐱' : 
-                                     petInfo.type === 'dog' ? '🐶' : '🐹'}
-                                  </span>
+                                <div className="w-[3.5vw] h-[3.5vw] bg-[#F4EDE0] rounded-full flex items-center flex-shrink-0 overflow-hidden">
+                                  <img 
+                                    src={
+                                      petInfo.type === 'cat' ? '/decorations/cat1.jpeg' :
+                                      petInfo.type === 'dog' ? '/decorations/fox1.jpeg' :
+                                      petInfo.type === 'other' ? '/decorations/capybara1.jpeg' :
+                                      '/decorations/fox1.jpeg'
+                                    }
+                                    alt={
+                                      petInfo.type === 'cat' ? 'Cat' :
+                                      petInfo.type === 'dog' ? 'Dog' :
+                                      petInfo.type === 'other' ? 'Capybara' :
+                                      'Pet'
+                                    }
+                                    className="w-[120%] h-[120%] object-cover transform -translate-x-2 scale-110"
+                                  />
                                 </div>
                                 
-                                {/* 右侧地点和描述 */}
-                                                                  <div className="flex-1 flex flex-col justify-center">
-                                    {/* 地点 */}
-                                    <div className="text-lg font-bold text-gray-800 leading-tight ">
-                                      {language === 'zh' ? activity.location : activity.locationEn}
-                                    </div>
+                                {/* 右侧地点和心情 */}
+                                <div className="flex-1 flex flex-col justify-center">
+                                  {/* 地点 */}
+                                  <div className="text-s font-medium text-gray-800 leading-tight mb-1">
+                                    {language === 'zh' ? activity.location : activity.locationEn}
+                                  </div>
                                   
+                            
                                 </div>
                               </div>
                               
                               {/* 分隔线 */}
-                              <div className="w-[95%] h-px bg-[#BBA084] my-1 relative z-10 mx-auto"></div>
+                              <div className="w-[90%] h-px bg-[#BBA084] my-1 relative z-10 mx-auto"></div>
                               
-                                                              {/* 下部分：活动标题 */}
+                                                              {/* 下部分：正在做的事情 */}
                                 <div className="flex items-center justify-between relative z-10">
-                                  <div className="ml-3 my-1 text-xs font-bold text-[#8F6C53]">
-                                    {language === 'zh' ? activity.title : activity.titleEn}
+                                  <div className="ml-2 my-1 text-xs text-gray-700">
+                                    {language === 'zh' ? activity.description : activity.titleEn}
                                   </div>
                               </div>
                             </div>

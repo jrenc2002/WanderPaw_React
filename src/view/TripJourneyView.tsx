@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { motion, AnimatePresence } from 'framer-motion'
 import { selectedLanguageAtom } from '@/store/MapState'
-import { WarmBg } from '@/components/bg/WarmBg'
-import { EarthWithCapybara, BottomGradientMask } from '@/components/decorations'
+
 import { 
   currentTripPlanAtom, 
   tripProgressAtom, 
@@ -301,83 +300,21 @@ ${petName} 💕`
         `}
       </style>
       
-      {/* 条件渲染背景 */}
-      {isTripsCompleted || isTransitioning ? (
-        // 旅行结束时或过渡动画时：显示地图背景
-        <div className="fixed inset-0 w-full h-full z-0">
-          <MapboxMap
-            className="w-full h-full"
-            center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]] as [number, number]} // 转换 [lng, lat] -> [lat, lng]
-            zoom={12}
-            maxZoom={16}
-            disableZoom={false}
-            disableInteraction={false}
-            points={mapPoints}
-            routes={mapRoutes}
-          />
-        </div>
-      ) : (
-        // 旅行进行中：使用温暖背景
-        <div className="fixed inset-0 w-full h-full z-0" style={{ backgroundColor: '#FFF6E4' }}>
-          {/* 背景装饰元素 */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* 左上角叶子装饰 */}
-            <div className="absolute top-0 left-[-60px] w-[350px] h-[350px]">
-              <img 
-                src="/decorations/leaves-dark.jpeg" 
-                alt="Left decoration" 
-                className="w-full h-full object-contain"
-              />
-            </div>
-
-            {/* 右上角叶子装饰 */}
-            <div className="absolute top-0 right-[-20px] w-[250px] h-[250px]">
-              <img 
-                src="/decorations/leaves-light.jpeg" 
-                alt="Right decoration" 
-                className="w-full h-full object-contain"
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 始终显示地图背景 */}
+      <div className="fixed inset-0 w-full h-full z-0">
+        <MapboxMap
+          className="w-full h-full"
+          center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]] as [number, number]} // 转换 [lng, lat] -> [lat, lng]
+          zoom={12}
+          maxZoom={16}
+          disableZoom={false}
+          disableInteraction={false}
+          points={mapPoints}
+          routes={mapRoutes}
+        />
+      </div>
       
-      {/* 过渡动画：温暖背景向下收回 */}
-      <AnimatePresence>
-        {isTransitioning && (
-          <motion.div
-            initial={{ y: 0 }}
-            animate={{ y: '100vh' }}
-            transition={{ 
-              duration: 1.5, 
-              ease: [0.25, 0.46, 0.45, 0.94] 
-            }}
-                         className="fixed inset-0 w-full h-full z-5"
-            style={{ backgroundColor: '#FFF6E4' }}
-          >
-            {/* 背景装饰元素 */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {/* 左上角叶子装饰 */}
-              <div className="absolute top-0 left-[-60px] w-[350px] h-[350px]">
-                <img 
-                  src="/decorations/leaves-dark.jpeg" 
-                  alt="Left decoration" 
-                  className="w-full h-full object-contain"
-                />
-              </div>
 
-              {/* 右上角叶子装饰 */}
-              <div className="absolute top-0 right-[-20px] w-[250px] h-[250px]">
-                <img 
-                  src="/decorations/leaves-light.jpeg" 
-                  alt="Right decoration" 
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* 所有UI元素悬浮在地图上层 */}
       <div className="relative z-10">
@@ -995,32 +932,7 @@ ${petName} 💕`
         </AnimatePresence>
       </div>
 
-              {/* 地球装饰和宠物 - 根据旅行状态调整位置 */}
-        <motion.div 
-          className="relative z-10"
-          style={{ pointerEvents: 'none' }} // 确保整个容器不阻挡点击
-          initial={{ 
-            y: 100, 
-            opacity: 0, 
-            scale: 0.8 
-          }}
-          animate={{
-            y: isTripsCompleted || isTransitioning ? 0 : -208, // -translate-y-52 = -13rem = -208px
-            opacity: 1,
-            scale: 1
-          }}
-          transition={{
-            duration: isTransitioning ? 1.5 : 2.5, // 增加初始出现动画时长到2.5秒
-            ease: isTransitioning ? [0.25, 0.46, 0.45, 0.94] : [0.25, 0.46, 0.45, 0.94],
-            delay: 0.3 // 添加延迟让地球更自然地出现
-          }}
-        >
-          <EarthWithCapybara petType={
-            currentTripPlan.petCompanion.type === 'none' 
-              ? 'other' 
-              : currentTripPlan.petCompanion.type as 'cat' | 'dog' | 'other'
-          } />
-        </motion.div>
+
 
       {/* 手帐按钮 - 右下角 */}
       <motion.div 
@@ -1075,8 +987,7 @@ ${petName} 💕`
         />
       </motion.div>
 
-      {/* 底部渐变遮罩 */}
-      <BottomGradientMask />
+
 
       {/* 信件弹窗 - 放在最后确保在最上层 */}
       {showLetterModal && (

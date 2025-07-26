@@ -30,6 +30,7 @@ export interface TripActivity {
   description: string
   descriptionEn: string
   status: 'pending' | 'current' | 'completed' | 'skipped'
+  tips?: string[] // 活动标签/提示
   photos?: string[]
   notes?: string
 }

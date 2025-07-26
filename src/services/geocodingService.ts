@@ -32,6 +32,18 @@ export class GeocodingService {
     '池袋Sunshine City屋顶花园': [139.7179, 35.7295],
     '池袋站便利店门口': [139.7108, 35.7297],
     
+    // 东京常见旅游地点
+    '谷中银座商店街': [139.7643, 35.7285],
+    '根津神社': [139.7615, 35.7283],
+    '上野公园': [139.7738, 35.7144],
+    '上野公园草地': [139.7738, 35.7144],
+    '东京国立博物馆': [139.7762, 35.7188],
+    '上野公园喷泉旁': [139.7738, 35.7144],
+    '浅草寺': [139.7967, 35.7148],
+    '仲见世商店街': [139.7967, 35.7148],
+    '隅田川河畔': [139.8024, 35.7148],
+    '上野·むぎとオリーブ拉面店': [139.7738, 35.7144],
+    
     // 中国主要城市
     '北京': [116.4074, 39.9042],
     '上海': [121.4737, 31.2304],
@@ -103,6 +115,12 @@ export class GeocodingService {
       const apiResult = await this.geocodeWithMapbox(cleanAddress, timeout)
       if (apiResult) {
         return apiResult
+      }
+
+      // 尝试使用Nominatim (免费，无需API Key)
+      const nominatimResult = await this.geocodeWithNominatim(cleanAddress, timeout)
+      if (nominatimResult) {
+        return nominatimResult
       }
 
       // 降级到静态数据模糊匹配
@@ -313,5 +331,60 @@ export class GeocodingService {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     
     return R * c
+  }
+
+  /**
+   * 使用Nominatim API进行地理编码 (免费，基于OpenStreetMap)
+   */
+  private static async geocodeWithNominatim(
+    address: string, 
+    timeout: number
+  ): Promise<GeocodingResult | null> {
+    try {
+      const encodedAddress = encodeURIComponent(address)
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodedAddress}&format=json&limit=1&accept-language=zh,en`
+      
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), timeout)
+      
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'WanderPaw-App/1.0' // Nominatim要求User-Agent
+        }
+      })
+      
+      clearTimeout(timeoutId)
+      
+      if (!response.ok) {
+        throw new Error(`Nominatim API错误: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      
+      if (data && data.length > 0) {
+        const result = data[0]
+        const lng = parseFloat(result.lon)
+        const lat = parseFloat(result.lat)
+        
+        return {
+          address,
+          coordinates: [lng, lat],
+          confidence: 0.7, // Nominatim结果置信度设为中等
+          source: 'api'
+        }
+      }
+      
+      return null
+      
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.warn('Nominatim地理编码超时:', address)
+      } else {
+        console.warn('Nominatim地理编码失败:', error)
+      }
+      return null
+    }
   }
 } 
