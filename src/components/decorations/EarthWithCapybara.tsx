@@ -10,7 +10,7 @@ const EarthWithCapybara: React.FC<EarthWithCapybaraProps> = ({ className = '' })
   const [language] = useAtom(selectedLanguageAtom)
 
   return (
-    <div className={`fixed bottom-[-15vw] left-1/2 transform -translate-x-1/2 z-30 w-[50vw] h-[50vw] pointer-events-none relative ${className}`}>
+    <div className={`fixed bottom-[-15vw] left-1/2 transform -translate-x-1/2 z-20 w-[50vw] h-[50vw] pointer-events-none relative ${className}`}>
       <img 
         src="/decorations/earth.jpeg" 
         alt={language === 'zh' ? '地球装饰' : 'Earth decoration'} 
