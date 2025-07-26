@@ -7,7 +7,7 @@
       "position": [39.9042, 116.4074],
       "title": "北京",
       "description": "中国首都，政治文化中心",
-      "tangpingIndex": 25,
+      "petFriendlyIndex": 25,
       "data": {
         "averageSalary": 12000,
         "rentPrice": 4500,
@@ -22,7 +22,7 @@
       "position": [31.2304, 121.4737],
       "title": "上海",
       "description": "经济金融中心",
-      "tangpingIndex": 20,
+      "petFriendlyIndex": 20,
       "data": {
         "averageSalary": 13500,
         "rentPrice": 5200,
@@ -37,7 +37,7 @@
       "position": [22.5431, 114.0579],
       "title": "深圳",
       "description": "科技创新之都",
-      "tangpingIndex": 30,
+      "petFriendlyIndex": 30,
       "data": {
         "averageSalary": 11800,
         "rentPrice": 4800,
@@ -52,7 +52,7 @@
       "position": [30.5728, 104.0668],
       "title": "成都",
       "description": "天府之国，生活悠闲",
-      "tangpingIndex": 75,
+      "petFriendlyIndex": 75,
       "data": {
         "averageSalary": 7800,
         "rentPrice": 2200,

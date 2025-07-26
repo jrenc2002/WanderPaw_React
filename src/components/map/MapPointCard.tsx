@@ -91,12 +91,7 @@ export const MapPointCard: React.FC<MapPointCardProps> = ({
     }
   }, [isVisible])
 
-  const getTangpingColor = (index: number) => {
-    if (index >= 80) return '#10b981'
-    if (index >= 60) return '#f59e0b'
-    if (index >= 40) return '#f97316'
-    return '#ef4444'
-  }
+
 
   if (!isVisible) return null
 
@@ -137,51 +132,8 @@ export const MapPointCard: React.FC<MapPointCardProps> = ({
 
       {/* 城市信息 */}
       <div className="map-card-info">
-        <h3 className="map-card-title">{point.title}</h3>
-        <p className="map-card-description">{point.description}</p>
+        <h3 className="map-card-title" style={{ textAlign: 'center', margin: '15px 0' }}>{point.title}</h3>
         
-        <div className="map-card-details">
-          <div className="map-detail-item">
-            <span className="detail-icon">🏠</span>
-            <span className="detail-label">
-              {language === 'zh' ? '躺平指数' : 'Lying Flat Index'}:
-            </span>
-            <span 
-              className="detail-value"
-              style={{ color: getTangpingColor(point.tangpingIndex) }}
-            >
-              {point.tangpingIndex}
-            </span>
-          </div>
-
-          {point.data && (
-            <>
-              {point.data.averageSalary && (
-                <div className="map-detail-item">
-                  <span className="detail-icon">💰</span>
-                  <span className="detail-label">
-                    {language === 'zh' ? '平均工资' : 'Avg Salary'}:
-                  </span>
-                  <span className="detail-value">
-                    {point.data.averageSalary.toLocaleString()} {point.data.currency}
-                  </span>
-                </div>
-              )}
-              {point.data.rentPrice && (
-                <div className="map-detail-item">
-                  <span className="detail-icon">🏡</span>
-                  <span className="detail-label">
-                    {language === 'zh' ? '房租' : 'Rent'}:
-                  </span>
-                  <span className="detail-value">
-                    {point.data.rentPrice.toLocaleString()} {point.data.currency}
-                  </span>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
         {/* 重播按钮 */}
         <button className="map-replay-btn" onClick={playAnimation}>
           <RefreshCcw size={14} />

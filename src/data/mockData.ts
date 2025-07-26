@@ -1,6 +1,6 @@
 import { RegionData } from '@/store/MapState'
 
-// Mock数据：全球地区生活成本和躺平指数
+// Mock数据：全球地区生活成本和宠物友好度指数
 export const mockRegionsData: Record<string, RegionData> = {
   // 世界级别
   'world': {
@@ -22,7 +22,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 0,
     climateComfort: 0,
     internetSpeed: 0,
-    tangpingIndex: 0,
+    petFriendlyIndex: 0,
     lifeQuality: 0,
     stressFactor: 0,
     freelanceFriendly: 0,
@@ -54,7 +54,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 15,
     climateComfort: 70,
     internetSpeed: 120,
-    tangpingIndex: 58,
+    petFriendlyIndex: 58,
     lifeQuality: 68,
     stressFactor: 72,
     freelanceFriendly: 55,
@@ -85,7 +85,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 75,
     climateComfort: 75,
     internetSpeed: 150,
-    tangpingIndex: 42,
+    petFriendlyIndex: 42,
     lifeQuality: 82,
     stressFactor: 85,
     freelanceFriendly: 30,
@@ -116,7 +116,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 70,
     climateComfort: 65,
     internetSpeed: 200,
-    tangpingIndex: 32,
+    petFriendlyIndex: 32,
     lifeQuality: 75,
     stressFactor: 92,
     freelanceFriendly: 25,
@@ -147,7 +147,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 10,
     climateComfort: 60,
     internetSpeed: 250,
-    tangpingIndex: 65,
+    petFriendlyIndex: 65,
     lifeQuality: 88,
     stressFactor: 75,
     freelanceFriendly: 80,
@@ -178,7 +178,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 65,
     climateComfort: 80,
     internetSpeed: 85,
-    tangpingIndex: 78,
+    petFriendlyIndex: 78,
     lifeQuality: 72,
     stressFactor: 45,
     freelanceFriendly: 85,
@@ -210,7 +210,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 45,
     climateComfort: 70,
     internetSpeed: 180,
-    tangpingIndex: 82,
+    petFriendlyIndex: 82,
     lifeQuality: 88,
     stressFactor: 35,
     freelanceFriendly: 75,
@@ -241,7 +241,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 10,
     climateComfort: 65,
     internetSpeed: 220,
-    tangpingIndex: 88,
+    petFriendlyIndex: 88,
     lifeQuality: 92,
     stressFactor: 25,
     freelanceFriendly: 95,
@@ -272,7 +272,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 5,
     climateComfort: 60,
     internetSpeed: 200,
-    tangpingIndex: 92,
+    petFriendlyIndex: 92,
     lifeQuality: 95,
     stressFactor: 20,
     freelanceFriendly: 90,
@@ -304,7 +304,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 5,
     climateComfort: 75,
     internetSpeed: 180,
-    tangpingIndex: 62,
+    petFriendlyIndex: 62,
     lifeQuality: 78,
     stressFactor: 68,
     freelanceFriendly: 85,
@@ -335,7 +335,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 5,
     climateComfort: 55,
     internetSpeed: 160,
-    tangpingIndex: 85,
+    petFriendlyIndex: 85,
     lifeQuality: 88,
     stressFactor: 35,
     freelanceFriendly: 80,
@@ -367,7 +367,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 5,
     climateComfort: 85,
     internetSpeed: 140,
-    tangpingIndex: 88,
+    petFriendlyIndex: 88,
     lifeQuality: 90,
     stressFactor: 30,
     freelanceFriendly: 85,
@@ -399,7 +399,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 10,
     climateComfort: 60,
     internetSpeed: 150,
-    tangpingIndex: 45,
+    petFriendlyIndex: 45,
     lifeQuality: 72,
     stressFactor: 85,
     freelanceFriendly: 65,
@@ -430,7 +430,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 15,
     climateComfort: 65,
     internetSpeed: 180,
-    tangpingIndex: 48,
+    petFriendlyIndex: 48,
     lifeQuality: 75,
     stressFactor: 82,
     freelanceFriendly: 70,
@@ -461,7 +461,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 20,
     climateComfort: 80,
     internetSpeed: 140,
-    tangpingIndex: 62,
+    petFriendlyIndex: 62,
     lifeQuality: 72,
     stressFactor: 70,
     freelanceFriendly: 75,
@@ -492,7 +492,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 25,
     climateComfort: 75,
     internetSpeed: 130,
-    tangpingIndex: 68,
+    petFriendlyIndex: 68,
     lifeQuality: 78,
     stressFactor: 65,
     freelanceFriendly: 72,
@@ -523,7 +523,7 @@ export const mockRegionsData: Record<string, RegionData> = {
     languageBarrier: 30,
     climateComfort: 85,
     internetSpeed: 110,
-    tangpingIndex: 78,
+    petFriendlyIndex: 78,
     lifeQuality: 75,
     stressFactor: 50,
     freelanceFriendly: 68,
@@ -547,10 +547,10 @@ export const getRegionsByLevel = (level: 'world' | 'country' | 'province' | 'cit
 
 // 获取顶级国家数据（用于世界地图）
 export const getTopCountries = () => {
-  return getRegionsByLevel('country').sort((a, b) => b.tangpingIndex - a.tangpingIndex)
+  return getRegionsByLevel('country').sort((a, b) => b.petFriendlyIndex - a.petFriendlyIndex)
 }
 
 // 获取中国省份数据
 export const getChinaProvinces = () => {
-  return getRegionsByLevel('province', 'CN').sort((a, b) => b.tangpingIndex - a.tangpingIndex)
+  return getRegionsByLevel('province', 'CN').sort((a, b) => b.petFriendlyIndex - a.petFriendlyIndex)
 } 

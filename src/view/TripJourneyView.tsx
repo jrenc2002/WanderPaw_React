@@ -295,7 +295,7 @@ ${petName} 💕`
     position: [waypoint.coordinates[1], waypoint.coordinates[0]] as [number, number], // 转换 [lng, lat] -> [lat, lng]
     title: language === 'zh' ? waypoint.name : waypoint.nameEn,
     description: waypoint.description || '',
-    tangpingIndex: waypoint.type === 'start' ? 90 : waypoint.type === 'end' ? 85 : 75, // 根据类型设置躺平指数
+    petFriendlyIndex: waypoint.type === 'start' ? 90 : waypoint.type === 'end' ? 85 : 75, // 根据类型设置宠物友好度
     data: {
       averageSalary: 8000,
       rentPrice: 3000,
@@ -357,6 +357,7 @@ ${petName} 💕`
           className="w-full h-full"
           center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]] as [number, number]} // 转换 [lng, lat] -> [lat, lng]
           zoom={12}
+          maxZoom={16}
           disableZoom={false}
           disableInteraction={false}
           points={mapPoints}

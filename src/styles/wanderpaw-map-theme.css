@@ -1,0 +1,197 @@
+/* WanderPaw 地图主题样式 */
+
+/* Mapbox 地图基础样式 */
+.wanderpaw-map {
+  font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", "Noto Sans CJK SC", Inter, sans-serif;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mapbox 控件主题化 */
+.wanderpaw-map .mapboxgl-ctrl {
+  font-family: inherit;
+  border-radius: 12px !important;
+  box-shadow: 
+    0 8px 24px rgba(104, 121, 73, 0.12),
+    0 4px 12px rgba(199, 170, 108, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(240, 243, 234, 0.8) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.wanderpaw-map .mapboxgl-ctrl-group {
+  background: linear-gradient(145deg, rgba(254, 253, 249, 0.95) 0%, rgba(249, 242, 226, 0.9) 100%) !important;
+  border: none !important;
+}
+
+.wanderpaw-map .mapboxgl-ctrl button {
+  background-color: transparent !important;
+  color: #687949 !important;
+  transition: all 0.2s ease !important;
+}
+
+.wanderpaw-map .mapboxgl-ctrl button:hover {
+  background-color: rgba(177, 193, 146, 0.15) !important;
+  color: #687949 !important;
+  transform: scale(1.05) !important;
+}
+
+.wanderpaw-map .mapboxgl-ctrl button:disabled {
+  background-color: transparent !important;
+  color: rgba(104, 121, 73, 0.4) !important;
+}
+
+/* 地图归属信息样式 */
+.wanderpaw-map .mapboxgl-ctrl-attrib {
+  background: linear-gradient(145deg, rgba(254, 253, 249, 0.9) 0%, rgba(249, 242, 226, 0.85) 100%) !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(229, 226, 220, 0.6) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.wanderpaw-map .mapboxgl-ctrl-attrib a {
+  color: #8F6C53 !important;
+  text-decoration: none !important;
+}
+
+.wanderpaw-map .mapboxgl-ctrl-attrib a:hover {
+  color: #687949 !important;
+}
+
+/* 信息窗体主题化 */
+.wanderpaw-map .mapboxgl-popup-content {
+  background: linear-gradient(145deg, #FEFDF9 0%, #F9F2E2 100%) !important;
+  border-radius: 16px !important;
+  border: 2px solid rgba(240, 243, 234, 0.9) !important;
+  box-shadow: 
+    0 20px 40px rgba(104, 121, 73, 0.1),
+    0 12px 24px rgba(199, 170, 108, 0.08),
+    0 6px 12px rgba(0, 0, 0, 0.04) !important;
+  padding: 0 !important;
+  font-family: inherit !important;
+}
+
+.wanderpaw-map .mapboxgl-popup-tip {
+  border-top-color: #F9F2E2 !important;
+  border-bottom-color: #F9F2E2 !important;
+}
+
+.wanderpaw-map .mapboxgl-popup-close-button {
+  color: #687949 !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  padding: 8px !important;
+  background: rgba(254, 253, 249, 0.9) !important;
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+.wanderpaw-map .mapboxgl-popup-close-button:hover {
+  background: rgba(240, 243, 234, 1) !important;
+  transform: scale(1.1) !important;
+  color: #687949 !important;
+}
+
+/* 地图标记主题化 */
+.wanderpaw-map .mapboxgl-marker {
+  font-family: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wanderpaw-map .mapboxgl-marker:hover {
+  transform: scale(1.1);
+  z-index: 1000;
+}
+
+/* 自定义标记样式 */
+.wanderpaw-marker {
+  font-family: inherit;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.wanderpaw-marker::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid inherit;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.wanderpaw-marker:hover {
+  transform: scale(1.15);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.15),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 地图路线样式 */
+.wanderpaw-route {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 2px 6px rgba(104, 121, 73, 0.2));
+}
+
+/* 地图加载指示器 */
+.wanderpaw-map-loading {
+  background: linear-gradient(145deg, #FEFDF9 0%, #F9F2E2 100%);
+  color: #687949;
+  font-family: inherit;
+  border-radius: 12px;
+  border: 1px solid rgba(240, 243, 234, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* 响应式样式 */
+@media (max-width: 768px) {
+  .wanderpaw-map .mapboxgl-ctrl {
+    border-radius: 10px !important;
+  }
+  
+  .wanderpaw-map .mapboxgl-popup-content {
+    border-radius: 14px !important;
+  }
+  
+  .wanderpaw-marker {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .wanderpaw-map .mapboxgl-ctrl {
+    border-radius: 8px !important;
+  }
+  
+  .wanderpaw-map .mapboxgl-popup-content {
+    border-radius: 12px !important;
+  }
+  
+  .wanderpaw-marker {
+    font-size: 11px !important;
+  }
+} 

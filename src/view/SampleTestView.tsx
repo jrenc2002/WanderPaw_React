@@ -14,7 +14,7 @@ export const SampleTestView: React.FC = () => {
     position: [sample.location.coordinates[1], sample.location.coordinates[0]] as [number, number], // Leaflet 使用 [lat, lng]
     title: sample.sharerProfile.nickname,
     description: `${sample.location.cityName} - ${sample.sharerProfile.profession}`,
-    tangpingIndex: sample.qualityScore || 70,
+    petFriendlyIndex: sample.qualityScore || 70,
     data: {
       averageSalary: sample.monthlyBudget.totalMonthly,
       currency: sample.monthlyBudget.currency,
@@ -45,10 +45,10 @@ export const SampleTestView: React.FC = () => {
       {/* 头部信息 */}
       <div className="p-6 bg-white/80 backdrop-blur-sm">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          🌍 躺平网 - 全球生活样本地图
+          🌍 WanderPaw - 全球生活样本地图
         </h1>
         <p className="text-gray-600 mb-4">
-          探索真实的生活样本，发现属于你的躺平方式
+          探索真实的生活样本，发现属于你的旅行方式
         </p>
         
         {/* 样本统计 */}
@@ -74,8 +74,8 @@ export const SampleTestView: React.FC = () => {
             className="w-full h-full"
             center={[30.0, 120.0]} // 以中国为中心
             zoom={4}
+            maxZoom={12}
             points={mapPoints}
-
           />
         </div>
       </div>

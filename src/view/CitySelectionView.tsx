@@ -17,14 +17,14 @@ const CitySelectionView: React.FC = () => {
     navigate(-1)
   }
 
-  const getTangpingColor = (index: number) => {
+  const getPetFriendlyColor = (index: number) => {
     if (index >= 80) return 'from-green-400 to-emerald-500'
     if (index >= 60) return 'from-blue-400 to-cyan-500'
     if (index >= 40) return 'from-yellow-400 to-orange-500'
     return 'from-red-400 to-pink-500'
   }
 
-  const getTangpingText = (index: number) => {
+  const getPetFriendlyText = (index: number) => {
     if (index >= 80) return language === 'zh' ? '超级躺平' : 'Super Chill'
     if (index >= 60) return language === 'zh' ? '很躺平' : 'Very Chill'
     if (index >= 40) return language === 'zh' ? '适度躺平' : 'Moderately Chill'
@@ -174,7 +174,7 @@ const CitySelectionView: React.FC = () => {
                   >
                     <div className="city-card-content">
                       {/* 背景渐变 */}
-                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${getTangpingColor(city.tangpingIndex)}`} 
+                      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${getPetFriendlyColor(city.petFriendlyIndex)}`} 
                            style={{ opacity: 0.95 - (Math.abs(position) * 0.1) }} />
                       
                       {/* 装饰性图案 */}
@@ -220,24 +220,24 @@ const CitySelectionView: React.FC = () => {
                           </div>
                         </div>
                         
-                        {/* 底部躺平指数 */}
+                        {/* 底部宠物友好度 */}
                         <div className="mt-4">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-sm font-medium">
-                              {language === 'zh' ? '躺平指数' : 'Chill Index'}
+                              {language === 'zh' ? '宠物友好度' : 'Chill Index'}
                             </span>
-                            <span className="text-lg font-bold">{city.tangpingIndex}</span>
+                            <span className="text-lg font-bold">{city.petFriendlyIndex}</span>
                           </div>
                           
                           <div className="w-full bg-white/20 rounded-full h-2 mb-2">
                             <div 
                               className="bg-white h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${city.tangpingIndex}%` }}
+                              style={{ width: `${city.petFriendlyIndex}%` }}
                             />
                           </div>
                           
                           <span className="text-xs text-white/80">
-                            {getTangpingText(city.tangpingIndex)}
+                            {getPetFriendlyText(city.petFriendlyIndex)}
                           </span>
                         </div>
                       </div>

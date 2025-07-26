@@ -29,8 +29,8 @@ export interface RegionData {
   climateComfort: number     // 气候舒适度 (0-100)
   internetSpeed: number      // 网络速度 (Mbps)
   
-  // 躺平指数相关
-  tangpingIndex: number      // 躺平指数 (0-100)
+  // 宠物友好度相关
+  petFriendlyIndex: number   // 宠物友好指数 (0-100)
   lifeQuality: number        // 生活质量 (0-100)
   stressFactor: number       // 压力因子 (0-100)
   freelanceFriendly: number  // 自由职业友好度 (0-100)
@@ -58,7 +58,7 @@ export interface MapNavigation {
 export interface FilterOptions {
   salaryRange: [number, number]
   rentRange: [number, number]
-  tangpingIndexRange: [number, number]
+  petFriendlyIndexRange: [number, number]
   selectedCurrencies: string[]
   selectedRegionTypes: MapLevel[]
   minLifeQuality: number
@@ -88,7 +88,7 @@ export const errorAtom = atom<string>('')
 export const filterOptionsAtom = atom<FilterOptions>({
   salaryRange: [0, 100000],
   rentRange: [0, 5000],
-  tangpingIndexRange: [0, 100],
+  petFriendlyIndexRange: [0, 100],
   selectedCurrencies: [],
   selectedRegionTypes: [],
   minLifeQuality: 0,
@@ -126,8 +126,8 @@ export const currentRegionsAtom = atom((get) => {
            region.averageSalary <= filter.salaryRange[1] &&
            region.rentPrice >= filter.rentRange[0] &&
            region.rentPrice <= filter.rentRange[1] &&
-           region.tangpingIndex >= filter.tangpingIndexRange[0] &&
-           region.tangpingIndex <= filter.tangpingIndexRange[1] &&
+           region.petFriendlyIndex >= filter.petFriendlyIndexRange[0] &&
+           region.petFriendlyIndex <= filter.petFriendlyIndexRange[1] &&
            region.lifeQuality >= filter.minLifeQuality &&
            region.stressFactor <= filter.maxStressFactor
   })
@@ -153,26 +153,28 @@ export const convertCurrency = (amount: number, fromCurrency: string, toCurrency
   return (amount * fromRate) / toRate
 }
 
-// 工具函数：计算躺平指数
-export const calculateTangpingIndex = (region: RegionData): number => {
+// 工具函数：计算宠物友好度指数
+export const calculatePetFriendlyIndex = (region: RegionData): number => {
   const {
     workLifeBalance,
     lifeQuality,
     stressFactor,
     socialSafety,
     livingIndex,
-    freelanceFriendly
+    climateComfort,
+    culturalDiversity
   } = region
   
-  // 躺平指数计算公式 (权重可调整)
+  // 宠物友好度指数计算公式 (权重可调整)
   const index = (
-    workLifeBalance * 0.25 +
-    lifeQuality * 0.2 +
-    (100 - stressFactor) * 0.2 +
-    socialSafety * 0.15 +
-    (100 - livingIndex) * 0.1 +
-    freelanceFriendly * 0.1
-  )
+    workLifeBalance * 0.2 +        // 工作生活平衡影响宠物陪伴时间
+    lifeQuality * 0.2 +           // 整体生活质量
+    (100 - stressFactor) * 0.15 + // 低压力环境对宠物有益
+    socialSafety * 0.15 +         // 安全环境适合宠物外出
+    climateComfort * 0.15 +       // 气候舒适度影响宠物健康
+    (100 - livingIndex) * 0.1 +   // 较低生活成本留出宠物开销
+    culturalDiversity * 0.05      // 文化多样性通常意味着更包容的宠物政策
+  ) / 100 * 100
   
-  return Math.round(index)
+  return Math.round(Math.max(0, Math.min(100, index)))
 } 

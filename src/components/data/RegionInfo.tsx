@@ -34,8 +34,8 @@ export const RegionInfo: React.FC<RegionInfoProps> = ({
     )
   }
 
-  // 获取躺平指数等级
-  const getTangpingLevel = (index: number) => {
+  // 获取宠物友好度等级
+  const getPetFriendlyLevel = (index: number) => {
     if (index >= 80) return { text: '极度躺平', color: 'text-green-600', bg: 'bg-green-100' }
     if (index >= 60) return { text: '相对躺平', color: 'text-blue-600', bg: 'bg-blue-100' }
     if (index >= 40) return { text: '一般', color: 'text-yellow-600', bg: 'bg-yellow-100' }
@@ -61,7 +61,7 @@ export const RegionInfo: React.FC<RegionInfoProps> = ({
     }
   }
 
-  const tangpingLevel = getTangpingLevel(region.tangpingIndex)
+  const petFriendlyLevel = getPetFriendlyLevel(region.petFriendlyIndex)
 
   // 货币格式化
   const formatCurrency = (amount: number, currency: string) => {
@@ -100,13 +100,13 @@ export const RegionInfo: React.FC<RegionInfoProps> = ({
             </p>
           </div>
           <div className="text-right">
-            <div className={`px-3 py-1 rounded-full text-sm font-medium ${tangpingLevel.bg} ${tangpingLevel.color}`}>
-              {tangpingLevel.text}
+                    <div className={`px-3 py-1 rounded-full text-sm font-medium ${petFriendlyLevel.bg} ${petFriendlyLevel.color}`}>
+          {petFriendlyLevel.text}
             </div>
             <div className="text-2xl font-bold mt-1">
-              {region.tangpingIndex}
+              {region.petFriendlyIndex}
             </div>
-            <div className="text-blue-100 text-xs">躺平指数</div>
+            <div className="text-blue-100 text-xs">宠物友好度</div>
           </div>
         </div>
       </div>

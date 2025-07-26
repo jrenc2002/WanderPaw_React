@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* WanderPaw 地图主题样式 */
+@import './styles/wanderpaw-map-theme.css';
+
 /* 全屏布局基础样式 */
 html {
   width: 100%;
@@ -34,9 +37,27 @@ html, body {
   -moz-osx-font-smoothing: grayscale !important;
 }
 
-/* Mapbox 控件样式优化 */
+/* Mapbox 控件样式优化 - WanderPaw 主题 */
 .mapboxgl-ctrl {
   font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(104, 121, 73, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(240, 243, 234, 0.6) !important;
+}
+
+.mapboxgl-ctrl-group {
+  background: rgba(254, 253, 249, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.mapboxgl-ctrl button {
+  background-color: transparent !important;
+  color: #687949 !important;
+}
+
+.mapboxgl-ctrl button:hover {
+  background-color: rgba(177, 193, 146, 0.1) !important;
 }
 
 /* Mapbox 标记点样式 */
@@ -44,13 +65,21 @@ html, body {
   font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
 }
 
-/* Mapbox 信息窗体样式 */
+/* Mapbox 信息窗体样式 - WanderPaw 主题 */
 .mapboxgl-popup-content {
   font-family: 'LXGW Bright', 'LXGW Bright SemiLight', "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   border-radius: 12px !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 
+    0 20px 40px rgba(104, 121, 73, 0.08),
+    0 8px 16px rgba(199, 170, 108, 0.06),
+    0 2px 8px rgba(0, 0, 0, 0.04) !important;
   padding: 0 !important;
-  border: none !important;
+  border: 2px solid rgba(240, 243, 234, 0.8) !important;
+  background: linear-gradient(145deg, #FEFDF9 0%, #F9F2E2 100%) !important;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: #F9F2E2 !important;
 }
 
 /* 自定义 popup 样式 */
