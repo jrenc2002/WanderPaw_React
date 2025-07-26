@@ -325,7 +325,7 @@ ${petName} 💕`
           <span>{language === 'zh' ? '返回' : 'Back'}</span>
         </div>
 
-        {/* 旅行状态卡片 */}
+        {/* 行程进程卡片 */}
         <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20">
           <div 
             className={`backdrop-blur-sm p-5 w-[47vw] transition-all duration-300 ${
@@ -356,10 +356,10 @@ ${petName} 💕`
                 <div className="w-[8vw] h-[6vw] flex items-center justify-center overflow-hidden">
                   <img 
                     src={
-                      currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat1.jpeg' :
-                      currentTripPlan.petCompanion.type === 'dog' ? '/decorations/fox1.jpeg' :
-                      currentTripPlan.petCompanion.type === 'other' ? '/decorations/capybara1.jpeg' :
-                      '/decorations/fox1.jpeg'
+                      currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat.png' :
+                      currentTripPlan.petCompanion.type === 'dog' ? '/decorations/fox.png' :
+                      currentTripPlan.petCompanion.type === 'other' ? '/decorations/capybara.jpeg' :
+                      '/decorations/fox.png'
                     }
                     alt={
                       currentTripPlan.petCompanion.type === 'cat' ? 'Cat' :
@@ -801,19 +801,22 @@ ${petName} 💕`
               </button>
             )}
 
-            {/* 行程完成后显示结束按钮 */}
+            {/* 行程完成后显示新旅程按钮 */}
             {isTripsCompleted && (
               <button 
                 style={getUnifiedButtonStyle()}
                 onMouseEnter={(e) => handleButtonHover(e, true)}
                 onMouseLeave={(e) => handleButtonHover(e, false)}
-                disabled
+                onClick={() => {
+                  clearCurrentTrip() // 清除当前旅行计划
+                  navigate('/home')
+                }}
               >
                 <span className="flex items-center justify-center gap-2">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M3 12L5 10M5 10L3 8M5 10H13M13 12V18C13 18.5304 13.2107 19.0391 13.5858 19.4142C13.9609 19.7893 14.4696 20 15 20H19C19.5304 20 20.0391 19.7893 20.4142 19.4142C20.7893 19.0391 21 18.5304 21 18V6C21 5.46957 20.7893 4.96086 20.4142 4.58579C20.0391 4.21071 19.5304 4 19 4H15C14.4696 4 13.9609 4.21071 13.5858 4.58579C13.2107 4.96086 13 5.46957 13 6V12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  <span>{language === 'zh' ? '结束咯！' : 'Finished!'}</span>
+                  <span>{language === 'zh' ? '开启新旅程！' : 'Start New Journey!'}</span>
                 </span>
               </button>
             )}
@@ -905,95 +908,6 @@ ${petName} 💕`
             </motion.div>
           )}
         </AnimatePresence>
-
-
-        {/* 信件弹窗 */}
-        {showLetterModal && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div 
-              className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 max-w-md w-full relative shadow-2xl"
-              style={{
-                background: 'linear-gradient(135deg, #fefdf9 0%, #f9f7f4 100%)',
-                border: '2px solid #e5ddd5'
-              }}
-            >
-              {/* 关闭按钮 */}
-              <button
-                onClick={handleCloseLetterModal}
-                className="absolute top-4 right-4 w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors"
-                aria-label={language === 'zh' ? '关闭信件' : 'Close letter'}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-
-              {/* 信件标题 */}
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center overflow-hidden">
-                  <img 
-                    src={
-                      currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat1.jpeg' :
-                      currentTripPlan.petCompanion.type === 'dog' ? '/decorations/fox1.jpeg' :
-                      currentTripPlan.petCompanion.type === 'other' ? '/decorations/capybara1.jpeg' :
-                      '/decorations/fox1.jpeg'
-                    }
-                    alt={
-                      currentTripPlan.petCompanion.type === 'cat' ? 'Cat' :
-                      currentTripPlan.petCompanion.type === 'dog' ? 'Dog' :
-                      currentTripPlan.petCompanion.type === 'other' ? 'Capybara' :
-                      'Pet'
-                    }
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-xl font-bold text-gray-800">
-                  {language === 'zh' ? '来自小伙伴的信' : 'Letter from Your Companion'}
-                </h3>
-                <p className="text-sm text-gray-500 mt-2">
-                  {language === 'zh' ? '读完信件后即可返回主页' : 'Read the letter to return home'}
-                </p>
-              </div>
-
-              {/* 信件内容 */}
-              <div 
-                className="bg-white/80 rounded-xl p-6 border border-gray-200"
-                style={{
-                  fontFamily: 'PingFang SC, sans-serif',
-                  lineHeight: '1.8'
-                }}
-              >
-                <pre className="whitespace-pre-wrap text-gray-700 text-sm leading-relaxed">
-                  {generateLetterContent()}
-                </pre>
-              </div>
-
-              {/* 底部按钮 */}
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={handleCloseLetterModal}
-                  style={{...getSecondaryButtonStyle(), flex: 1}}
-                  onMouseEnter={(e) => handleSecondaryButtonHover(e, true)}
-                  onMouseLeave={(e) => handleSecondaryButtonHover(e, false)}
-                >
-                  {language === 'zh' ? '稍后再看' : 'Read Later'}
-                </button>
-                <button
-                  onClick={() => {
-                    handleCloseLetterModal()
-                    clearCurrentTrip() // 清除当前旅行计划
-                    navigate('/home')
-                  }}
-                  style={{...getUnifiedButtonStyle(), flex: 1}}
-                  onMouseEnter={(e) => handleButtonHover(e, true)}
-                  onMouseLeave={(e) => handleButtonHover(e, false)}
-                >
-                  {language === 'zh' ? '读完了，回主页' : 'Finished, Go Home'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
               {/* 地球装饰和水豚 */}
@@ -1002,7 +916,7 @@ ${petName} 💕`
       {/* 手帐按钮 - 右下角 */}
       <div 
         onClick={handleJournalClick}
-        className="fixed bottom-8 right-8 z-50 w-[12vw] h-[12vw] hover:scale-110 transition-transform cursor-pointer"
+        className="fixed bottom-8 right-8 z-40 w-[12vw] h-[12vw] hover:scale-110 transition-transform cursor-pointer"
         aria-label={language === 'zh' ? '打开手帐' : 'Open Journal'}
         role="button"
         tabIndex={0}
@@ -1021,6 +935,167 @@ ${petName} 💕`
 
       {/* 底部渐变遮罩 */}
       <BottomGradientMask />
+
+      {/* 信件弹窗 - 放在最后确保在最上层 */}
+      {showLetterModal && (
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{
+            background: 'rgba(92, 90, 76, 0.15)',
+            backdropFilter: 'blur(9.399999618530273px)'
+          }}
+          onClick={handleCloseLetterModal}
+        >
+          <div 
+            className="w-[65vw] h-[80vh] relative"
+            style={{
+              backgroundImage: 'url(/decorations/letter_paper.jpeg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 内容容器 */}
+            <div className="w-full h-full" style={{ padding: '8vw' }}>
+              {/* 上层：标题 */}
+              <div className="text-center mb-6">
+                <h2 
+                  className="text-2xl font-bold"
+                  style={{ color: '#687949' }}
+                >
+                  豚豚的来信
+                </h2>
+              </div>
+
+              {/* 下层：主要内容 */}
+              <div className="flex gap-6 h-[calc(100%-120px)]">
+              {/* 左侧：宠物照片 */}
+              <div className="w-[50%] flex items-start">
+                <div className="w-full aspect-square  p-1 transform  relative">
+                  <img 
+                    src="/decorations/photo.png"
+                    alt="宠物照片"
+                    className="w-full h-full object-cover"
+                  />
+                  
+                  
+                </div>
+              </div>
+
+              {/* 右侧：信件内容 */}
+              <div className="flex-1 flex flex-col">
+                {/* 信件标题 */}
+                <div className="text-center mb-4">
+                  <h3 
+                    className="text-xl font-semibold mb-2"
+                    style={{ color: '#687949' }}
+                  >
+                    岚山竹林
+                  </h3>
+                  <div 
+                    className="text-sm"
+                    style={{ color: '#A6A196' }}
+                  >
+                    7月24日 14:30 · 天气晴朗 ☀️
+                  </div>
+                </div>
+
+                {/* 信件内容卡片 */}
+                <div 
+                  className="p-4 mb-4 flex-1 relative"
+                  style={{
+                    borderRadius: '25px',
+                    background: '#F9F2E2'
+                  }}
+                >
+                  {/* 引号装饰 */}
+                  <div 
+                    className="absolute top-2 left-3 text-3xl opacity-50"
+                    style={{ color: '#687949' }}
+                  >
+                    "
+                  </div>
+                  <div 
+                    className="text-sm leading-relaxed pt-4 px-2"
+                    style={{ color: '#687949' }}
+                  >
+                    我去拍照的时候突然下起了雨，但雨中的竹林意外好看，还遇到一只会摇尾巴的野猫。这个地方太安静太适合发呆了。
+                  </div>
+                  <div 
+                    className="absolute bottom-2 right-3 text-3xl opacity-50"
+                    style={{ color: '#687949' }}
+                  >
+                    "
+                  </div>
+                </div>
+
+                {/* 分割线 */}
+                <div 
+                  className="h-px mb-4"
+                  style={{ background: '#EADDC7' }}
+                ></div>
+
+                {/* 推荐指数和意外收获 */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <span 
+                      className="text-sm"
+                      style={{ color: '#A6A196' }}
+                    >
+                      推荐指数
+                    </span>
+                    <div className="flex text-yellow-500">
+                      ⭐⭐⭐⭐
+                    </div>
+                  </div>
+                  
+                  {/* 意外收获卡片 */}
+                  <div 
+                    className="px-3 py-2 flex items-center gap-2"
+                    style={{
+                      borderRadius: '17px',
+                      border: '3px solid #D9C6B1',
+                      background: '#FDF5E8',
+                      boxShadow: '0 2px 11.4px 3px rgba(123, 66, 15, 0.11)'
+                    }}
+                  >
+                                         
+                     <img 
+                       src="/decorations/image 93.png"
+                       alt="意外收获"
+                       className="w-6 h-6 object-contain"
+                     />
+                  </div>
+                </div>
+
+                {/* 底部按钮 */}
+                <div className="flex gap-3 mt-auto">
+                  <button 
+                    className="flex-1 py-3 px-4 rounded-[1vw] text-white font-medium transition-all hover:scale-105"
+                    style={{ background: '#687949' }}
+                    onClick={() => {
+                      handleCloseLetterModal()
+                      navigate('/travel-journal')
+                    }}
+                  >
+                    收进手帐
+                  </button>
+                  <button 
+                    className="w-[4vw] h-[4vw] rounded-full flex items-center justify-center transition-all hover:scale-105"
+                    style={{ background: '#D9C6B1' }}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" stroke="#687949" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 圆形展开动画覆盖层 */}
       <AnimatePresence>
