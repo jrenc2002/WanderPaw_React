@@ -13,7 +13,7 @@ export const WarmBg: React.FC<WarmBgProps> = ({
 }) => {
   return (
     <div
-      className={`relative min-h-screen w-full overflow-hidden ${className}`}
+      className={`relative h-screen w-full overflow-hidden ${className}`}
       style={{ backgroundColor: '#FFF6E4' }}
     >
       {/* 背景装饰元素 */}
