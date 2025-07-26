@@ -146,7 +146,13 @@ export const PetCharacterSelection: React.FC = () => {
                           {character.personality.slice(0, 3).map((personality) => (
                             <span
                               key={personality}
-                              className="px-2 py-1 rounded-full text-xs font-medium bg-white/60 text-gray-700 border border-gray-200"
+                              className="px-2 py-1 text-xs font-medium"
+                              style={{
+                                borderRadius: '19.5px',
+                                border: '1px solid #BBA084',
+                                background: '#FDF5E8',
+                                color: '#BBA084'
+                              }}
                             >
                               {getPersonalityLabel(personality)}
                             </span>

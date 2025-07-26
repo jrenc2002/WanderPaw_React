@@ -581,15 +581,15 @@ const TripPlanView: React.FC = () => {
   return (
     <WarmBg>
       {/* 返回按钮 - 左上角 */}
-      <button
+      <div
         onClick={handleBack}
-        className="absolute top-[2.2vh] left-[2.2vh] z-20 flex items-center gap-[0.7vh] text-[#687949] bg-transparent p-[0.7vh] rounded-lg"
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg cursor-pointer transform transition-transform duration-200 hover:scale-110"
       >
-        <svg width="3vh" height="3vh" viewBox="0 0 24 24" fill="none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <span style={{ fontSize: '2.5vh' }}>{language === 'zh' ? '返回' : 'Back'}</span>
-      </button>
+        <span>{language === 'zh' ? '返回' : 'Back'}</span>
+      </div>
 
       {/* 左下角水豚装饰 */}
       <div className="fixed bottom-0 left-[3vh] z-0">
@@ -732,8 +732,8 @@ const TripPlanView: React.FC = () => {
             textAlign: 'center' 
           }}>
             {language === 'zh' 
-              ? `${petInfo.type === 'cat' ? '猫咪' : petInfo.type === 'dog' ? '狗狗' : '仓鼠'}的探索计划` 
-              : `${petInfo.type === 'cat' ? 'Cat' : petInfo.type === 'dog' ? 'Dog' : 'Hamster'} Exploration Plan`
+              ? `${petInfo.name || '豚豚君'}的探索计划` 
+              : `${petInfo.name || 'Tonton-kun'}'s Exploration Plan`
             }
           </h2>
           
@@ -832,7 +832,7 @@ const TripPlanView: React.FC = () => {
                               }}
                             >
                               {/* 上部分：头像、地点和描述 */}
-                              <div className="flex items-start gap-3 m-2 relative z-10">
+                              <div className="flex items-center gap-3 m-2 relative z-10">
                                 {/* 左侧头像 */}
                                 <div className="w-[3.5vw] h-[3.5vw] bg-orange-200 rounded-full flex items-center justify-center flex-shrink-0">
                                   <span className="text-lg">
@@ -842,26 +842,23 @@ const TripPlanView: React.FC = () => {
                                 </div>
                                 
                                 {/* 右侧地点和描述 */}
-                                <div className="flex-1 flex flex-col justify-center">
-                                  {/* 地点 */}
-                                  <div className="text-s font-medium text-gray-800 leading-tight mb-1">
-                                    {language === 'zh' ? activity.location : activity.locationEn}
-                                  </div>
-                                  {/* 描述 */}
-                                  <div className="text-xs text-gray-600 leading-tight">
-                                    {language === 'zh' ? '期待这次探索～' : 'Looking forward to this exploration~'}
-                                  </div>
+                                                                  <div className="flex-1 flex flex-col justify-center">
+                                    {/* 地点 */}
+                                    <div className="text-lg font-bold text-gray-800 leading-tight ">
+                                      {language === 'zh' ? activity.location : activity.locationEn}
+                                    </div>
+                                  
                                 </div>
                               </div>
                               
                               {/* 分隔线 */}
-                              <div className="w-[90%] h-px bg-[#BBA084] my-1 relative z-10 mx-auto"></div>
+                              <div className="w-[95%] h-px bg-[#BBA084] my-1 relative z-10 mx-auto"></div>
                               
-                              {/* 下部分：活动标题 */}
-                              <div className="flex items-center justify-between relative z-10">
-                                <div className="ml-2 my-1 text-xs text-gray-700">
-                                  {language === 'zh' ? activity.title : activity.titleEn}
-                                </div>
+                                                              {/* 下部分：活动标题 */}
+                                <div className="flex items-center justify-between relative z-10">
+                                  <div className="ml-3 my-1 text-xs font-bold text-[#8F6C53]">
+                                    {language === 'zh' ? activity.title : activity.titleEn}
+                                  </div>
                               </div>
                             </div>
                           </div>

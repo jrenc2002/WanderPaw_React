@@ -8,6 +8,7 @@ import { WarmBg } from '@/components/bg/WarmBg'
 import type { TripTheme } from '@/store/TripState'
 import toast from 'react-hot-toast'
 import clipImage from '@/assets/夹子.jpg'
+import { getUnifiedButtonStyle, handleButtonHover } from '@/utils/buttonStyles'
 
 const tripThemes: TripTheme[] = [
   {
@@ -164,15 +165,15 @@ const TripThemesView: React.FC = () => {
   return (
     <WarmBg>
       {/* 返回按钮 - 左上角 */}
-      <button
+      <div
         onClick={handleBack}
-        className="absolute top-[2.2vh] left-[2.2vh] z-20 flex items-center gap-[0.7vh] text-[#687949] bg-transparent p-[0.7vh] rounded-lg"
+        className="absolute top-6 left-6 z-20 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg cursor-pointer transform transition-transform duration-200 hover:scale-110"
       >
-        <svg width="3vh" height="3vh" viewBox="0 0 24 24" fill="none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <span style={{ fontSize: '2.5vh' }}>{language === 'zh' ? '返回' : 'Back'}</span>
-      </button>
+        <span>{language === 'zh' ? '返回' : 'Back'}</span>
+      </div>
 
       {/* 左下角宠物装饰 */}
       <div className="fixed bottom-0 left-[3vh] z-0">
@@ -341,11 +342,9 @@ const TripThemesView: React.FC = () => {
                   toast.error(language === 'zh' ? '请先选择一个主题' : 'Please select a theme first')
                 }
               }}
-              className="px-[3vh] py-[0.7vh] bg-gradient-to-r from-[#687949] to-[#687949] hover:from-[#C7AA6C] hover:to-[#C7AA6C] text-white font-bold transition-all duration-200 shadow-lg transform hover:scale-105"
-              style={{
-                borderRadius: '1.2vh',
-                fontSize: '2vh'
-              }}
+              style={getUnifiedButtonStyle()}
+              onMouseEnter={(e) => handleButtonHover(e, true)}
+              onMouseLeave={(e) => handleButtonHover(e, false)}
             >
               {language === 'zh' ? '生成计划' : 'Generate Plan'}
             </button>

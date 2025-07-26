@@ -38,7 +38,7 @@ const StartTripButton = () => {
     return (
         <svg 
             onClick={handleStartTrip}
-            className="fixed bottom-5 right-6 z-50 cursor-pointer"
+            className="fixed bottom-5 right-6 z-50 cursor-pointer transform transition-transform duration-200 hover:scale-110"
             width="250" 
             height="63" 
             viewBox="0 0 459 110" 

@@ -65,12 +65,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       return false
     }
 
-    // 验证手机号格式（如果填写了）
-    if (registerForm.phoneNumber && !/^[+]?[0-9]{8,15}$/.test(registerForm.phoneNumber)) {
-      setError('请输入有效的手机号码')
-      toast.error('请输入有效的手机号码')
-      return false
-    }
+
 
     return true
   }
@@ -103,7 +98,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       toast.success(`注册成功，欢迎 ${response.username}！`)
       
       // 清空表单
-      setRegisterForm({ username: '', password: '', phoneNumber: '' })
+      setRegisterForm({ username: '', password: '' })
       setConfirmPassword('')
       
       // 调用成功回调或导航到首页
@@ -154,23 +149,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             />
           </div>
 
-          {/* 手机号输入框 */}
-          <div>
-            <label htmlFor="register-phone" className="block text-sm font-medium text-[#687949] mb-2">
-              手机号码（可选）
-            </label>
-            <input
-              id="register-phone"
-              type="tel"
-              value={registerForm.phoneNumber}
-              onChange={handleInputChange('phoneNumber')}
-              className="w-full px-4 py-3 rounded-xl bg-[#F0E6D6] text-[#687949] placeholder-[#687949]/50
-                       border-2 border-transparent focus:border-[#687949] focus:bg-white
-                       transition-all duration-200"
-              placeholder="请输入手机号码（可选）"
-              disabled={loading}
-            />
-          </div>
+
 
           {/* 密码输入框 */}
           <div>

@@ -268,10 +268,25 @@ export const completeTripAtom = atom(
     // 添加到历史记录
     set(tripHistoryAtom, [completedTrip, ...tripHistory])
     
-    // 清除当前计划
-    set(currentTripPlanAtom, null)
+    // 更新当前计划状态为已完成，但不清除
+    set(currentTripPlanAtom, completedTrip)
     
     // 重置进度
+    set(tripProgressAtom, {
+      currentActivityIndex: 0,
+      completedActivities: [],
+      totalActivities: 0,
+      elapsedTime: 0,
+      estimatedRemainingTime: 0
+    })
+  }
+)
+
+// 清除当前旅行计划（用户主动离开）
+export const clearCurrentTripAtom = atom(
+  null,
+  (get, set) => {
+    set(currentTripPlanAtom, null)
     set(tripProgressAtom, {
       currentActivityIndex: 0,
       completedActivities: [],
