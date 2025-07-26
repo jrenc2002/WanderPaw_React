@@ -5,6 +5,7 @@ import { selectedLanguageAtom } from '@/store/MapState'
 import { getTopCountries } from '@/data/mockData'
 import type { RegionData } from '@/store/MapState'
 import { WarmBg } from '@/components/bg/WarmBg'
+import { EarthWithCapybara, BottomGradientMask } from '@/components/decorations'
 import './CitySelectionView.css'
 
 const CitySelectionView: React.FC = () => {
@@ -124,7 +125,7 @@ const CitySelectionView: React.FC = () => {
   }
 
   return (
-    <WarmBg showDecorations={true} className="relative">
+    <WarmBg>
       {/* 返回按钮 - 左上角 */}
       <button
         onClick={handleBack}
@@ -278,6 +279,13 @@ const CitySelectionView: React.FC = () => {
           
         </div>
       </div>
+
+      {/* 地球装饰和水豚 */}
+      <div className='absolute bottom-[-60vh] left-0 w-full h-full z-[-1]'>
+        <EarthWithCapybara />
+      </div>
+       {/* 底部渐变遮罩 */}
+       <BottomGradientMask />
     </WarmBg>
   )
 }

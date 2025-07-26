@@ -75,10 +75,10 @@ const TravelJournalView: React.FC = () => {
         
 
         
-
-             {/* 地球装饰和水豚 */}
-       <EarthWithCapybara />
-
+    {/* 地球装饰和水豚 */}
+    <div className='absolute bottom-[-60vh] '>
+        <EarthWithCapybara />
+      </div>
        {/* 底部渐变遮罩 */}
        <BottomGradientMask />
 
