@@ -9,6 +9,8 @@ import { mockRegionsData } from '@/data/mockData'
 import { WarmBg } from '@/components/bg/WarmBg'
 import DashedCard from '@/components/common/DashedCard'
 import { generateRealisticCityActivities } from '@/utils/tripDataGenerator'
+import { TripPlanMap } from '@/components/map/TripPlanMap'
+import type { GeneratedTripActivity } from '@/services/tripPlanningService'
 import toast from 'react-hot-toast'
 
 const generateActivitiesForThemes = (themes: string[], cityName: string): Omit<TripActivity, 'coordinates' | 'status'>[] => {
@@ -435,8 +437,13 @@ const TripPlanView: React.FC = () => {
   const [activities, setActivities] = useState<Omit<TripActivity, 'coordinates' | 'status'>[]>([])
   const [cityData, setCityData] = useState<any>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [planTitle, setPlanTitle] = useState<string>('')
+  const [planSummary, setPlanSummary] = useState<string>('')
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list')
   
   const tripPlan = location.state?.tripPlan
+  const generatedPlan = location.state?.generatedPlan
+  const isAiGenerated = location.state?.isAiGenerated
 
   useEffect(() => {
     if (tripPlan) {
@@ -445,25 +452,60 @@ const TripPlanView: React.FC = () => {
       
       setIsGenerating(true)
       
-      // 优先使用丰富的mock数据
-      const cityName = language === 'zh' ? city?.name : city?.nameEn
-      const generatedActivities = generateActivitiesForThemes(tripPlan.themes, cityName || '')
-      
-      if (generatedActivities.length > 0) {
-        setActivities(generatedActivities)
-      } else {
-        // 回退到真实城市数据
-        const realisticActivities = generateRealisticCityActivities(
-          tripPlan.cityId, 
-          tripPlan.themes, 
-          language
+      // 如果有AI生成的计划数据，优先使用
+      if (isAiGenerated && generatedPlan) {
+        console.log('使用AI生成的旅行计划:', generatedPlan)
+        
+        // 设置计划标题和摘要
+        setPlanTitle(language === 'zh' ? generatedPlan.planTitle : generatedPlan.planTitleEn)
+        setPlanSummary(language === 'zh' ? generatedPlan.summary : generatedPlan.summaryEn)
+        
+        // 转换AI生成的活动到本地格式
+        const aiActivities = generatedPlan.activities.map((activity: any) => ({
+          id: activity.id,
+          time: activity.time,
+          title: language === 'zh' ? activity.title : activity.titleEn,
+          titleEn: activity.titleEn,
+          location: language === 'zh' ? activity.location : activity.locationEn,
+          locationEn: activity.locationEn,
+          theme: activity.theme,
+          duration: activity.duration,
+          description: language === 'zh' ? activity.description : activity.descriptionEn,
+          descriptionEn: activity.descriptionEn
+        }))
+        
+        setActivities(aiActivities)
+        
+        toast.success(
+          language === 'zh' 
+            ? `✨ AI为您和${petInfo?.name || '小伙伴'}定制了专属旅行计划！` 
+            : `✨ AI has customized an exclusive trip plan for you and ${petInfo?.name || 'buddy'}!`,
+          { duration: 4000 }
         )
-        setActivities(realisticActivities)
+      } else {
+        // 使用原有的生成逻辑
+        const cityName = language === 'zh' ? city?.name : city?.nameEn
+        const generatedActivities = generateActivitiesForThemes(tripPlan.themes, cityName || '')
+        
+        if (generatedActivities.length > 0) {
+          setActivities(generatedActivities)
+        } else {
+          // 回退到真实城市数据
+          const realisticActivities = generateRealisticCityActivities(
+            tripPlan.cityId, 
+            tripPlan.themes, 
+            language
+          )
+          setActivities(realisticActivities)
+        }
+        
+        // 设置默认标题
+        setPlanTitle(language === 'zh' ? `${cityName}旅行计划` : `${cityName} Trip Plan`)
       }
       
       setIsGenerating(false)
     }
-  }, [tripPlan, language])
+  }, [tripPlan, generatedPlan, isAiGenerated, language, petInfo?.name])
 
   const handleStartTrip = () => {
     if (!cityData || !activities.length) {
@@ -558,6 +600,29 @@ const TripPlanView: React.FC = () => {
       return `${hours - 12}PM`;
     }
   };
+
+  // 转换活动数据为地图组件格式
+  const convertToMapActivities = (activities: Omit<TripActivity, 'coordinates' | 'status'>[]): GeneratedTripActivity[] => {
+    return activities.map(activity => ({
+      ...activity,
+      coordinates: activity.coordinates as [number, number] | undefined,
+      tips: [], // TripActivity没有tips字段，使用空数组
+      estimatedCost: undefined,
+      difficulty: 'easy' as const
+    }))
+  }
+
+  // 处理活动点击
+  const handleActivityClick = (activity: GeneratedTripActivity) => {
+    console.log('选中活动:', activity)
+    toast.success(
+      `${language === 'zh' ? '选中活动' : 'Selected activity'}: ${activity.title}`,
+      {
+        duration: 2000,
+        position: 'top-center',
+      }
+    )
+  }
 
   if (!tripPlan || !cityData) {
     return (
@@ -732,18 +797,55 @@ const TripPlanView: React.FC = () => {
             </div>
           }
         >
-          <h2 style={{ 
-            fontSize: '1.5vw', 
-            fontWeight: 'bold', 
-            color: '#573E23', 
-            marginTop: '2vh', 
-            textAlign: 'center' 
-          }}>
-            {language === 'zh' 
-              ? `${petInfo.name || '豚豚君'}的探索计划` 
-              : `${petInfo.name || 'Tonton-kun'}'s Exploration Plan`
-            }
-          </h2>
+          <div style={{ marginTop: '2vh', textAlign: 'center' }}>
+            <h2 style={{ 
+              fontSize: '1.5vw', 
+              fontWeight: 'bold', 
+              color: '#573E23', 
+              marginBottom: '1vh'
+            }}>
+              {planTitle || (language === 'zh' 
+                ? `${petInfo.name || '豚豚君'}的探索计划` 
+                : `${petInfo.name || 'Tonton-kun'}'s Exploration Plan`
+              )}
+            </h2>
+            
+            {/* AI生成计划的标识和摘要 */}
+            {isAiGenerated && (
+              <div style={{ 
+                background: 'linear-gradient(135deg, rgba(199, 170, 108, 0.1), rgba(104, 121, 73, 0.1))',
+                border: '1px solid rgba(199, 170, 108, 0.3)',
+                borderRadius: '0.5vw',
+                padding: '1vh 1.5vw',
+                margin: '1vh 2vw 0 2vw',
+                fontSize: '0.9vw',
+                color: '#573E23'
+              }}>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  gap: '0.5vw',
+                  marginBottom: planSummary ? '0.5vh' : '0'
+                }}>
+                  <span style={{ fontSize: '1.1vw' }}>✨</span>
+                  <span style={{ fontWeight: '500' }}>
+                    {language === 'zh' ? 'AI专属定制' : 'AI Customized'}
+                  </span>
+                </div>
+                {planSummary && (
+                  <p style={{ 
+                    fontSize: '0.8vw', 
+                    lineHeight: '1.4',
+                    margin: '0',
+                    opacity: 0.8
+                  }}>
+                    {planSummary}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
           
           
 

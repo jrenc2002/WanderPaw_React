@@ -19,11 +19,36 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     proxy: {
+      // WanderPaw 后端API代理
       '/api': {
         target: 'https://backeenee.zeabur.app',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''), // 移除/api前缀，因为后端路径不包含/api
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: true,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('API proxy error:', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('API proxy request:', req.method, req.url, '-> ', proxyReq.path);
+          });
+        }
       },
+      // 小红书API代理 - 正确的路径映射
+      '/xhs-api': {
+        target: 'https://xhsxhs.zeabur.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/xhs-api/, ''),
+        secure: true,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('XHS proxy error:', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('XHS proxy request:', req.method, req.url, '-> ', proxyReq.path);
+          });
+        }
+      }
     },
   },
   preview: {

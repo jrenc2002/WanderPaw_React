@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../WanderPaw_Fastify"
+		},
+		{
+			"path": "../Spider_XHS"
 		}
 	],
 	"settings": {

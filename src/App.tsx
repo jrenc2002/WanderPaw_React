@@ -15,11 +15,8 @@ import { ProtectedRoute, GuestRoute } from '@/components/auth/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
 import HomeView from '@/view/HomeView.tsx';
 import SettingView from '@/view/SettingView';
-import { SampleTestView } from '@/view/SampleTestView';
-import { SampleDetailView } from '@/view/SampleDetailView';
 import { AuthView } from '@/view/AuthView';
 import { PetInitializationView } from '@/view/PetInitializationView';
-import { MapTestView } from '@/view/MapTestView';
 import TripThemesView from '@/view/TripThemesView';
 import TripPlanView from '@/view/TripPlanView';
 import TripJourneyView from '@/view/TripJourneyView';
@@ -115,21 +112,7 @@ const MainContent = () => {
                                 <SettingView />
                             </ProtectedRoute>
                         } />
-                        <Route path="/test" element={
-                            <ProtectedRoute>
-                                <SampleTestView />
-                            </ProtectedRoute>
-                        } />
-                        <Route path="/sample/:id" element={
-                            <ProtectedRoute>
-                                <SampleDetailView />
-                            </ProtectedRoute>
-                        } />
-                        <Route path="/map-test" element={
-                            <ProtectedRoute>
-                                <MapTestView />
-                            </ProtectedRoute>
-                        } />
+
                         
                         {/* 旅行规划路由 */}
                         <Route path="/city-selection" element={
@@ -152,7 +135,9 @@ const MainContent = () => {
                                 <TripJourneyView />
                             </ProtectedRoute>
                         } />
-                        <Route path="/travel-journal" element={<TravelJournalView />} />
+                                                <Route path="/travel-journal" element={<TravelJournalView />} />
+                        
+
                     </Routes>
                     <div><Toaster position="top-center" /></div>
                 </div>
@@ -192,21 +177,7 @@ const MainContent = () => {
                                         <SettingView />
                                     </ProtectedRoute>
                                 } />
-                                <Route path="/test" element={
-                                    <ProtectedRoute>
-                                        <SampleTestView />
-                                    </ProtectedRoute>
-                                } />
-                                <Route path="/sample/:id" element={
-                                    <ProtectedRoute>
-                                        <SampleDetailView />
-                                    </ProtectedRoute>
-                                } />
-                                <Route path="/map-test" element={
-                                    <ProtectedRoute>
-                                        <MapTestView />
-                                    </ProtectedRoute>
-                                } />
+
                                 
                                 {/* 旅行规划路由 */}
                                 <Route path="/city-selection" element={
@@ -230,6 +201,8 @@ const MainContent = () => {
                                     </ProtectedRoute>
                                 } />
                                 <Route path="/travel-journal" element={<TravelJournalView />} />
+                                
+
                             </Routes>
                         </div>
                     </div>

@@ -9,6 +9,8 @@ import type { TripTheme } from '@/store/TripState'
 import toast from 'react-hot-toast'
 import clipImage from '@/assets/夹子.jpg'
 import { getUnifiedButtonStyle, handleButtonHover } from '@/utils/buttonStyles'
+import { TripPlanningService, type TripPlanningRequest } from '@/services/tripPlanningService'
+import { XhsService } from '@/services/xhsService'
 
 const tripThemes: TripTheme[] = [
   {
@@ -61,6 +63,7 @@ const TripThemesView: React.FC = () => {
   const petInfo = authState.user?.petInfo
   const [cityData, setCityData] = useState<any>(null)
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   // 根据宠物类型获取装饰图片
   const getPetDecoration = () => {
@@ -123,28 +126,123 @@ const TripThemesView: React.FC = () => {
     }
   }, [cityId])
 
-  const handleThemeSelect = (themeId: string) => {
+  const handleThemeSelect = async (themeId: string) => {
     if (!cityData) {
       toast.error(language === 'zh' ? '城市数据未加载' : 'City data not loaded')
       return
     }
 
-    // 创建简化的旅行计划数据，传递给计划页面
-    const tripPlan = {
-      cityId,
-      cityName: language === 'zh' ? cityData.name : cityData.nameEn,
-      themes: [themeId], // 只选择单个主题
-      selectedThemeNames: [
-        (() => {
-          const theme = tripThemes.find(t => t.id === themeId)
-          return theme ? (language === 'zh' ? theme.name : theme.nameEn) : ''
-        })()
-      ]
+    if (!authState.accessToken) {
+      toast.error(language === 'zh' ? '请先登录' : 'Please login first')
+      navigate('/auth')
+      return
     }
 
-    navigate('/trip-plan', { 
-      state: { tripPlan } 
-    })
+    if (!petInfo || !petInfo.name) {
+      toast.error(language === 'zh' ? '请先设置宠物信息' : 'Please set pet information first')
+      navigate('/pet-initialization')
+      return
+    }
+
+    setIsGenerating(true)
+    
+    try {
+      // 显示开始生成的提示
+      const loadingToast = toast.loading(
+        language === 'zh' ? '正在生成专属旅行计划...' : 'Generating exclusive trip plan...'
+      )
+
+      // 获取选择的主题信息
+      const selectedThemeData = tripThemes.find(t => t.id === themeId)
+      const themeNames = selectedThemeData ? [
+        language === 'zh' ? selectedThemeData.name : selectedThemeData.nameEn
+      ] : []
+
+      // 构建旅行规划请求
+      const planningRequest: TripPlanningRequest = {
+        cityName: language === 'zh' ? cityData.name : cityData.nameEn,
+        cityNameEn: cityData.nameEn || cityData.name,
+        themes: [themeId],
+        themeNames,
+        duration: 1, // 默认1天
+        petInfo,
+        language,
+      }
+
+      console.log('开始生成旅行计划:', planningRequest)
+
+      // 调用旅行规划服务
+      const response = await TripPlanningService.generateTripPlan(
+        planningRequest,
+        authState.accessToken
+      )
+
+      toast.dismiss(loadingToast)
+
+      if (response.success && response.data) {
+        toast.success(
+          language === 'zh' 
+            ? `成功生成旅行计划！包含${response.data.activities.length}个活动` 
+            : `Trip plan generated! Including ${response.data.activities.length} activities`,
+          { duration: 3000 }
+        )
+
+        // 导航到旅行计划页面，传递生成的数据
+        navigate('/trip-plan', { 
+          state: { 
+            tripPlan: {
+              cityId,
+              cityName: planningRequest.cityName,
+              themes: planningRequest.themes,
+              selectedThemeNames: themeNames
+            },
+            generatedPlan: response.data,
+            isAiGenerated: true
+          } 
+        })
+      } else {
+        throw new Error(response.error || '生成计划失败')
+      }
+    } catch (error: any) {
+      console.error('旅行计划生成失败:', error)
+      
+      toast.error(
+        language === 'zh' 
+          ? `生成失败：${error.message}` 
+          : `Generation failed: ${error.message}`,
+        { duration: 5000 }
+      )
+
+             // 如果是服务连接问题，提供备用方案
+       if (error.message.includes('连接') || error.message.includes('connect')) {
+         toast(
+           language === 'zh' 
+             ? '将为您切换到离线模式生成计划' 
+             : 'Switching to offline mode for plan generation',
+           { icon: '💡', duration: 3000 }
+         )
+         
+         // 重新获取主题名称用于备用计划
+         const selectedThemeData = tripThemes.find(t => t.id === themeId)
+         const fallbackThemeNames = selectedThemeData ? [
+           language === 'zh' ? selectedThemeData.name : selectedThemeData.nameEn
+         ] : []
+         
+         // 使用原有的简化旅行计划数据作为备用
+         const fallbackPlan = {
+           cityId,
+           cityName: language === 'zh' ? cityData.name : cityData.nameEn,
+           themes: [themeId],
+           selectedThemeNames: fallbackThemeNames
+         }
+
+         navigate('/trip-plan', { 
+           state: { tripPlan: fallbackPlan } 
+         })
+       }
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   const handleBack = () => {
@@ -342,11 +440,34 @@ const TripThemesView: React.FC = () => {
                   toast.error(language === 'zh' ? '请先选择一个主题' : 'Please select a theme first')
                 }
               }}
-              style={getUnifiedButtonStyle()}
-              onMouseEnter={(e) => handleButtonHover(e, true)}
-              onMouseLeave={(e) => handleButtonHover(e, false)}
+              disabled={isGenerating || !selectedTheme}
+              style={{
+                ...getUnifiedButtonStyle(),
+                opacity: isGenerating || !selectedTheme ? 0.6 : 1,
+                cursor: isGenerating || !selectedTheme ? 'not-allowed' : 'pointer',
+                background: isGenerating || !selectedTheme 
+                  ? 'linear-gradient(to right, #9ca3af, #6b7280)' 
+                  : getUnifiedButtonStyle().background
+              }}
+              onMouseEnter={(e) => {
+                if (!isGenerating && selectedTheme) {
+                  handleButtonHover(e, true)
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isGenerating && selectedTheme) {
+                  handleButtonHover(e, false)
+                }
+              }}
             >
-              {language === 'zh' ? '生成计划' : 'Generate Plan'}
+              {isGenerating ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>{language === 'zh' ? '正在生成中...' : 'Generating...'}</span>
+                </div>
+              ) : (
+                language === 'zh' ? '生成计划' : 'Generate Plan'
+              )}
             </button>
           </div>
         </div>
