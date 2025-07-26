@@ -97,21 +97,20 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   }
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            欢迎回来
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            登录您的账户继续使用
-          </p>
-        </div>
+    <div className="w-full">
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-bold text-[#687949] mb-2">
+          欢迎回来
+        </h2>
+        <p className="text-sm text-[#687949] opacity-60">
+          登录您的账户继续使用
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
           {/* 用户名输入框 */}
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="username" className="block text-sm font-medium text-[#687949] mb-2">
               用户名
             </label>
             <input
@@ -119,10 +118,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               type="text"
               value={loginForm.username}
               onChange={handleInputChange('username')}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                       transition-colors duration-200"
+              className="w-full px-4 py-3 rounded-xl bg-[#F0E6D6] text-[#687949] placeholder-[#687949]/50
+                       border-2 border-transparent focus:border-[#687949] focus:bg-white
+                       transition-all duration-200"
               placeholder="请输入用户名"
               disabled={loading}
               required
@@ -131,7 +129,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
           {/* 密码输入框 */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-[#687949] mb-2">
               密码
             </label>
             <div className="relative">
@@ -140,10 +138,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 type={showPassword ? 'text' : 'password'}
                 value={loginForm.password}
                 onChange={handleInputChange('password')}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                         transition-colors duration-200 pr-12"
+                className="w-full px-4 py-3 pr-12 rounded-xl bg-[#F0E6D6] text-[#687949] placeholder-[#687949]/50
+                         border-2 border-transparent focus:border-[#687949] focus:bg-white
+                         transition-all duration-200"
                 placeholder="请输入密码"
                 disabled={loading}
                 required
@@ -152,8 +149,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2
-                         text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
-                         transition-colors duration-200"
+                         text-[#687949]/50 hover:text-[#687949] transition-colors duration-200"
                 disabled={loading}
               >
                 {showPassword ? (
@@ -177,10 +173,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400
-                     text-white font-medium rounded-lg transition-colors duration-200
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-                     disabled:cursor-not-allowed"
+            className="w-full py-3 px-4 bg-[#687949] hover:bg-[#505D39] disabled:bg-[#687949]/50
+                     text-white font-medium rounded-xl transition-all duration-200
+                     focus:outline-none focus:ring-2 focus:ring-[#687949]/50 focus:ring-offset-2
+                     disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
           >
             {loading ? (
               <div className="flex items-center justify-center space-x-2">
@@ -194,20 +190,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         </form>
 
         {/* 切换到注册 */}
-        <div className="mt-6 text-center">
-          <p className="text-gray-600 dark:text-gray-400">
+        <div className="mt-4 text-center">
+          <p className="text-sm text-[#687949] opacity-70">
             还没有账户？{' '}
             <button
               onClick={onSwitchToRegister}
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300
-                       font-medium transition-colors duration-200"
+              className="text-[#687949] hover:text-[#505D39] font-medium 
+                       transition-colors duration-200 underline"
               disabled={loading}
             >
               立即注册
             </button>
           </p>
         </div>
-      </div>
     </div>
   )
 } 

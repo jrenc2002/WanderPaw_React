@@ -122,21 +122,20 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   }
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            创建账户
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            加入我们，开始探索世界
-          </p>
-        </div>
+    <div className="w-full">
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-bold text-[#687949] mb-2">
+          创建账户
+        </h2>
+        <p className="text-sm text-[#687949] opacity-60">
+          加入我们，开始探索世界
+        </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
           {/* 用户名输入框 */}
           <div>
-            <label htmlFor="register-username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="register-username" className="block text-sm font-medium text-[#687949] mb-2">
               用户名 *
             </label>
             <input
@@ -144,10 +143,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               type="text"
               value={registerForm.username}
               onChange={handleInputChange('username')}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                       transition-colors duration-200"
+              className="w-full px-4 py-3 rounded-xl bg-[#F0E6D6] text-[#687949] placeholder-[#687949]/50
+                       border-2 border-transparent focus:border-[#687949] focus:bg-white
+                       transition-all duration-200"
               placeholder="请输入用户名（至少3个字符）"
               disabled={loading}
               required
@@ -158,7 +156,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           {/* 手机号输入框 */}
           <div>
-            <label htmlFor="register-phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="register-phone" className="block text-sm font-medium text-[#687949] mb-2">
               手机号码（可选）
             </label>
             <input
@@ -166,10 +164,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               type="tel"
               value={registerForm.phoneNumber}
               onChange={handleInputChange('phoneNumber')}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                       transition-colors duration-200"
+              className="w-full px-4 py-3 rounded-xl bg-[#F0E6D6] text-[#687949] placeholder-[#687949]/50
+                       border-2 border-transparent focus:border-[#687949] focus:bg-white
+                       transition-all duration-200"
               placeholder="请输入手机号码（可选）"
               disabled={loading}
             />
@@ -177,7 +174,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           {/* 密码输入框 */}
           <div>
-            <label htmlFor="register-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="register-password" className="block text-sm font-medium text-[#687949] mb-2">
               密码 *
             </label>
             <div className="relative">
@@ -186,10 +183,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 type={showPassword ? 'text' : 'password'}
                 value={registerForm.password}
                 onChange={handleInputChange('password')}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                         transition-colors duration-200 pr-12"
+                className="w-full px-4 py-3 pr-12 rounded-xl bg-[#F0E6D6] text-[#687949] placeholder-[#687949]/50
+                         border-2 border-transparent focus:border-[#687949] focus:bg-white
+                         transition-all duration-200"
                 placeholder="请输入密码（至少8个字符）"
                 disabled={loading}
                 required
@@ -200,8 +196,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2
-                         text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200
-                         transition-colors duration-200"
+                         text-[#687949]/50 hover:text-[#687949] transition-colors duration-200"
                 disabled={loading}
               >
                 {showPassword ? (
@@ -223,7 +218,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
           {/* 确认密码输入框 */}
           <div>
-            <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="confirm-password" className="block text-sm font-medium text-[#687949] mb-2">
               确认密码 *
             </label>
             <input
@@ -231,10 +226,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               type={showPassword ? 'text' : 'password'}
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg
-                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                       transition-colors duration-200"
+              className="w-full px-4 py-3 rounded-xl bg-[#F0E6D6] text-[#687949] placeholder-[#687949]/50
+                       border-2 border-transparent focus:border-[#687949] focus:bg-white
+                       transition-all duration-200"
               placeholder="请再次输入密码"
               disabled={loading}
               required
@@ -245,10 +239,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 disabled:bg-gray-400
-                     text-white font-medium rounded-lg transition-colors duration-200
-                     focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2
-                     disabled:cursor-not-allowed"
+            className="w-full py-3 px-4 bg-[#687949] hover:bg-[#505D39] disabled:bg-[#687949]/50
+                     text-white font-medium rounded-xl transition-all duration-200
+                     focus:outline-none focus:ring-2 focus:ring-[#687949]/50 focus:ring-offset-2
+                     disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
           >
             {loading ? (
               <div className="flex items-center justify-center space-x-2">
@@ -262,13 +256,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </form>
 
         {/* 切换到登录 */}
-        <div className="mt-6 text-center">
-          <p className="text-gray-600 dark:text-gray-400">
+        <div className="mt-4 text-center">
+          <p className="text-sm text-[#687949] opacity-70">
             已有账户？{' '}
             <button
               onClick={onSwitchToLogin}
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300
-                       font-medium transition-colors duration-200"
+              className="text-[#687949] hover:text-[#505D39] font-medium 
+                       transition-colors duration-200 underline"
               disabled={loading}
             >
               立即登录
@@ -277,19 +271,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
 
         {/* 使用条款提示 */}
-        <div className="mt-4 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+        <div className="mt-3 text-center">
+          <p className="text-xs text-[#687949] opacity-50">
             注册即表示您同意我们的{' '}
-            <a href="#" className="text-blue-600 hover:text-blue-700 dark:text-blue-400">
+            <a href="#" className="text-[#687949] hover:text-[#505D39] underline">
               服务条款
             </a>{' '}
             和{' '}
-            <a href="#" className="text-blue-600 hover:text-blue-700 dark:text-blue-400">
+            <a href="#" className="text-[#687949] hover:text-[#505D39] underline">
               隐私政策
             </a>
           </p>
         </div>
-      </div>
     </div>
   )
 } 

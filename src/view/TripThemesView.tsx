@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
+import { authStateAtom } from '@/store/AuthState'
 import { mockRegionsData } from '@/data/mockData'
 import { WarmBg } from '@/components/bg/WarmBg'
 import type { TripTheme } from '@/store/TripState'
@@ -55,8 +56,64 @@ const TripThemesView: React.FC = () => {
   const navigate = useNavigate()
   const { cityId } = useParams<{ cityId: string }>()
   const [language] = useAtom(selectedLanguageAtom)
+  const [authState] = useAtom(authStateAtom)
+  const petInfo = authState.user?.petInfo
   const [cityData, setCityData] = useState<any>(null)
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
+
+  // 根据宠物类型获取装饰图片
+  const getPetDecoration = () => {
+    // 调试信息
+    console.log('authState.user:', authState.user)
+    console.log('petInfo:', petInfo)
+    
+    // 如果用户没有登录或没有宠物信息，显示默认水豚
+    if (!authState.user || !petInfo) {
+      console.log('使用默认装饰：水豚')
+      return {
+        src: '/decorations/capybara.jpeg',
+        alt: language === 'zh' ? '水豚装饰' : 'Capybara decoration'
+      }
+    }
+    
+    if (petInfo.avatar) {
+      // 如果有自定义头像，直接使用
+      console.log('使用自定义头像:', petInfo.avatar)
+      return {
+        src: petInfo.avatar,
+        alt: petInfo.name || (language === 'zh' ? '宠物装饰' : 'Pet decoration')
+      }
+    }
+    
+    // 根据宠物类型返回对应图片
+    console.log('根据宠物类型选择:', petInfo.type)
+    switch (petInfo.type) {
+      case 'cat':
+        return {
+          src: '/decorations/cat.png',
+          alt: language === 'zh' ? '小喵装饰' : 'Cat decoration'
+        }
+      case 'dog':
+        return {
+          src: '/decorations/fox.png', // 使用狐狸图片作为狗的装饰
+          alt: language === 'zh' ? '小狗装饰' : 'Dog decoration'
+        }
+      case 'other':
+        return {
+          src: '/decorations/capybara.jpeg',
+          alt: language === 'zh' ? '水豚装饰' : 'Capybara decoration'
+        }
+      case 'none':
+      case undefined:
+      case null:
+      default:
+        // 默认显示水豚
+        return {
+          src: '/decorations/capybara.jpeg',
+          alt: language === 'zh' ? '水豚装饰' : 'Capybara decoration'
+        }
+    }
+  }
 
   useEffect(() => {
     if (cityId) {
@@ -117,12 +174,24 @@ const TripThemesView: React.FC = () => {
         <span style={{ fontSize: '2.5vh' }}>{language === 'zh' ? '返回' : 'Back'}</span>
       </button>
 
-      {/* 左下角水豚装饰 */}
+      {/* 左下角宠物装饰 */}
       <div className="fixed bottom-0 left-[3vh] z-0">
         <img 
-          src="/decorations/capybara.jpeg" 
-          alt="Capybara decoration"
+          src={getPetDecoration().src}
+          alt={getPetDecoration().alt}
           className="w-[35vh] h-[35vh] object-contain transition-opacity duration-300"
+          onError={(e) => {
+            console.error('图片加载失败:', getPetDecoration().src)
+            console.error('完整URL:', e.currentTarget.src)
+            // 如果图片加载失败，尝试加载水豚图片作为备用
+            const fallbackUrl = window.location.origin + '/decorations/capybara.jpeg'
+            if (e.currentTarget.src !== fallbackUrl) {
+              e.currentTarget.src = fallbackUrl
+            }
+          }}
+          onLoad={() => {
+            console.log('图片加载成功:', getPetDecoration().src)
+          }}
         />
       </div>
 

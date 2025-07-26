@@ -197,6 +197,7 @@ export const PRESET_PET_CHARACTERS: PresetPetCharacter[] = [
     personality: ['curious', 'playful', 'independent'],
     age: 'young',
     emoji: '🐱',
+    avatar: '/decorations/cat.png',
     description: '小喵总是对世界充满好奇，她会在阳光下伸懒腰，会追逐窗外的蝴蝶，也会在深夜悄悄陪伴你工作到很晚。',
     quote: '好奇心是最好的向导',
     bgColor: 'from-pink-100 to-rose-50',

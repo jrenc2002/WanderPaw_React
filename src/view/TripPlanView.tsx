@@ -543,6 +543,22 @@ const TripPlanView: React.FC = () => {
     navigate(-1)
   }
 
+  // 时间格式转换函数
+  const formatTimeToAMPM = (timeString: string) => {
+    // 假设输入格式是 "HH:MM" 例如 "14:30"
+    const [hours] = timeString.split(':').map(Number);
+    
+    if (hours === 0) {
+      return '12AM';
+    } else if (hours === 12) {
+      return '12PM';
+    } else if (hours < 12) {
+      return `${hours}AM`;
+    } else {
+      return `${hours - 12}PM`;
+    }
+  };
+
   if (!tripPlan || !cityData) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -760,144 +776,100 @@ const TripPlanView: React.FC = () => {
                   </div>
                 ) : (
                   <div style={{ height: '100%' }}>
-                <div style={{ position: 'relative' }}>
-                  {/* 左侧时间线SVG背景 */}
-                  <div 
-                    style={{ 
-                      position: 'absolute', 
-                      left: '1.5vw', 
-                      top: 0, 
-                      zIndex: 0, 
-                      height: `${activities.length * 12}vh` 
-                    }}
-                  >
-                    <svg width="2.5vw" height="100%" viewBox="0 0 32 238" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ height: '100%' }}>
-                      <line x1="16.5" y1="48.5" x2="16.5" y2="100%" stroke="#687949" strokeLinecap="round"/>
-                      <path d="M16 0C7.13846 0 0 7.13846 0 16C0 24.8615 7.13846 32 16 32C24.8615 32 32 24.8615 32 16C32 7.13846 24.8615 0 16 0ZM16 29.5385C8.49231 29.5385 2.46154 23.5077 2.46154 16C2.46154 8.49231 8.49231 2.46154 16 2.46154C23.5077 2.46154 29.5385 8.49231 29.5385 16C29.5385 23.5077 23.5077 29.5385 16 29.5385Z" fill="#687949" fillOpacity="0.22"/>
-                      <circle cx="16" cy="16" r="9" fill="#687949"/>
-                    </svg>
-                  </div>
+                    {/* 渲染所有活动列表 */}
+                    {activities.map((activity, index) => {
+                      const isLast = index === activities.length - 1
 
-                  <div style={{ position: 'relative', zIndex: 10 }}>
-                    {activities.map((activity, index) => (
-                      <div key={activity.id} style={{ 
-                        marginBottom: index < activities.length - 1 ? '4vh' : '0',
-                        marginLeft: '4vw'
-                      }}>
-                        {/* 时间显示在卡片上方 */}
-                        <div style={{ 
-                          fontSize: '0.9vw', 
-                          fontWeight: 'bold', 
-                          color: '#687949', 
-                          marginBottom: '1vh'
-                        }}>
-                          {activity.time}
-                        </div>
-                        
-                        {/* 活动内容卡片 */}
-                        <div 
-                          style={{
-                            padding: '1.5vh 2vw',
-                            transition: 'all 0.2s',
-                            borderRadius: '1vw',
-                            background: '#FDF9EF',
-                            boxShadow: '0 0.2vh 0.6vh 0.15vh rgba(123, 66, 15, 0.11)',
-                            cursor: 'pointer',
-                            maxWidth: '25vw'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'scale(1.02)'
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'scale(1)'
-                          }}
-                        >
-                          <div style={{ 
-                            display: 'flex', 
-                            alignItems: 'flex-start', 
-                            gap: '2vw' 
-                          }}>
-                            <div style={{ 
-                              width: '3vw', 
-                              height: '3vw', 
-                              backgroundColor: '#dcfce7', 
-                              borderRadius: '0.5vw', 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'center', 
-                              flexShrink: 0, 
-                              position: 'relative', 
-                              overflow: 'hidden' 
-                            }}>
-                              <div style={{ 
-                                width: '2vw', 
-                                height: '1.5vh', 
-                                backgroundColor: '#bbf7d0', 
-                                borderRadius: '0.2vw', 
-                                position: 'relative' 
-                              }}>
-                                <div style={{ 
-                                  position: 'absolute', 
-                                  top: 0, 
-                                  left: '0.2vw', 
-                                  width: '0.4vw', 
-                                  height: '0.2vh', 
-                                  backgroundColor: '#4ade80', 
-                                  borderRadius: '50%' 
-                                }}></div>
-                                <div style={{ 
-                                  position: 'absolute', 
-                                  top: '0.2vh', 
-                                  right: '0.2vw', 
-                                  width: '0.2vw', 
-                                  height: '0.2vh', 
-                                  backgroundColor: '#f87171', 
-                                  borderRadius: '50%' 
-                                }}></div>
-                                <div style={{ 
-                                  position: 'absolute', 
-                                  bottom: '0.2vh', 
-                                  left: '0.4vw', 
-                                  width: '0.6vw', 
-                                  height: '0.1vh', 
-                                  backgroundColor: '#93c5fd', 
-                                  borderRadius: '0.05vh' 
-                                }}></div>
-                                <div style={{ 
-                                  position: 'absolute', 
-                                  top: '0.4vh', 
-                                  left: 0, 
-                                  width: '0.4vw', 
-                                  height: '0.1vh', 
-                                  backgroundColor: '#fbbf24', 
-                                  borderRadius: '0.05vh' 
-                                }}></div>
+                      return (
+                        <div key={activity.id} className="flex items-start gap-2 mb-4">
+                          {/* 左侧：进程节点和进度线 */}
+                          <div className="flex flex-col items-center ml-2">
+                            {/* 进程节点 */}
+                            <div className="relative">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="1.5vw" height="1.5vw" viewBox="0 0 41 41" fill="none">
+                                <path d="M20.4216 0.600098C9.33294 0.600098 0.400391 9.53265 0.400391 20.6213C0.400391 31.71 9.33294 40.6426 20.4216 40.6426C31.5103 40.6426 40.4429 31.71 40.4429 20.6213C40.4429 9.53265 31.5103 0.600098 20.4216 0.600098ZM20.4216 37.5624C11.0271 37.5624 3.48058 30.0159 3.48058 20.6213C3.48058 11.2268 11.0271 3.68029 20.4216 3.68029C29.8162 3.68029 37.3627 11.2268 37.3627 20.6213C37.3627 30.0159 29.8162 37.5624 20.4216 37.5624Z" fill="#687949" fillOpacity="0.22"/>
+                              </svg>
+                              
+                              {/* 圆心点 */}
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-[0.6vw] h-[0.6vw] bg-[#687949] rounded-full"></div>
                               </div>
                             </div>
                             
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <h4 style={{ 
-                                fontWeight: 'bold', 
-                                color: '#573E23', 
-                                marginBottom: '0.5vh', 
-                                fontSize: '1.1vw' 
-                              }}>
-                                {language === 'zh' ? activity.title : activity.titleEn}
-                              </h4>
-                              <p style={{ 
-                                fontSize: '0.9vw', 
-                                color: '#6b7280', 
-                                lineHeight: '1.6' 
-                              }}>
-                                {language === 'zh' ? activity.description : activity.descriptionEn}
-                              </p>
+                            {/* 进度线 */}
+                            {!isLast && (
+                              <div 
+                                className="w-[1px] h-[14vh] mt-2"
+                                style={{ background: '#687949' }}
+                              ></div>
+                            )}
+                          </div>
+
+                          {/* 右侧：时间和卡片 */}
+                          <div className="flex-1">
+                            {/* 时间 */}
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-sm font-medium text-gray-700">
+                                {formatTimeToAMPM(activity.time)}
+                              </span>
+                            </div>
+
+                            {/* 卡片内容 */}
+                            <div 
+                              className="relative p-3"
+                              style={{
+                                borderRadius: '0.8vw',
+                                background: '#FDF9EF',
+                                boxShadow: '0 1.8px 8px 2.7px rgba(123, 66, 15, 0.1)',
+                                transition: 'all 0.2s',
+                                cursor: 'pointer'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'scale(1.02)'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'scale(1)'
+                              }}
+                            >
+                              {/* 上部分：头像、地点和描述 */}
+                              <div className="flex items-start gap-3 m-2 relative z-10">
+                                {/* 左侧头像 */}
+                                <div className="w-[3.5vw] h-[3.5vw] bg-orange-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <span className="text-lg">
+                                    {petInfo.type === 'cat' ? '🐱' : 
+                                     petInfo.type === 'dog' ? '🐶' : '🐹'}
+                                  </span>
+                                </div>
+                                
+                                {/* 右侧地点和描述 */}
+                                <div className="flex-1 flex flex-col justify-center">
+                                  {/* 地点 */}
+                                  <div className="text-s font-medium text-gray-800 leading-tight mb-1">
+                                    {language === 'zh' ? activity.location : activity.locationEn}
+                                  </div>
+                                  {/* 描述 */}
+                                  <div className="text-xs text-gray-600 leading-tight">
+                                    {language === 'zh' ? '期待这次探索～' : 'Looking forward to this exploration~'}
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {/* 分隔线 */}
+                              <div className="w-[90%] h-px bg-[#BBA084] my-1 relative z-10 mx-auto"></div>
+                              
+                              {/* 下部分：活动标题 */}
+                              <div className="flex items-center justify-between relative z-10">
+                                <div className="ml-2 my-1 text-xs text-gray-700">
+                                  {language === 'zh' ? activity.title : activity.titleEn}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                      )
+                    })}
+
+
                   </div>
                 )}
               </div>
