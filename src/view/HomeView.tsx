@@ -154,8 +154,8 @@ const HomeView: React.FC = () => {
               </div>
               <div className="flex items-center gap-1">
                 <span>🏠</span>
-                <span>{language === 'zh' ? '躺平指数' : 'Lying Flat Index'}: </span>
-                <span className="font-semibold">{mapPoints.find(p => p.id === selectedRegion)?.tangpingIndex}</span>
+                <span>{language === 'zh' ? '宠物友好度' : 'Pet Friendly Index'}: </span>
+                <span className="font-semibold">{mapPoints.find(p => p.id === selectedRegion)?.petFriendlyIndex}</span>
               </div>
               {selectedData.averageSalary && (
                 <div className="flex items-center gap-1">

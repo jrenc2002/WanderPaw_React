@@ -7,7 +7,7 @@ const testPoints = [
     position: [39.9042, 116.4074] as [number, number],
     title: '北京',
     description: '中国的首都',
-    tangpingIndex: 75,
+    petFriendlyIndex: 75,
     data: {
       averageSalary: 15000,
       rentPrice: 5000,
@@ -20,7 +20,7 @@ const testPoints = [
     position: [31.2304, 121.4737] as [number, number],
     title: '上海',
     description: '中国的经济中心',
-    tangpingIndex: 65,
+    petFriendlyIndex: 65,
     data: {
       averageSalary: 18000,
       rentPrice: 6000,
@@ -33,7 +33,7 @@ const testPoints = [
     position: [22.5431, 114.0579] as [number, number],
     title: '深圳',
     description: '中国的科技之都',
-    tangpingIndex: 70,
+    petFriendlyIndex: 70,
     data: {
       averageSalary: 16000,
       rentPrice: 4500,

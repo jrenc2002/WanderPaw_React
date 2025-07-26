@@ -14,6 +14,26 @@ declare global {
   }
 }
 
+// 颜色亮度调整函数
+const adjustColorBrightness = (hex: string, factor: number): string => {
+  // 移除 # 符号
+  const color = hex.replace('#', '')
+  
+  // 将十六进制转换为 RGB
+  const r = parseInt(color.substr(0, 2), 16)
+  const g = parseInt(color.substr(2, 2), 16)
+  const b = parseInt(color.substr(4, 2), 16)
+  
+  // 调整亮度
+  const newR = Math.min(255, Math.floor(r * factor))
+  const newG = Math.min(255, Math.floor(g * factor))
+  const newB = Math.min(255, Math.floor(b * factor))
+  
+  // 转换回十六进制
+  const newColor = ((newR << 16) | (newG << 8) | newB).toString(16).padStart(6, '0')
+  return `#${newColor}`
+}
+
 // Mapbox access token - 你需要在 Mapbox 官网注册获取
 // 请替换为你的 PUBLIC TOKEN (以 pk. 开头)
 mapboxgl.accessToken = 'pk.eyJ1IjoieHVuaXh3d2kiLCJhIjoiY21kOW92ODUyMGE1aDJscTNuaW55eWNocyJ9.sqfV_Ukyc6u9jgWeq3vukQ'
@@ -185,168 +205,83 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
     const containerId = uniqueId || 'infowindow-' + point.id + '-' + Date.now()
     
     return `
-      <div class="info-window-container" id="${containerId}" style="
-        font-family: 'Inter', sans-serif;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        min-width: 280px;
-        max-width: 320px;
-        overflow: hidden;
-        border: 2px solid rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-      ">
-        <!-- 照片卡片区域 -->
-        <div class="photo-area" style="
-          position: relative;
-          height: 100px;
-          margin: 15px;
-          margin-bottom: 0;
-        ">
-          ${images.map((imageUrl, index) => `
-            <div class="photo-card photo-card-${index}" style="
-              position: absolute;
-              width: 80px;
-              aspect-ratio: 1;
-              border: 4px solid #fff;
-              border-radius: 15px;
-              overflow: hidden;
-              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-              left: 50%;
-              top: 50%;
-              margin-left: -40px;
-              margin-top: -40px;
-              transform-origin: center center;
-              scale: 0;
-            ">
-              <img src="${imageUrl}" alt="${point.title} ${index + 1}" style="
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-              ">
+      <div class="map-point-card" style="min-width: min(300px, 85vw); max-width: min(340px, 90vw);">
+        <div class="map-card-close" onclick="this.closest('.mapboxgl-popup').remove()" style="color: #687949;">
+          ✕
+        </div>
+        
+        <div class="map-card-photos" id="${containerId}">
+          ${images.map((image, index) => `
+            <div class="photo-card" style="position: absolute; width: 70px; aspect-ratio: 1; border: 3px solid #FEFDF9; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(104, 121, 73, 0.15); left: 50%; top: 50%; margin-left: -35px; margin-top: -35px; transform-origin: center center;">
+              <img 
+                src="${image}" 
+                alt="城市照片 ${index + 1}"
+                class="map-photo-image"
+                style="width: 100%; height: 100%; object-fit: cover;"
+              />
             </div>
           `).join('')}
         </div>
-
-        <!-- 城市信息 -->
-        <div style="padding: 15px; padding-top: 10px;">
-          <h3 style="
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 5px;
-            text-align: center;
-          ">${point.title}</h3>
+        
+        <div class="map-card-info">
+          <h3 class="map-card-title" style="color: #687949; font-weight: 700;">${point.title}</h3>
+          <p class="map-card-description" style="color: #8F6C53;">${point.description}</p>
           
-          <p style="
-            font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 12px;
-            text-align: center;
-            line-height: 1.4;
-          ">${point.description}</p>
-          
-          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;">
-            <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem;">
-              <span style="font-size: 0.9rem; min-width: 18px;">🏠</span>
-              <span style="color: #666; flex: 1;">
-                ${language === 'zh' ? '躺平指数' : 'Lying Flat Index'}:
-              </span>
-              <span style="color: ${point.tangpingIndex >= 80 ? '#10b981' : point.tangpingIndex >= 60 ? '#f59e0b' : point.tangpingIndex >= 40 ? '#f97316' : '#ef4444'}; font-weight: 600; margin-left: auto;">
-                ${point.tangpingIndex}
-              </span>
+          <div class="map-card-details">
+            <div class="map-detail-item">
+              <span class="detail-icon" style="color: #B1C192;">💰</span>
+              <span class="detail-label" style="color: #8F6C53;">平均薪资</span>
+              <span class="detail-value" style="color: #687949; font-weight: 600;">${point.data?.averageSalary?.toLocaleString() || 'N/A'}</span>
             </div>
-            
-            ${point.data && point.data.averageSalary ? `
-              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem;">
-                <span style="font-size: 0.9rem; min-width: 18px;">💰</span>
-                <span style="color: #666; flex: 1;">
-                  ${language === 'zh' ? '平均工资' : 'Avg Salary'}:
-                </span>
-                <span style="color: #333; font-weight: 600; margin-left: auto;">
-                  ${point.data.averageSalary.toLocaleString()} ${point.data.currency}
-                </span>
-              </div>
-            ` : ''}
-            
-            ${point.data && point.data.rentPrice ? `
-              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.8rem;">
-                <span style="font-size: 0.9rem; min-width: 18px;">🏡</span>
-                <span style="color: #666; flex: 1;">
-                  ${language === 'zh' ? '房租' : 'Rent'}:
-                </span>
-                <span style="color: #333; font-weight: 600; margin-left: auto;">
-                  ${point.data.rentPrice.toLocaleString()} ${point.data.currency}
-                </span>
-              </div>
-            ` : ''}
+            <div class="map-detail-item">
+              <span class="detail-icon" style="color: #B1C192;">🏠</span>
+              <span class="detail-label" style="color: #8F6C53;">房租</span>
+              <span class="detail-value" style="color: #687949; font-weight: 600;">${point.data?.rentPrice?.toLocaleString() || 'N/A'}</span>
+            </div>
+            <div class="map-detail-item">
+              <span class="detail-icon" style="color: #B1C192;">📊</span>
+              <span class="detail-label" style="color: #8F6C53;">宠物友好度</span>
+              <span class="detail-value" style="color: #687949; font-weight: 600;">${Math.round(point.petFriendlyIndex)}</span>
+            </div>
           </div>
-
-          <!-- 重播按钮 -->
-          <button 
-            onclick="if(window.playInfoWindowAnimation) window.playInfoWindowAnimation('${containerId}')" 
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 5px;
-              padding: 6px 12px;
-              background: rgba(59, 130, 246, 0.1);
-              border: 1px solid rgba(59, 130, 246, 0.2);
-              border-radius: 8px;
-              color: #3b82f6;
-              font-size: 0.75rem;
-              cursor: pointer;
-              transition: all 0.2s ease;
-              width: 100%;
-            "
-            onmouseover="this.style.background='rgba(59, 130, 246, 0.15)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(59, 130, 246, 0.2)'"
-            onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
-          >
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M4 12a8 8 0 018-8V2.5M20 12a8 8 0 01-8 8v1.5"/>
-              <path d="M4 12a8 8 0 008 8v-1.5M20 12a8 8 0 00-8-8V2.5"/>
-            </svg>
-            <span>${language === 'zh' ? '重播' : 'Replay'}</span>
+          
+          <button class="map-replay-btn" onclick="if(window.playInfoWindowAnimation) window.playInfoWindowAnimation('${containerId}')" style="background: linear-gradient(135deg, rgba(177, 193, 146, 0.12) 0%, rgba(199, 170, 108, 0.08) 100%); border: 1px solid rgba(177, 193, 146, 0.3); color: #687949;">
+            <span style="font-size: 14px;">🔄</span>
+            重播动画
           </button>
         </div>
-      </div>
-      
-      <script>
-        function startAnimation() {
-          if (window.playInfoWindowAnimation) {
-            window.playInfoWindowAnimation('${containerId}');
-          }
-        }
-        setTimeout(startAnimation, 200);
-        setTimeout(startAnimation, 500);
-      </script>
-    `
+      </div>`
   }
 
   // 创建自定义标记
   const createCustomMarker = (point: MapPoint) => {
-    const color = point.tangpingIndex >= 80 ? '#10b981' : 
-                  point.tangpingIndex >= 60 ? '#f59e0b' : 
-                  point.tangpingIndex >= 40 ? '#f97316' : '#ef4444'
+    // 使用 WanderPaw 主题色彩的宠物友好度颜色方案
+    const color = point.petFriendlyIndex >= 80 ? '#687949' :  // forest - 深绿色（最佳）
+                  point.petFriendlyIndex >= 60 ? '#B1C192' :  // sage - 浅绿色（良好）
+                  point.petFriendlyIndex >= 40 ? '#C7AA6C' :  // gold - 金黄色（一般）
+                  point.petFriendlyIndex >= 20 ? '#BBA084' :  // sand - 浅棕色（较差）
+                  '#8F6C53'                                // earth - 深棕色（最差）
     
-    const size = point.tangpingIndex >= 70 ? 46 : 
-                 point.tangpingIndex >= 50 ? 42 : 
-                 point.tangpingIndex >= 30 ? 38 : 34
+    const size = point.petFriendlyIndex >= 70 ? 46 : 
+                 point.petFriendlyIndex >= 50 ? 42 : 
+                 point.petFriendlyIndex >= 30 ? 38 : 34
 
     // 创建自定义标记元素
     const el = document.createElement('div')
     el.innerHTML = `
       <div class="relative">
-        <div class="rounded-full border-3 border-white shadow-lg flex items-center justify-center text-white font-bold transition-all duration-200 hover:scale-110 cursor-pointer" 
-             style="background-color: ${color}; width: ${size}px; height: ${size}px; box-shadow: 0 0 10px rgba(0,0,0,0.3);">
+        <div class="rounded-full border-3 shadow-lg flex items-center justify-center text-white font-bold transition-all duration-200 hover:scale-110 cursor-pointer" 
+             style="background: linear-gradient(135deg, ${color} 0%, ${adjustColorBrightness(color, 0.8)} 100%); 
+                    border: 3px solid #FEFDF9; 
+                    width: ${size}px; 
+                    height: ${size}px; 
+                    box-shadow: 0 4px 16px ${color}40, 0 2px 8px rgba(0,0,0,0.1);">
           <div class="flex flex-col items-center justify-center">
-            <span style="font-size: 14px; font-weight: 700; line-height: 1.2;">${Math.round(point.tangpingIndex)}</span>
+            <span style="font-size: 14px; font-weight: 700; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">${Math.round(point.petFriendlyIndex)}</span>
           </div>
         </div>
         <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0" 
-             style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid ${color};"></div>
+             style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid ${color}; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></div>
       </div>
     `
     el.className = 'marker'
@@ -518,7 +453,7 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
           'line-cap': 'round'
         },
         paint: {
-          'line-color': style.color || '#3b82f6',
+          'line-color': style.color || '#B1C192',  // 使用 WanderPaw sage 色调
           'line-width': style.weight || 4,
           'line-opacity': style.opacity || 0.8
         }
@@ -531,9 +466,9 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
         new mapboxgl.Popup()
           .setLngLat(e.lngLat)
           .setHTML(`
-            <div class="p-3 max-w-sm bg-white rounded-lg shadow-lg">
-              <h3 class="font-bold text-lg mb-2 text-gray-800">${route.name}</h3>
-              ${route.description ? `<p class="text-sm text-gray-600">${route.description}</p>` : ''}
+            <div class="p-3 max-w-sm rounded-lg shadow-lg" style="background: linear-gradient(145deg, #FEFDF9 0%, #F9F2E2 100%); border: 2px solid #F0F3EA;">
+              <h3 class="font-bold text-lg mb-2" style="color: #687949;">${route.name}</h3>
+              ${route.description ? `<p class="text-sm" style="color: #8F6C53;">${route.description}</p>` : ''}
             </div>
           `)
           .addTo(map.current!)

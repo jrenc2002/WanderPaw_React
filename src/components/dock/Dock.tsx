@@ -69,7 +69,7 @@ export function DockObject(): React.ReactElement {
 
         <DockIcon
           name={'主页'}
-          designation={'躺平指数地图🗺️'}
+          designation={'宠物友好度地图🗺️'}
           id={2}
           onClick={() => handleNavigation('/home')}
           className={

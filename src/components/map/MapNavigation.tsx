@@ -95,23 +95,46 @@ export const MapNavigation: React.FC<MapNavigationProps> = ({
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border p-4 ${className}`}>
+    <div className={`rounded-lg shadow-sm border p-4 ${className}`} 
+         style={{ 
+           background: 'linear-gradient(145deg, #FEFDF9 0%, #F9F2E2 100%)', 
+           borderColor: '#F0F3EA',
+           boxShadow: '0 4px 12px rgba(104, 121, 73, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05)'
+         }}>
       {/* 面包屑导航 */}
       <div className="mb-4">
-        <h3 className="text-sm font-medium text-gray-500 mb-2">当前位置</h3>
+        <h3 className="text-sm font-medium mb-2" style={{ color: '#8F6C53' }}>当前位置</h3>
         <nav className="flex items-center space-x-1 text-sm">
           {navigation.breadcrumb.map((item, index) => (
             <div key={item.id} className="flex items-center">
               {index > 0 && (
-                <ChevronRightIcon className="w-4 h-4 text-gray-400 mx-1" />
+                <ChevronRightIcon className="w-4 h-4 mx-1" style={{ color: '#BBA084' }} />
               )}
               <button
                 onClick={() => handleBreadcrumbClick(item, index)}
                 className={`flex items-center space-x-1 px-2 py-1 rounded transition-colors ${
                   index === navigation.breadcrumb.length - 1
-                    ? 'bg-blue-100 text-blue-700 cursor-default'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'cursor-default'
+                    : 'hover:bg-opacity-50'
                 }`}
+                style={{
+                  backgroundColor: index === navigation.breadcrumb.length - 1 
+                    ? 'rgba(177, 193, 146, 0.2)' 
+                    : 'transparent',
+                  color: index === navigation.breadcrumb.length - 1 
+                    ? '#687949' 
+                    : '#8F6C53'
+                }}
+                onMouseEnter={(e) => {
+                  if (index !== navigation.breadcrumb.length - 1) {
+                    e.currentTarget.style.backgroundColor = 'rgba(199, 170, 108, 0.1)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (index !== navigation.breadcrumb.length - 1) {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                  }
+                }}
                 disabled={index === navigation.breadcrumb.length - 1}
               >
                 {getLevelIcon(item.level)}
@@ -124,15 +147,26 @@ export const MapNavigation: React.FC<MapNavigationProps> = ({
 
       {/* 快速导航 */}
       <div className="mb-4">
-        <h3 className="text-sm font-medium text-gray-500 mb-2">快速导航</h3>
+        <h3 className="text-sm font-medium mb-2" style={{ color: '#8F6C53' }}>快速导航</h3>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigateToRegion('world', 'world')}
-            className={`px-3 py-1 text-xs rounded-full border transition-colors ${
-              navigation.currentLevel === 'world'
-                ? 'bg-blue-500 text-white border-blue-500'
-                : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-            }`}
+            className="px-3 py-1 text-xs rounded-full border transition-colors"
+            style={{
+              backgroundColor: navigation.currentLevel === 'world' ? '#687949' : '#FEFDF9',
+              color: navigation.currentLevel === 'world' ? 'white' : '#8F6C53',
+              borderColor: navigation.currentLevel === 'world' ? '#687949' : '#E5E2DC'
+            }}
+            onMouseEnter={(e) => {
+              if (navigation.currentLevel !== 'world') {
+                e.currentTarget.style.backgroundColor = 'rgba(240, 243, 234, 0.8)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (navigation.currentLevel !== 'world') {
+                e.currentTarget.style.backgroundColor = '#FEFDF9'
+              }
+            }}
           >
             🌍 世界地图
           </button>
@@ -140,11 +174,22 @@ export const MapNavigation: React.FC<MapNavigationProps> = ({
           {navigation.currentLevel !== 'world' && (
             <button
               onClick={() => navigateToRegion('CN', 'country')}
-              className={`px-3 py-1 text-xs rounded-full border transition-colors ${
-                navigation.currentRegion === 'CN'
-                  ? 'bg-red-500 text-white border-red-500'
-                  : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-              }`}
+              className="px-3 py-1 text-xs rounded-full border transition-colors"
+              style={{
+                backgroundColor: navigation.currentRegion === 'CN' ? '#C7AA6C' : '#FEFDF9',
+                color: navigation.currentRegion === 'CN' ? 'white' : '#8F6C53',
+                borderColor: navigation.currentRegion === 'CN' ? '#C7AA6C' : '#E5E2DC'
+              }}
+              onMouseEnter={(e) => {
+                if (navigation.currentRegion !== 'CN') {
+                  e.currentTarget.style.backgroundColor = 'rgba(240, 243, 234, 0.8)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (navigation.currentRegion !== 'CN') {
+                  e.currentTarget.style.backgroundColor = '#FEFDF9'
+                }
+              }}
             >
               🇨🇳 中国
             </button>
@@ -153,17 +198,17 @@ export const MapNavigation: React.FC<MapNavigationProps> = ({
       </div>
 
       {/* 当前层级信息 */}
-      <div className="pt-3 border-t border-gray-200">
+      <div className="pt-3" style={{ borderTop: '1px solid #E5E2DC' }}>
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-500">当前层级:</span>
-          <div className="flex items-center space-x-1 text-gray-700">
+          <span style={{ color: '#8F6C53' }}>当前层级:</span>
+          <div className="flex items-center space-x-1" style={{ color: '#687949' }}>
             {getLevelIcon(navigation.currentLevel)}
             <span className="font-medium">{getLevelName(navigation.currentLevel)}</span>
           </div>
         </div>
         
         {navigation.currentLevel !== 'world' && (
-          <div className="mt-2 text-xs text-gray-500">
+          <div className="mt-2 text-xs" style={{ color: '#BBA084' }}>
             💡 点击地图上的区域可以进入下一级
           </div>
         )}

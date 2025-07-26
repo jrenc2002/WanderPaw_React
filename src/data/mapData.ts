@@ -4,7 +4,7 @@ export interface MapPoint {
   position: [number, number] // [lat, lng]
   title: string
   description: string
-  tangpingIndex: number
+  petFriendlyIndex: number
   data?: {
     averageSalary?: number
     rentPrice?: number
@@ -46,7 +46,7 @@ export interface MapConfig {
 
 // 默认样式配置
 export const defaultRouteStyle = {
-  color: '#3388ff',
+  color: '#B1C192',  // 使用 WanderPaw sage 色调
   weight: 4,
   opacity: 0.8,
   dashArray: ''
@@ -59,7 +59,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [39.9042, 116.4074],
     title: '北京',
     description: '首都，高消费高压力',
-    tangpingIndex: 25,
+    petFriendlyIndex: 25,
     data: {
       averageSalary: 12000,
       rentPrice: 4500,
@@ -74,7 +74,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [31.2304, 121.4737],
     title: '上海',
     description: '经济中心，生活成本极高',
-    tangpingIndex: 20,
+    petFriendlyIndex: 20,
     data: {
       averageSalary: 13500,
       rentPrice: 5200,
@@ -89,7 +89,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [22.5431, 114.0579],
     title: '深圳',
     description: '科技之都，年轻人聚集地',
-    tangpingIndex: 30,
+    petFriendlyIndex: 30,
     data: {
       averageSalary: 11800,
       rentPrice: 4800,
@@ -104,7 +104,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [23.1291, 113.2644],
     title: '广州',
     description: '商贸中心，生活相对宜居',
-    tangpingIndex: 45,
+    petFriendlyIndex: 45,
     data: {
       averageSalary: 9500,
       rentPrice: 3200,
@@ -119,7 +119,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [30.2741, 120.1551],
     title: '杭州',
     description: '电商之都，环境优美',
-    tangpingIndex: 55,
+    petFriendlyIndex: 55,
     data: {
       averageSalary: 10200,
       rentPrice: 3500,
@@ -134,7 +134,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [30.5728, 104.0668],
     title: '成都',
     description: '悠闲城市，生活节奏慢',
-    tangpingIndex: 75,
+    petFriendlyIndex: 75,
     data: {
       averageSalary: 7800,
       rentPrice: 2200,
@@ -149,7 +149,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [29.5647, 106.5507],
     title: '重庆',
     description: '山城火锅，生活成本低',
-    tangpingIndex: 70,
+    petFriendlyIndex: 70,
     data: {
       averageSalary: 7200,
       rentPrice: 1800,
@@ -164,7 +164,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [30.5928, 114.3055],
     title: '武汉',
     description: '九省通衢，教育资源丰富',
-    tangpingIndex: 60,
+    petFriendlyIndex: 60,
     data: {
       averageSalary: 7500,
       rentPrice: 2000,
@@ -179,7 +179,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [34.3416, 108.9398],
     title: '西安',
     description: '古都风韵，生活悠闲',
-    tangpingIndex: 65,
+    petFriendlyIndex: 65,
     data: {
       averageSalary: 6800,
       rentPrice: 1600,
@@ -194,7 +194,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [32.0603, 118.7969],
     title: '南京',
     description: '六朝古都，文化底蕴深厚',
-    tangpingIndex: 50,
+    petFriendlyIndex: 50,
     data: {
       averageSalary: 8500,
       rentPrice: 2800,
@@ -209,7 +209,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [36.0986, 120.3719],
     title: '青岛',
     description: '海滨城市，环境宜人',
-    tangpingIndex: 68,
+    petFriendlyIndex: 68,
     data: {
       averageSalary: 7000,
       rentPrice: 2300,
@@ -224,7 +224,7 @@ export const chineseCitiesData: MapPoint[] = [
     position: [38.9140, 121.6147],
     title: '大连',
     description: '北方明珠，气候宜人',
-    tangpingIndex: 72,
+    petFriendlyIndex: 72,
     data: {
       averageSalary: 6500,
       rentPrice: 2000,
@@ -356,7 +356,7 @@ export const mapConfigExample = {
       position: [39.9042, 116.4074],
       title: '示例城市',
       description: '这是一个示例城市',
-      tangpingIndex: 60,
+      petFriendlyIndex: 60,
       data: {
         averageSalary: 8000,
         rentPrice: 3000,

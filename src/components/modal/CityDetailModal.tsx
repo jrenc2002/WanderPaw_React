@@ -118,7 +118,7 @@ export const CityDetailModal: React.FC<CityDetailModalProps> = ({
   if (!isOpen) return null
 
   const images = getCityImages(point.id)
-  const getTangpingColor = (index: number) => {
+  const getPetFriendlyColor = (index: number) => {
     if (index >= 80) return '#10b981'
     if (index >= 60) return '#f59e0b'
     if (index >= 40) return '#f97316'
@@ -160,15 +160,15 @@ export const CityDetailModal: React.FC<CityDetailModalProps> = ({
           <div className="city-info-main">
             <h2 className="city-title">{point.title}</h2>
             <p className="city-description">{point.description}</p>
-            <div className="city-tangping">
-              <span className="tangping-label">
-                {language === 'zh' ? '躺平指数' : 'Lying Flat Index'}:
+            <div className="city-pet-friendly">
+              <span className="pet-friendly-label">
+                {language === 'zh' ? '宠物友好度' : 'Pet Friendly Index'}:
               </span>
               <span 
-                className="tangping-value"
-                style={{ color: getTangpingColor(point.tangpingIndex) }}
+                className="pet-friendly-value"
+                style={{ color: getPetFriendlyColor(point.petFriendlyIndex) }}
               >
-                {point.tangpingIndex}
+                {point.petFriendlyIndex}
               </span>
             </div>
           </div>

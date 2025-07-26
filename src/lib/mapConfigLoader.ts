@@ -81,8 +81,8 @@ function validateAndTransformConfig(config: MapConfigJSON): MapConfig {
       throw new Error(`Point ${index}: title is required and must be a string`)
     }
     
-    if (typeof point.tangpingIndex !== 'number' || point.tangpingIndex < 0 || point.tangpingIndex > 100) {
-      throw new Error(`Point ${index}: tangpingIndex must be a number between 0 and 100`)
+    if (typeof point.petFriendlyIndex !== 'number' || point.petFriendlyIndex < 0 || point.petFriendlyIndex > 100) {
+      throw new Error(`Point ${index}: petFriendlyIndex must be a number between 0 and 100`)
     }
   })
   

@@ -120,7 +120,7 @@
   line-height: 1.5;
 }
 
-.city-tangping {
+.city-pet-friendly {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -128,12 +128,12 @@
   font-size: clamp(1rem, 2.5vw, 1.2rem);
 }
 
-.tangping-label {
+.pet-friendly-label {
   color: #555;
   font-weight: 500;
 }
 
-.tangping-value {
+.pet-friendly-value {
   font-weight: 700;
   font-size: clamp(1.3rem, 3vw, 1.5rem);
 }
@@ -323,11 +323,11 @@
     font-size: clamp(0.85rem, 2vw, 1rem);
   }
 
-  .city-tangping {
+  .city-pet-friendly {
     font-size: clamp(0.9rem, 2.2vw, 1rem);
   }
 
-  .tangping-value {
+  .pet-friendly-value {
     font-size: clamp(1.1rem, 2.8vw, 1.3rem);
   }
 

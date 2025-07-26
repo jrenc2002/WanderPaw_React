@@ -91,7 +91,7 @@ export const MapPointCard: React.FC<MapPointCardProps> = ({
     }
   }, [isVisible])
 
-  const getTangpingColor = (index: number) => {
+  const getPetFriendlyColor = (index: number) => {
     if (index >= 80) return '#10b981'
     if (index >= 60) return '#f59e0b'
     if (index >= 40) return '#f97316'
@@ -144,13 +144,13 @@ export const MapPointCard: React.FC<MapPointCardProps> = ({
           <div className="map-detail-item">
             <span className="detail-icon">🏠</span>
             <span className="detail-label">
-              {language === 'zh' ? '躺平指数' : 'Lying Flat Index'}:
+              {language === 'zh' ? '宠物友好度' : 'Pet Friendly Index'}:
             </span>
             <span 
               className="detail-value"
-              style={{ color: getTangpingColor(point.tangpingIndex) }}
+              style={{ color: getPetFriendlyColor(point.petFriendlyIndex) }}
             >
-              {point.tangpingIndex}
+              {point.petFriendlyIndex}
             </span>
           </div>
 

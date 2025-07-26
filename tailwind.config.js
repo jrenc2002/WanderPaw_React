@@ -225,7 +225,22 @@ module.exports = {
                 purple: colors.purple,
                 fuchsia: colors.fuchsia,
                 pink: colors.pink,
-                rose: colors.rose
+                rose: colors.rose,
+                // WanderPaw 主题色彩
+                wanderpaw: {
+                    'forest': '#687949',     // 主绿色
+                    'sage': '#B1C192',       // 浅绿色
+                    'cream': '#F0F3EA',      // 米白色
+                    'gold': '#C7AA6C',       // 金黄色
+                    'earth': '#8F6C53',      // 棕色
+                    'sand': '#BBA084',       // 浅棕色
+                    'linen': '#EADDC7',      // 米色
+                    'pearl': '#F9F2E2',      // 浅米色
+                    'ivory': '#FDF5E8',      // 极浅米色
+                    'snow': '#FDF9EF',       // 奶白色
+                    'pure': '#FEFDF9',       // 纯白色
+                    'mist': '#E5E2DC',       // 浅灰米色
+                }
             }),
             columns: {
                 auto: 'auto',
