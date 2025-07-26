@@ -44,8 +44,8 @@ export const SampleTestView: React.FC = () => {
     <WarmBg>
       {/* 头部信息 */}
       <div className="p-6 bg-white/80 backdrop-blur-sm">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          🌍 WanderPaw - 全球生活样本地图
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-2">
+          🌍 <span className="wanderpaw-title">WanderPaw</span> - 全球生活样本地图
         </h1>
         <p className="text-gray-600 mb-4">
           探索真实的生活样本，发现属于你的旅行方式

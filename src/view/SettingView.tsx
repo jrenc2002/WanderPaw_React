@@ -358,7 +358,7 @@ const AboutTab: React.FC = () => {
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-          📱 关于 WanderPaw
+          📱 关于 <span className="wanderpaw-title">WanderPaw</span>
         </h2>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           一个专为宠物爱好者设计的生活探索应用
@@ -378,7 +378,7 @@ const AboutTab: React.FC = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600 dark:text-gray-400">开发者：</span>
-              <span className="text-gray-900 dark:text-white">WanderPaw Team</span>
+              <span className="text-gray-900 dark:text-white"><span className="wanderpaw-title">WanderPaw</span> Team</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600 dark:text-gray-400">技术栈：</span>

@@ -90,7 +90,7 @@ export const PetCharacterSelection: React.FC = () => {
       <div className="flex flex-col min-h-screen py-8 px-4 sm:px-6 lg:px-8">
         {/* 头部 */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#687949' }}>
+          <h1 className="wanderpaw-title text-4xl md:text-5xl font-bold mb-4" style={{ color: '#687949' }}>
             WanderPaw
           </h1>
           <p className="text-xl font-medium" style={{ color: '#687949' }}>
@@ -161,14 +161,7 @@ export const PetCharacterSelection: React.FC = () => {
                       )}
                     </div>
 
-                    {/* 座右铭 */}
-                    <div className="text-center mt-auto">
-                      <p className="text-sm font-medium text-gray-600rounded-lg px-3 py-2">
-                        {character.quote}
-                      </p>
-                    </div>
-
-                                        {/* 选中指示器 - 爪印图标 */}
+                    {/* 选中指示器 - 爪印图标 */}
                     {selectedCharacter?.id === character.id && (
                       <div className="absolute top-2 right-2">
                         <svg 

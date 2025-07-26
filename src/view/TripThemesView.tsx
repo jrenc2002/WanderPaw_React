@@ -200,7 +200,7 @@ const TripThemesView: React.FC = () => {
       <div className="px-[2.2vh] py-[3vh]">
         {/* 主标题 */}
         <div className="text-center mb-[3vh]">
-          <h1 className="text-[4.4vh] md:text-[5.5vh] font-bold text-[#687949] dark:text-amber-200 mb-[1.5vh]">
+          <h1 className="wanderpaw-title text-4xl md:text-5xl font-bold text-[#687949] dark:text-amber-200 mb-[1.5vh]">
             WanderPaw
           </h1>
           <p className="text-[1.8vh] text-[#687949] dark:text-amber-300 font-medium">

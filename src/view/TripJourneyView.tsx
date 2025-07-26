@@ -208,7 +208,7 @@ const TripJourneyView: React.FC = () => {
           currentActivity
         }
       })
-    }, 600) // 600ms 动画持续时间
+    }, 800) // 800ms 动画持续时间
   }
 
   const handleNextActivity = () => {
@@ -438,7 +438,11 @@ ${petName} 💕`
             <div className="flex items-start justify-between mb-1">
               {/* 左侧：宠物头像、名称和当前活动 */}
               <div className="flex items-start gap-4">
-                <div className="w-[8vw] h-[6vw] flex items-center justify-center overflow-hidden">
+                <div className={`flex items-center justify-center overflow-hidden ${
+                  currentTripPlan.petCompanion.type === 'cat' || currentTripPlan.petCompanion.type === 'dog' 
+                    ? 'w-[7vw] h-[5.5vw]' 
+                    : 'w-[8vw] h-[6vw]'
+                }`}>
                   <img 
                     src={
                       currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat.png' :
@@ -452,7 +456,11 @@ ${petName} 💕`
                       currentTripPlan.petCompanion.type === 'other' ? 'Capybara' :
                       'Pet'
                     }
-                    className="w-full h-full object-cover"
+                    className={`w-full h-full ${
+                      currentTripPlan.petCompanion.type === 'cat' || currentTripPlan.petCompanion.type === 'dog'
+                        ? 'object-contain'
+                        : 'object-cover'
+                    }`}
                   />
                 </div>
                 
@@ -998,28 +1006,65 @@ ${petName} 💕`
 
       </div>
 
-              {/* 地球装饰和水豚 */}
-        <EarthWithCapybara />
+              {/* 地球装饰和宠物 */}
+        <EarthWithCapybara petType={
+          currentTripPlan.petCompanion.type === 'none' 
+            ? 'other' 
+            : currentTripPlan.petCompanion.type as 'cat' | 'dog' | 'other'
+        } />
 
       {/* 手帐按钮 - 右下角 */}
-      <div 
+      <motion.div 
         onClick={handleJournalClick}
-        className="fixed bottom-8 right-8 z-40 w-[12vw] h-[12vw] hover:scale-110 transition-transform cursor-pointer"
+        className="fixed bottom-8 right-8 z-40 w-[12vw] h-[12vw] cursor-pointer"
         aria-label={language === 'zh' ? '打开手帐' : 'Open Journal'}
         role="button"
         tabIndex={0}
+        initial={{ scale: 1, rotate: 0 }}
+        whileHover={{ 
+          scale: 1.1, 
+          rotate: 2,
+          transition: { duration: 0.3, ease: "easeOut" }
+        }}
+        whileTap={{
+          scale: 0.95,
+          rotate: -2,
+          transition: { duration: 0.1 }
+        }}
+        animate={isJournalAnimating ? {
+          scale: [1, 0.9, 1.2, 0.8],
+          rotate: [0, -5, 5, 0],
+          transition: {
+            duration: 0.4,
+            ease: "easeInOut"
+          }
+        } : {
+          y: [0, -3, 0],
+          transition: {
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }
+        }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             handleJournalClick()
           }
         }}
       >
-        <img 
+        <motion.img 
           src="/decorations/book.jpeg" 
           alt={language === 'zh' ? '手帐' : 'Journal'} 
           className="w-full h-full object-contain drop-shadow-lg"
+          animate={isJournalAnimating ? {
+            rotateY: [0, 180, 0],
+            transition: {
+              duration: 0.6,
+              ease: "easeInOut"
+            }
+          } : {}}
         />
-      </div>
+      </motion.div>
 
       {/* 底部渐变遮罩 */}
       <BottomGradientMask />
@@ -1052,7 +1097,10 @@ ${petName} 💕`
                   className="text-2xl font-bold"
                   style={{ color: '#687949' }}
                 >
-                  豚豚的来信
+                  {language === 'zh' 
+                    ? `${currentTripPlan?.petCompanion?.name || '豚豚'}的来信`
+                    : `Letter from ${currentTripPlan?.petCompanion?.name || 'Pet'}`
+                  }
                 </h2>
               </div>
 
@@ -1188,34 +1236,170 @@ ${petName} 💕`
       {/* 圆形展开动画覆盖层 */}
       <AnimatePresence>
         {isJournalAnimating && (
-          <motion.div
-            initial={{
-              width: '12vw',
-              height: '12vw',
-              borderRadius: '50%',
-              opacity: 0.9
-            }}
-            animate={{
-              width: '200vmax',
-              height: '200vmax',
-              borderRadius: '0%',
-              opacity: 1,
-              transition: {
-                duration: 0.6,
-                ease: [0.22, 1, 0.36, 1],
-                borderRadius: {
-                  duration: 0.4,
-                  delay: 0.2
+          <>
+            {/* 第一层：圆形展开效果 */}
+            <motion.div
+              initial={{
+                width: '12vw',
+                height: '12vw',
+                borderRadius: '50%',
+                opacity: 0.8,
+                scale: 0.8,
+                x: 0,
+                y: 0
+              }}
+              animate={{
+                width: '200vmax',
+                height: '200vmax',
+                borderRadius: '0%',
+                opacity: 0.95,
+                scale: 1,
+                x: '-50%',
+                y: '-50%',
+                transition: {
+                  duration: 0.8,
+                  ease: [0.25, 0.46, 0.45, 0.94],
+                  borderRadius: {
+                    duration: 0.5,
+                    delay: 0.2
+                  },
+                  scale: {
+                    duration: 0.3
+                  },
+                  x: {
+                    duration: 0.8,
+                    ease: [0.25, 0.46, 0.45, 0.94]
+                  },
+                  y: {
+                    duration: 0.8,
+                    ease: [0.25, 0.46, 0.45, 0.94]
+                  }
                 }
-              }
-            }}
-            className="fixed z-[60] bg-gradient-to-br from-amber-50 to-orange-100"
-            style={{ 
-              bottom: 'calc(8 * 0.25rem + 6vw)', // 底部距离 + 手帐按钮高度的一半
-              right: 'calc(8 * 0.25rem + 6vw)', // 右侧距离 + 手帐按钮宽度的一半
-              transformOrigin: 'center'
-            }}
-          />
+              }}
+              className="fixed z-[60] bg-gradient-to-tl from-amber-50/90 to-orange-100/90"
+              style={{ 
+                bottom: 'calc(2rem + 6vw)',
+                right: 'calc(2rem + 6vw)',
+                transformOrigin: 'bottom right',
+                backdropFilter: 'blur(2px)'
+              }}
+            />
+            
+            {/* 第二层：纸张质感效果 */}
+            <motion.div
+              initial={{
+                width: '8vw',
+                height: '8vw',
+                borderRadius: '50%',
+                opacity: 0,
+                x: 0,
+                y: 0
+              }}
+              animate={{
+                width: '200vmax',
+                height: '200vmax',
+                borderRadius: '0%',
+                opacity: 0.7,
+                x: '-50%',
+                y: '-50%',
+                transition: {
+                  duration: 0.9,
+                  delay: 0.1,
+                  ease: [0.22, 1, 0.36, 1],
+                  x: {
+                    duration: 0.9,
+                    delay: 0.1,
+                    ease: [0.22, 1, 0.36, 1]
+                  },
+                  y: {
+                    duration: 0.9,
+                    delay: 0.1,
+                    ease: [0.22, 1, 0.36, 1]
+                  }
+                }
+              }}
+              className="fixed z-[59] bg-gradient-to-tl from-yellow-50/60 to-amber-50/60"
+              style={{ 
+                bottom: 'calc(2rem + 6vw)',
+                right: 'calc(2rem + 6vw)',
+                transformOrigin: 'bottom right',
+                backgroundImage: 'radial-gradient(circle at 85% 85%, rgba(255,255,255,0.2) 0%, transparent 50%)'
+              }}
+            />
+
+            {/* 第三层：飘落的纸张装饰 */}
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{
+                  x: 'calc(100vw - 5rem)',
+                  y: 'calc(100vh - 5rem)',
+                  rotate: 0,
+                  opacity: 0,
+                  scale: 0.5
+                }}
+                animate={{
+                  x: `${Math.random() * 80}vw`,
+                  y: `${Math.random() * 80}vh`,
+                  rotate: -180 + Math.random() * 360,
+                  opacity: [0, 0.6, 0],
+                  scale: [0.5, 1, 0.3],
+                  transition: {
+                    duration: 1.2,
+                    delay: 0.2 + i * 0.1,
+                    ease: "easeOut"
+                  }
+                }}
+                className="fixed z-[58] w-6 h-6 bg-amber-100 rounded-sm shadow-sm"
+                style={{
+                  background: 'linear-gradient(45deg, #fef3c7, #fed7aa)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}
+              />
+            ))}
+            
+            {/* 第四层：温暖光晕效果 */}
+            <motion.div
+              initial={{
+                width: '6vw',
+                height: '6vw',
+                borderRadius: '50%',
+                opacity: 0,
+                x: 0,
+                y: 0
+              }}
+              animate={{
+                width: '40vw',
+                height: '40vw',
+                opacity: [0, 0.4, 0.2, 0],
+                x: '-50%',
+                y: '-50%',
+                transition: {
+                  duration: 1.5,
+                  delay: 0.3,
+                  ease: "easeOut",
+                  x: {
+                    duration: 1.5,
+                    delay: 0.3,
+                    ease: "easeOut"
+                  },
+                  y: {
+                    duration: 1.5,
+                    delay: 0.3,
+                    ease: "easeOut"
+                  }
+                }
+              }}
+              className="fixed z-[57]"
+              style={{ 
+                bottom: 'calc(2rem + 6vw)',
+                right: 'calc(2rem + 6vw)',
+                transformOrigin: 'bottom right',
+                background: 'radial-gradient(circle, rgba(255, 243, 199, 0.6) 0%, rgba(254, 215, 170, 0.3) 40%, transparent 70%)',
+                filter: 'blur(20px)'
+              }}
+            />
+          </>
         )}
       </AnimatePresence>
     </WarmBg>

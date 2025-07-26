@@ -141,7 +141,7 @@ const CitySelectionView: React.FC = () => {
       <div className="px-6 py-8">
         {/* 标题和描述 */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#687949] dark:text-amber-200 mb-4">
+          <h1 className="wanderpaw-title text-4xl md:text-5xl font-bold text-[#687949] dark:text-amber-200 mb-4">
             WanderPaw
           </h1>
           <p className="text-xl text-[#687949] dark:text-amber-300 font-medium">

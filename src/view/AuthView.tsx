@@ -35,7 +35,7 @@ export const AuthView: React.FC = () => {
             <div className="relative z-10 p-8">
               {/* 顶部品牌区域 */}
               <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-[#687949] mb-2">
+                <h1 className="wanderpaw-title text-4xl md:text-5xl font-bold text-[#687949] mb-2">
                   WanderPaw
                 </h1>
                 <p className="text-sm text-[#687949] opacity-70">

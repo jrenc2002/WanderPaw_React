@@ -65,70 +65,6 @@ export function DockObject(): React.ReactElement {
     <div className="z-50 bg-background absolute flex bottom-4 left-4 flex-col items-center justify-center rounded-lg h-20">
 
       <Dock className="relative bg-[rgba(255,255,255)] hover:bg-[rgb(255,255,255)] dark:bg-zinc-800 dark:hover:bg-zinc-700 duration-200 hover:backdrop-blur-xl">
- 
-
-        <DockIcon
-          name={'主页'}
-          designation={'宠物友好度地图🗺️'}
-          id={2}
-          onClick={() => handleNavigation('/home')}
-          className={
-            (location.pathname === '/home' ? '  ' : '') + 'bg-neutral-400/20'
-          }
-        >
-          {location.pathname !== '/home' ? (
-            <Icons.Review className="h-6 w-6 dark:text-white" />
-          ) : (
-            <Icons.selectedReview className="h-6 w-6 dark:text-white" isDark={theme === 'dark'} />
-          )}
-        </DockIcon>
-        
-        <DockIcon
-          name={'演示'}
-          designation={'Leaflet地图演示📍'}
-          id={3}
-          onClick={() => handleNavigation('/demo')}
-          className={
-            (location.pathname === '/demo' ? '  ' : '') + 'bg-neutral-400/20'
-          }
-        >
-          {location.pathname !== '/demo' ? (
-            <Icons.Demo className="h-6 w-6 dark:text-white" />
-          ) : (
-            <Icons.selectedDemo className="h-6 w-6 dark:text-white" isDark={theme === 'dark'} />
-          )}
-        </DockIcon>
-        {/* <DockIcon
-          name={'介绍'}
-          designation={'小鹿💖'}
-          id={3}
-          onClick={() => handleNavigation('/goods')}
-          className={
-            (location.pathname === '/goods' ? ' ' : '') + 'bg-neutral-400/20'
-          }
-        >
-          {location.pathname !== '/goods' ? (
-            <Icons.Content className="h-6 w-6 dark:text-white" />
-          ) : (
-            <Icons.selectedContent className="h-6 w-6 dark:text-white" isDark={theme === 'dark'} />
-
-          )}
-        </DockIcon> */}
-        <DockIcon
-          name={'设置'}
-          designation={'在这进行相关设置💻'}
-          id={4}
-          onClick={() => handleNavigation('/setting')}
-          className={
-            (location.pathname === '/setting' ? '  ' : '') + 'bg-neutral-400/20'
-          }
-        >
-          {location.pathname !== '/setting' ? (
-            <Icons.Set className="h-6 w-6 dark:text-white" />
-          ) : (
-            <Icons.selectedSet className="h-6 w-6 dark:text-white" isDark={theme === 'dark'} />
-          )}
-        </DockIcon>
 
         <DockIcon
           name={authState.isAuthenticated ? '登出' : '登录'}
@@ -137,7 +73,7 @@ export function DockObject(): React.ReactElement {
               ? `${authState.user?.username || '用户'} - 点击登出 👋` 
               : '登录您的账户 🔑'
           }
-          id={5}
+          id={1}
           onClick={handleAuth}
           className={'bg-neutral-400/20'}
         >
@@ -147,7 +83,6 @@ export function DockObject(): React.ReactElement {
             <Icons.Login className="h-6 w-6 dark:text-white" />
           )}
         </DockIcon>
-
 
       </Dock>
     </div>

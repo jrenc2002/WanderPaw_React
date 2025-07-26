@@ -125,9 +125,9 @@ export const previousStepAtom = atom(
 
 // 宠物类型选项
 export const PET_TYPE_OPTIONS = [
-  { value: 'cat', label: '猫咪', emoji: '🐱' },
-  { value: 'dog', label: '狗狗', emoji: '🐶' },
-  { value: 'other', label: '其他宠物', emoji: '🐹' },
+  { value: 'cat', label: '三花喵', emoji: '🐱' },
+  { value: 'dog', label: '赤狐酱', emoji: '🦊' },
+  { value: 'other', label: '水豚君', emoji: '🐹' },
   { value: 'none', label: '暂无宠物', emoji: '🚫' },
 ] as const
 
@@ -176,44 +176,44 @@ export interface PresetPetCharacter {
 // 预设宠物角色数据
 export const PRESET_PET_CHARACTERS: PresetPetCharacter[] = [
   {
-    id: 'tuntunji',
-    name: '豚豚君',
+    id: 'capy',
+    name: 'Capy',
     type: 'other',
     gender: 'unknown',
     personality: ['calm', 'gentle', 'independent'],
     age: 'adult',
     emoji: '🐹',
     avatar: '/decorations/capybara.jpeg',
-    description: '水豚君走得很慢，但看得多，他喜欢凝视傍晚的小卷，坐在路边喝一杯手冲咖啡，他总能发现不经意的风景，并写成一段柔软的碎念寄给你。',
+    description: '水豚君走得慢，但看得多。他喜欢拐进偏僻的小巷，坐在路边喝一杯手冲咖啡。他总能发现不经意的风景，并写成一段温柔的碎念寄给你。',
     quote: '慢一点，看得多一点',
     bgColor: 'from-orange-100 to-amber-50',
     accentColor: 'orange-500'
   },
   {
-    id: 'xiaomao',
-    name: '小喵',
+    id: 'tanuki',
+    name: 'Tanuki',
     type: 'cat',
     gender: 'female',
     personality: ['curious', 'playful', 'independent'],
     age: 'young',
     emoji: '🐱',
     avatar: '/decorations/cat.png',
-    description: '小喵总是对世界充满好奇，她会在阳光下伸懒腰，会追逐窗外的蝴蝶，也会在深夜悄悄陪伴你工作到很晚。',
+    description: '三花喵不赶热闹，只对那些"曾经发生过什么"的地方感兴趣。她爱在旧书店停留，偏爱不知名的手艺铺。她总会给你写下一些碎碎念式的评论，引你进入另一个城市。',
     quote: '好奇心是最好的向导',
     bgColor: 'from-pink-100 to-rose-50',
     accentColor: 'pink-500'
   },
   {
-    id: 'ali',
-    name: '阿狸',
+    id: 'foxo',
+    name: 'Foxo',
     type: 'dog',
     gender: 'male',
-    personality: ['active', 'clingy', 'playful'],
+    personality: ['active', 'curious', 'playful'],
     age: 'adult',
     emoji: '🦊',
     avatar: '/decorations/fox.png',
-    description: '旺仔是最忠诚的伙伴，他会在你回家时热烈欢迎，陪你散步看日落，用无条件的爱温暖你的每一天。',
-    quote: '陪伴是最长情的告白',
+    description: '赤狐酱从不回头看路。他能在最短时间踩遍最多的点，也总有本事在禁入的后巷挖出惊喜。他热爱冒险，行动迅速，会第一时间把前方的情报传回给你！',
+    quote: '冒险就是最好的陪伴',
     bgColor: 'from-blue-100 to-sky-50',
     accentColor: 'blue-500'
   },

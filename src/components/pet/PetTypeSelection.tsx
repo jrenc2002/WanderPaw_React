@@ -80,11 +80,11 @@ export const PetTypeSelection: React.FC = () => {
 function getTypeDescription(type: PetType): string {
   switch (type) {
     case 'cat':
-      return '独立又温暖的毛茸茸伙伴'
+      return '好奇调皮，偏爱探索城市的角落'
     case 'dog':
-      return '忠诚活泼的最佳朋友'
+      return '热血探索，总能发现最棒的冒险'
     case 'other':
-      return '特别的小动物伙伴'
+      return '安静温顺，用独特视角看世界'
     case 'none':
       return '暂时还没有宠物'
     default:

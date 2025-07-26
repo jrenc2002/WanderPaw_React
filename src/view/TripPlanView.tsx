@@ -591,11 +591,19 @@ const TripPlanView: React.FC = () => {
         <span>{language === 'zh' ? '返回' : 'Back'}</span>
       </div>
 
-      {/* 左下角水豚装饰 */}
+      {/* 左下角宠物装饰 */}
       <div className="fixed bottom-0 left-[3vh] z-0">
         <img 
-          src="/decorations/capybara.jpeg" 
-          alt="Capybara decoration"
+          src={
+            petInfo.type === 'cat' ? "/decorations/cat.png" :
+            petInfo.type === 'dog' ? "/decorations/fox.png" :
+            "/decorations/capybara.jpeg"
+          }
+          alt={
+            petInfo.type === 'cat' ? "Cat decoration" :
+            petInfo.type === 'dog' ? "Dog decoration" :
+            "Pet decoration"
+          }
           className="w-[35vh] h-[35vh] object-contain transition-opacity duration-300"
         />
       </div>
