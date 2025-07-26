@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
+import { authStateAtom } from '@/store/AuthState'
 import { petInfoAtom } from '@/store/PetState'
 import { currentTripPlanAtom, createTripPlan, startTripAtom } from '@/store/TripState'
 import type { TripActivity } from '@/store/TripState'
@@ -11,6 +12,7 @@ import DashedCard from '@/components/common/DashedCard'
 import { generateRealisticCityActivities } from '@/utils/tripDataGenerator'
 import { TripPlanMap } from '@/components/map/TripPlanMap'
 import type { GeneratedTripActivity } from '@/services/tripPlanningService'
+import { TripPlanningService, type TripPlanningRequest } from '@/services/tripPlanningService'
 import toast from 'react-hot-toast'
 
 const generateActivitiesForThemes = (themes: string[], cityName: string): Omit<TripActivity, 'coordinates' | 'status'>[] => {
@@ -431,6 +433,7 @@ const TripPlanView: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [language] = useAtom(selectedLanguageAtom)
+  const [authState] = useAtom(authStateAtom)
   const [petInfo] = useAtom(petInfoAtom)
   const [_currentTripPlan, setCurrentTripPlan] = useAtom(currentTripPlanAtom)
   const [, startTrip] = useAtom(startTripAtom)
@@ -548,38 +551,130 @@ const TripPlanView: React.FC = () => {
     }
   }
 
-  const handleRegeneratePlan = () => {
+  const handleRegeneratePlan = async () => {
     if (!tripPlan || !cityData) return
+    
+    // 检查登录状态
+    if (!authState.accessToken) {
+      toast.error(language === 'zh' ? '请先登录' : 'Please login first')
+      return
+    }
+
+    if (!petInfo || !petInfo.name) {
+      toast.error(language === 'zh' ? '请先设置宠物信息' : 'Please set pet information first')
+      return
+    }
     
     setIsGenerating(true)
     
-    setTimeout(() => {
-      // 优先使用丰富的mock数据重新生成活动
-      const cityName = language === 'zh' ? cityData?.name : cityData?.nameEn
-      const generatedActivities = generateActivitiesForThemes(tripPlan.themes, cityName || '')
-      
-      if (generatedActivities.length > 0) {
-        setActivities(generatedActivities)
-      } else {
-        // 回退到真实城市数据
-        const realisticActivities = generateRealisticCityActivities(
-          tripPlan.cityId, 
-          tripPlan.themes, 
-          language
-        )
-        setActivities(realisticActivities)
-      }
-      
-      setIsGenerating(false)
-      
-      toast.success(
-        language === 'zh' ? '计划已重新生成！' : 'Plan regenerated!',
-        {
-          icon: '🔄',
-          duration: 2000
-        }
+    try {
+      // 显示重新生成提示
+      const loadingToast = toast.loading(
+        language === 'zh' ? '正在重新生成旅行计划...' : 'Regenerating trip plan...'
       )
-    }, 1000) // 模拟生成时间
+
+      // 构建旅行规划请求
+      const planningRequest: TripPlanningRequest = {
+        cityName: language === 'zh' ? cityData.name : cityData.nameEn,
+        cityNameEn: cityData.nameEn || cityData.name,
+        themes: tripPlan.themes,
+        themeNames: tripPlan.selectedThemeNames,
+        duration: 1, // 默认1天
+        petInfo,
+        language,
+      }
+
+      console.log('重新生成旅行计划:', planningRequest)
+
+      // 调用AI生成服务
+      const response = await TripPlanningService.generateTripPlan(
+        planningRequest,
+        authState.accessToken
+      )
+
+      toast.dismiss(loadingToast)
+
+      if (response.success && response.data) {
+        // 设置新的计划标题和摘要
+        setPlanTitle(language === 'zh' ? response.data.planTitle : response.data.planTitleEn)
+        setPlanSummary(language === 'zh' ? response.data.summary : response.data.summaryEn)
+        
+        // 转换AI生成的活动到本地格式
+        const aiActivities = response.data.activities.map((activity: any) => ({
+          id: activity.id,
+          time: activity.time,
+          title: language === 'zh' ? activity.title : activity.titleEn,
+          titleEn: activity.titleEn,
+          location: language === 'zh' ? activity.location : activity.locationEn,
+          locationEn: activity.locationEn,
+          theme: activity.theme,
+          duration: activity.duration,
+          description: language === 'zh' ? activity.description : activity.descriptionEn,
+          descriptionEn: activity.descriptionEn,
+          tips: activity.tips || []
+        }))
+        
+        setActivities(aiActivities)
+        
+        toast.success(
+          language === 'zh' 
+            ? `✨ 为您和${petInfo?.name || '小伙伴'}重新定制了全新的旅行计划！` 
+            : `✨ A brand new trip plan has been customized for you and ${petInfo?.name || 'buddy'}!`,
+          { 
+            icon: '🔄',
+            duration: 4000 
+          }
+        )
+      } else {
+        throw new Error(response.error || '重新生成计划失败')
+      }
+    } catch (error: any) {
+      console.error('重新生成旅行计划失败:', error)
+      
+      toast.error(
+        language === 'zh' 
+          ? `重新生成失败：${error.message}` 
+          : `Regeneration failed: ${error.message}`,
+        { duration: 5000 }
+      )
+
+      // 如果AI服务失败，提供备用方案
+      if (error.message.includes('连接') || error.message.includes('connect')) {
+        toast(
+          language === 'zh' 
+            ? '将为您切换到离线模式重新生成计划' 
+            : 'Switching to offline mode for plan regeneration',
+          { icon: '💡', duration: 3000 }
+        )
+        
+        // 使用原有的mock数据作为备用
+        setTimeout(() => {
+          const cityName = language === 'zh' ? cityData?.name : cityData?.nameEn
+          const generatedActivities = generateActivitiesForThemes(tripPlan.themes, cityName || '')
+          
+          if (generatedActivities.length > 0) {
+            setActivities(generatedActivities)
+          } else {
+            const realisticActivities = generateRealisticCityActivities(
+              tripPlan.cityId, 
+              tripPlan.themes, 
+              language
+            )
+            setActivities(realisticActivities)
+          }
+          
+          toast.success(
+            language === 'zh' ? '计划已重新生成！' : 'Plan regenerated!',
+            {
+              icon: '🔄',
+              duration: 2000
+            }
+          )
+        }, 500)
+      }
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   const handleBack = () => {
