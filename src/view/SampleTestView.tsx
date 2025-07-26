@@ -74,8 +74,8 @@ export const SampleTestView: React.FC = () => {
             className="w-full h-full"
             center={[30.0, 120.0]} // 以中国为中心
             zoom={4}
+            maxZoom={12}
             points={mapPoints}
-
           />
         </div>
       </div>

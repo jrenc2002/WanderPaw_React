@@ -110,84 +110,12 @@ const HomeView: React.FC = () => {
         className="w-full h-full"
         center={mapCenter}
         zoom={mapZoom}
+        maxZoom={8}
         points={mapPoints}
         routes={mapRoutes}
       />
       
 
-      
-      {/* 地图控制面板 */}
-      <div className="absolute top-4 left-4 z-[1000]">
-        <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg">
-          <h3 className="text-gray-800 font-semibold mb-2 flex items-center gap-2">
-            <span>🗺️</span>
-            {language === 'zh' ? '地图控制' : 'Map Controls'}
-          </h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center gap-2">
-              <span>📍</span>
-              <span>{language === 'zh' ? '显示城市' : 'Cities'}: {mapPoints.length}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>🛣️</span>
-              <span>{language === 'zh' ? '显示路线' : 'Routes'}: {mapRoutes.length}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>🔍</span>
-              <span>{language === 'zh' ? '缩放级别' : 'Zoom'}: {mapZoom}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 选中城市详细信息 */}
-      {selectedRegion && selectedData && (
-        <div className="absolute top-32 right-8 z-[1000]">
-          <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-lg px-4 py-3 max-w-sm shadow-lg">
-            <h3 className="text-gray-800 font-semibold mb-2 flex items-center gap-2">
-              <span>📍</span>
-              {language === 'zh' ? '选中城市详情' : 'Selected City Details'}
-            </h3>
-            <div className="text-gray-700 text-sm space-y-2">
-              <div className="font-medium text-base">
-                {mapPoints.find(p => p.id === selectedRegion)?.title}
-              </div>
-              <div className="flex items-center gap-1">
-                <span>🏠</span>
-                <span>{language === 'zh' ? '宠物友好度' : 'Pet Friendly Index'}: </span>
-                <span className="font-semibold">{mapPoints.find(p => p.id === selectedRegion)?.petFriendlyIndex}</span>
-              </div>
-              {selectedData.averageSalary && (
-                <div className="flex items-center gap-1">
-                  <span>💰</span>
-                  <span>{language === 'zh' ? '平均工资' : 'Average Salary'}: </span>
-                  <span>{selectedData.averageSalary.toLocaleString()} {selectedData.currency}</span>
-                </div>
-              )}
-              {selectedData.rentPrice && (
-                <div className="flex items-center gap-1">
-                  <span>🏡</span>
-                  <span>{language === 'zh' ? '房租' : 'Rent'}: </span>
-                  <span>{selectedData.rentPrice.toLocaleString()} {selectedData.currency}</span>
-                </div>
-              )}
-              {selectedData.workLifeBalance && (
-                <div className="flex items-center gap-1">
-                  <span>⚖️</span>
-                  <span>{language === 'zh' ? '工作生活平衡' : 'Work-Life Balance'}: </span>
-                  <span>{selectedData.workLifeBalance}</span>
-                </div>
-              )}
-              <button
-                onClick={() => setSelectedRegion(null)}
-                className="mt-2 px-3 py-1 bg-blue-500 text-white rounded-md text-xs hover:bg-blue-600 transition-colors"
-              >
-                {language === 'zh' ? '关闭' : 'Close'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 选中路线详细信息 */}
       {selectedRoute && (

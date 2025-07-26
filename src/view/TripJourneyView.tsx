@@ -324,6 +324,7 @@ ${petName} 💕`
           className="w-full h-full"
           center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]] as [number, number]} // 转换 [lng, lat] -> [lat, lng]
           zoom={12}
+          maxZoom={16}
           disableZoom={false}
           disableInteraction={false}
           points={mapPoints}

@@ -77,8 +77,8 @@ export const MapTestView: React.FC = () => {
             className="w-full h-full"
             center={[35.0, 110.0]} // 中国中心
             zoom={5}
+            maxZoom={14}
             points={testPoints}
-
           />
         </div>
 
