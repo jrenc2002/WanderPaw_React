@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { MapboxMap } from '@/components/map/MapboxMap'
-import { MapBorderMask } from '@/components/decorations'
+
 import { WarmBg } from '@/components/bg/WarmBg'
 import { RegionInfo } from '@/components/data/RegionInfo'
 import { getPointsByZoom, getRoutesByZoom, type MapPoint, type MapRoute } from '@/data/mapData'
@@ -98,6 +98,14 @@ const HomeView: React.FC = () => {
 
   return (
     <WarmBg className="relative w-full h-screen overflow-hidden">
+      {/* 主标题 */}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-[1000]">
+        <h1 className="text-6xl font-bold drop-shadow-lg tracking-wide" 
+            style={{ fontFamily: 'Paytone One, sans-serif', color: '#687949' }}>
+          wanderpaw
+        </h1>
+      </div>
+
       {/* Mapbox 地图 */}
       <MapboxMap
         onRegionClick={handleRegionClick}
@@ -110,10 +118,6 @@ const HomeView: React.FC = () => {
         points={mapPoints}
         routes={mapRoutes}
       />
-      
-      {/* 地图边界遮罩 */}
-      <MapBorderMask maskWidth="30px" />
-
 
       {/* 选中路线详细信息 */}
       {selectedRoute && (

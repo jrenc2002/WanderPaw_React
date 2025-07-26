@@ -4,7 +4,7 @@ import { useAtom } from 'jotai'
 import { motion, AnimatePresence } from 'framer-motion'
 import { selectedLanguageAtom } from '@/store/MapState'
 import { WarmBg } from '@/components/bg/WarmBg'
-import { EarthWithCapybara, BottomGradientMask, MapBorderMask } from '@/components/decorations'
+import { EarthWithCapybara, BottomGradientMask } from '@/components/decorations'
 import { 
   currentTripPlanAtom, 
   tripProgressAtom, 
@@ -28,6 +28,7 @@ const TripJourneyView: React.FC = () => {
   const [isJournalAnimating, setIsJournalAnimating] = useState<boolean>(false)
   const [letterAnimationStage, setLetterAnimationStage] = useState<'hidden' | 'appearing' | 'disappearing' | 'reappearing' | 'final'>('hidden')
   const [hasReadLetter, setHasReadLetter] = useState<boolean>(false)
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false)
 
   // 自定义虚线卡片样式已通过CSS类实现
 
@@ -71,10 +72,10 @@ const TripJourneyView: React.FC = () => {
       tripProgress.currentActivityIndex >= currentTripPlan.activities.length ||
       currentTripPlan.status === 'completed'
     )) {
-      // 延迟2秒显示信件，让用户先看到"行程结束"状态
+      // 延迟1秒显示信件，让用户先看到"行程结束"状态
       const timer = setTimeout(() => {
         startLetterAnimation()
-      }, 2000)
+      }, 1000)
       return () => clearTimeout(timer)
     }
   }, [currentTripPlan, tripProgress.currentActivityIndex])
@@ -84,40 +85,45 @@ const TripJourneyView: React.FC = () => {
     // 第一阶段：从屏幕中间出现
     setLetterAnimationStage('appearing')
     
-    // 2秒后在中间消失
+    // 1.5秒后在中间消失
     setTimeout(() => {
       setLetterAnimationStage('disappearing')
-    }, 2000)
+    }, 1500)
     
-    // 3.5秒后在宠物右边重新出现
+    // 2.5秒后在宠物右边重新出现
     setTimeout(() => {
       setLetterAnimationStage('reappearing')
-    }, 3500)
+    }, 2500)
     
-    // 5秒后设置为最终状态
+    // 3.5秒后设置为最终状态
     setTimeout(() => {
       setLetterAnimationStage('final')
-      setShowLetter(true)
-    }, 5000)
+    }, 3500)
   }
 
-  // 处理行程卡片点击 - 直接结束行程
+  // 处理行程卡片点击 - 添加背景收回动画
   const handleTripCardClick = () => {
-    if (!isTripsCompleted && letterAnimationStage === 'hidden') {
-      // 直接完成整个旅行
-      completeTrip()
-      toast.success(
-        language === 'zh' ? '行程已结束！' : 'Trip completed!',
-        {
-          icon: '🎉',
-          duration: 2000
-        }
-      )
+    if (!isTripsCompleted && letterAnimationStage === 'hidden' && !isTransitioning) {
+      // 开始过渡动画
+      setIsTransitioning(true)
       
-      // 延迟1秒后开始信件动画
+      // 1.5秒后完成旅行（动画完成时）
       setTimeout(() => {
-        startLetterAnimation()
-      }, 1000)
+        completeTrip()
+        setIsTransitioning(false)
+        toast.success(
+          language === 'zh' ? '行程已结束！' : 'Trip completed!',
+          {
+            icon: '🎉',
+            duration: 2000
+          }
+        )
+        
+        // 延迟0.5秒后开始信件动画
+        setTimeout(() => {
+          startLetterAnimation()
+        }, 500)
+      }, 1500)
     }
   }
 
@@ -274,7 +280,7 @@ ${petName} 💕`
   )
 
   return (
-    <WarmBg>
+    <div className="relative">
       {/* 滚动条样式 */}
       <style>
         {`
@@ -295,22 +301,83 @@ ${petName} 💕`
         `}
       </style>
       
-      {/* 全屏地图背景 */}
-      <div className="fixed inset-0 w-full h-full">
-        <MapboxMap
-          className="w-full h-full"
-          center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]] as [number, number]} // 转换 [lng, lat] -> [lat, lng]
-          zoom={12}
-          maxZoom={16}
-          disableZoom={false}
-          disableInteraction={false}
-          points={mapPoints}
-          routes={mapRoutes}
-        />
-        
-        {/* 地图边界遮罩 */}
-        <MapBorderMask variant="subtle" maskWidth="50px" />
-      </div>
+      {/* 条件渲染背景 */}
+      {isTripsCompleted || isTransitioning ? (
+        // 旅行结束时或过渡动画时：显示地图背景
+        <div className="fixed inset-0 w-full h-full z-0">
+          <MapboxMap
+            className="w-full h-full"
+            center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]] as [number, number]} // 转换 [lng, lat] -> [lat, lng]
+            zoom={12}
+            maxZoom={16}
+            disableZoom={false}
+            disableInteraction={false}
+            points={mapPoints}
+            routes={mapRoutes}
+          />
+        </div>
+      ) : (
+        // 旅行进行中：使用温暖背景
+        <div className="fixed inset-0 w-full h-full z-0" style={{ backgroundColor: '#FFF6E4' }}>
+          {/* 背景装饰元素 */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* 左上角叶子装饰 */}
+            <div className="absolute top-0 left-[-60px] w-[350px] h-[350px]">
+              <img 
+                src="/decorations/leaves-dark.jpeg" 
+                alt="Left decoration" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            {/* 右上角叶子装饰 */}
+            <div className="absolute top-0 right-[-20px] w-[250px] h-[250px]">
+              <img 
+                src="/decorations/leaves-light.jpeg" 
+                alt="Right decoration" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* 过渡动画：温暖背景向下收回 */}
+      <AnimatePresence>
+        {isTransitioning && (
+          <motion.div
+            initial={{ y: 0 }}
+            animate={{ y: '100vh' }}
+            transition={{ 
+              duration: 1.5, 
+              ease: [0.25, 0.46, 0.45, 0.94] 
+            }}
+                         className="fixed inset-0 w-full h-full z-5"
+            style={{ backgroundColor: '#FFF6E4' }}
+          >
+            {/* 背景装饰元素 */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {/* 左上角叶子装饰 */}
+              <div className="absolute top-0 left-[-60px] w-[350px] h-[350px]">
+                <img 
+                  src="/decorations/leaves-dark.jpeg" 
+                  alt="Left decoration" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
+
+              {/* 右上角叶子装饰 */}
+              <div className="absolute top-0 right-[-20px] w-[250px] h-[250px]">
+                <img 
+                  src="/decorations/leaves-light.jpeg" 
+                  alt="Right decoration" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 所有UI元素悬浮在地图上层 */}
       <div className="relative z-10">
@@ -325,24 +392,28 @@ ${petName} 💕`
           <span>{language === 'zh' ? '返回' : 'Back'}</span>
         </div>
 
+
+
+
+
         {/* 行程进程卡片 */}
         <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20">
           <div 
             className={`backdrop-blur-sm p-5 w-[47vw] transition-all duration-300 ${
-              !isTripsCompleted && letterAnimationStage === 'hidden' 
+              !isTripsCompleted && letterAnimationStage === 'hidden' && !isTransitioning
                 ? 'cursor-pointer hover:scale-105 hover:shadow-lg' 
                 : 'cursor-default'
             }`}
             style={{
               borderRadius: '1.5vw',
               background: '#FEFDF9',
-              boxShadow: isTripsCompleted 
+              boxShadow: isTripsCompleted || isTransitioning
                 ? '0 2px 34.9px 3px rgba(123, 66, 15, 0.05)' 
                 : '0 2px 34.9px 3px rgba(123, 66, 15, 0.11)',
-              opacity: isTripsCompleted ? 0.8 : 1
+              opacity: isTripsCompleted || isTransitioning ? 0.8 : 1
             }}
             onClick={handleTripCardClick}
-            title={!isTripsCompleted && letterAnimationStage === 'hidden' 
+            title={!isTripsCompleted && letterAnimationStage === 'hidden' && !isTransitioning
               ? (language === 'zh' ? '点击结束行程' : 'Click to end trip') 
               : ''
             }
@@ -793,7 +864,7 @@ ${petName} 💕`
           
           {/* 固定在探索计划底部的按钮 */}
           <div className="mt-4 flex justify-center">
-            {!isTripsCompleted && (
+            {!isTripsCompleted && !isTransitioning && (
               <button 
                 onClick={handleAdjustPlan}
                 style={getUnifiedButtonStyle()}
@@ -881,19 +952,23 @@ ${petName} 💕`
                   y: '-50%'
                 }
               }
-              className="fixed z-30"
+              className="fixed z-[10000]"
               style={{ 
                 transformOrigin: 'center'
               }}
             >
               <motion.div
-                onClick={letterAnimationStage === 'final' ? handleLetterClick : undefined}
-                className="w-[8vw] h-[8vw] transition-transform cursor-pointer bg-transparent"
+                onClick={(letterAnimationStage === 'reappearing' || letterAnimationStage === 'final') ? handleLetterClick : undefined}
+                className={`w-[8vw] h-[8vw] transition-transform cursor-pointer bg-transparent ${
+                  (letterAnimationStage === 'reappearing' || letterAnimationStage === 'final') 
+                    ? 'ring-2 ring-yellow-400 ring-opacity-50 rounded-lg' 
+                    : ''
+                }`}
                 aria-label={language === 'zh' ? '查看信件' : 'View Letter'}
                 role="button"
-                tabIndex={letterAnimationStage === 'final' ? 0 : -1}
-                whileHover={letterAnimationStage === 'final' ? { scale: 1.15 } : {}}
-                animate={letterAnimationStage === 'final' ? {
+                tabIndex={(letterAnimationStage === 'reappearing' || letterAnimationStage === 'final') ? 0 : -1}
+                whileHover={(letterAnimationStage === 'reappearing' || letterAnimationStage === 'final') ? { scale: 1.15 } : {}}
+                animate={(letterAnimationStage === 'reappearing' || letterAnimationStage === 'final') ? {
                   y: [0, -5, 0],
                   transition: {
                     duration: 2,
@@ -903,7 +978,9 @@ ${petName} 💕`
                 } : {}}
                 style={{
                   backgroundColor: 'transparent',
-                  pointerEvents: letterAnimationStage === 'final' ? 'auto' : 'none'
+                  pointerEvents: (letterAnimationStage === 'reappearing' || letterAnimationStage === 'final') ? 'auto' : 'none',
+                  position: 'relative',
+                  zIndex: 10001
                 }}
               >
                 <img 
@@ -918,12 +995,32 @@ ${petName} 💕`
         </AnimatePresence>
       </div>
 
-              {/* 地球装饰和宠物 */}
-        <EarthWithCapybara petType={
-          currentTripPlan.petCompanion.type === 'none' 
-            ? 'other' 
-            : currentTripPlan.petCompanion.type as 'cat' | 'dog' | 'other'
-        } />
+              {/* 地球装饰和宠物 - 根据旅行状态调整位置 */}
+        <motion.div 
+          className="relative z-10"
+          style={{ pointerEvents: 'none' }} // 确保整个容器不阻挡点击
+          initial={{ 
+            y: 100, 
+            opacity: 0, 
+            scale: 0.8 
+          }}
+          animate={{
+            y: isTripsCompleted || isTransitioning ? 0 : -208, // -translate-y-52 = -13rem = -208px
+            opacity: 1,
+            scale: 1
+          }}
+          transition={{
+            duration: isTransitioning ? 1.5 : 2.5, // 增加初始出现动画时长到2.5秒
+            ease: isTransitioning ? [0.25, 0.46, 0.45, 0.94] : [0.25, 0.46, 0.45, 0.94],
+            delay: 0.3 // 添加延迟让地球更自然地出现
+          }}
+        >
+          <EarthWithCapybara petType={
+            currentTripPlan.petCompanion.type === 'none' 
+              ? 'other' 
+              : currentTripPlan.petCompanion.type as 'cat' | 'dog' | 'other'
+          } />
+        </motion.div>
 
       {/* 手帐按钮 - 右下角 */}
       <motion.div 
@@ -1188,7 +1285,7 @@ ${petName} 💕`
                   }
                 }
               }}
-              className="fixed z-[60] bg-gradient-to-tl from-amber-50/90 to-orange-100/90"
+              className="fixed z-[25] bg-gradient-to-tl from-amber-50/90 to-orange-100/90"
               style={{ 
                 bottom: 'calc(2rem + 6vw)',
                 right: 'calc(2rem + 6vw)',
@@ -1230,7 +1327,7 @@ ${petName} 💕`
                   }
                 }
               }}
-              className="fixed z-[59] bg-gradient-to-tl from-yellow-50/60 to-amber-50/60"
+              className="fixed z-[24] bg-gradient-to-tl from-yellow-50/60 to-amber-50/60"
               style={{ 
                 bottom: 'calc(2rem + 6vw)',
                 right: 'calc(2rem + 6vw)',
@@ -1262,7 +1359,7 @@ ${petName} 💕`
                     ease: "easeOut"
                   }
                 }}
-                className="fixed z-[58] w-6 h-6 bg-amber-100 rounded-sm shadow-sm"
+                className="fixed z-[23] w-6 h-6 bg-amber-100 rounded-sm shadow-sm"
                 style={{
                   background: 'linear-gradient(45deg, #fef3c7, #fed7aa)',
                   boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
@@ -1302,7 +1399,7 @@ ${petName} 💕`
                   }
                 }
               }}
-              className="fixed z-[57]"
+              className="fixed z-[22]"
               style={{ 
                 bottom: 'calc(2rem + 6vw)',
                 right: 'calc(2rem + 6vw)',
@@ -1314,7 +1411,7 @@ ${petName} 💕`
           </>
         )}
       </AnimatePresence>
-    </WarmBg>
+    </div>
   )
 }
 

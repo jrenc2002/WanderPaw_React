@@ -3,6 +3,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 自定义动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
 /* WanderPaw 地图主题样式 */
 @import './styles/wanderpaw-map-theme.css';
 

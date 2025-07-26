@@ -370,33 +370,26 @@ export const MapboxMap: React.FC<MapboxMapProps> = ({
 
   // 创建自定义标记
   const createCustomMarker = (point: MapPoint) => {
-    // 使用 WanderPaw 主题色彩的宠物友好度颜色方案
-    const color = point.petFriendlyIndex >= 80 ? WANDERPAW_COLORS.forest :  // 深绿色（最佳）
-                  point.petFriendlyIndex >= 60 ? WANDERPAW_COLORS.sage :    // 浅绿色（良好）
-                  point.petFriendlyIndex >= 40 ? WANDERPAW_COLORS.gold :    // 金黄色（一般）
-                  point.petFriendlyIndex >= 20 ? WANDERPAW_COLORS.sand :    // 浅棕色（较差）
-                  WANDERPAW_COLORS.earth                                     // 深棕色（最差）
-    
-    const size = point.petFriendlyIndex >= 70 ? 46 : 
-                 point.petFriendlyIndex >= 50 ? 42 : 
-                 point.petFriendlyIndex >= 30 ? 38 : 34
+    // 设置统一的标记大小
+    const size = 40
 
-    // 创建自定义标记元素
+    // 创建自定义标记元素，使用 shitx.jpg 图片
     const el = document.createElement('div')
     el.innerHTML = `
       <div class="relative wanderpaw-marker">
-        <div class="rounded-full border-3 shadow-lg flex items-center justify-center text-white font-bold transition-all duration-200 hover:scale-110 cursor-pointer" 
-             style="background: linear-gradient(135deg, ${color} 0%, ${adjustColorBrightness(color, 0.8)} 100%); 
-                    border: 3px solid ${WANDERPAW_COLORS.pure}; 
-                    width: ${size}px; 
+        <div class=" flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer overflow-hidden" 
+             style="width: ${size}px; 
                     height: ${size}px; 
-                    box-shadow: 0 4px 16px ${color}40, 0 2px 8px rgba(0,0,0,0.1);">
-          <div class="flex flex-col items-center justify-center">
-            <span style="font-size: 14px; font-weight: 700; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">${Math.round(point.petFriendlyIndex)}</span>
-          </div>
+                    
+                    position: relative;">
+          <img 
+            src="/decorations/shitx.jpg" 
+            alt="Map marker" 
+            style="width: 100%; height: 100%; object-fit: cover;"
+          />
         </div>
         <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0" 
-             style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid ${color}; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></div>
+             style="border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid ${WANDERPAW_COLORS.earth}; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></div>
       </div>
     `
     el.className = 'marker'
