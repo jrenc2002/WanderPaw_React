@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { selectedLanguageAtom } from '@/store/MapState'
@@ -21,31 +21,36 @@ const selectedCities = [
     id: 'CN-ZJ',
     cityName: '杭州',
     cityNameEn: 'Hangzhou',
-    image: hangzhouImg
+    image: hangzhouImg,
+    fallbackImage: '/city-images/杭州.jpg'
   },
   {
     id: 'CN-SC', 
     cityName: '成都',
     cityNameEn: 'Chengdu',
-    image: chengduImg
+    image: chengduImg,
+    fallbackImage: '/city-images/成都.jpg'
   },
   {
     id: 'JP',
     cityName: '京都',
     cityNameEn: 'Kyoto', 
-    image: kyotoImg
+    image: kyotoImg,
+    fallbackImage: '/city-images/京都.jpg'
   },
   {
     id: 'SG',
     cityName: '新加坡',
     cityNameEn: 'Singapore',
-    image: singaporeImg
+    image: singaporeImg,
+    fallbackImage: '/city-images/新加坡.jpg'
   },
   {
     id: 'CN-QD',
     cityName: '青岛',
     cityNameEn: 'Qingdao',
-    image: qingdaoImg
+    image: qingdaoImg,
+    fallbackImage: '/city-images/青岛.jpg'
   }
 ]
 
@@ -54,41 +59,72 @@ const CitySelectionView: React.FC = () => {
   const [language] = useAtom(selectedLanguageAtom)
 
   
-
-
-
+  // 默认选中中间的城市（京都，索引2）
+  const [selectedCityIndex, setSelectedCityIndex] = useState<number>(2)
+  
+  // 图片加载状态
+  const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
 
   // 获取精选城市数据
   const destinations = useMemo(() => {
-    return selectedCities.map(city => ({
+    const result = selectedCities.map(city => ({
       ...city,
       regionData: mockRegionsData[city.id]
     })).filter(city => city.regionData)
+    
+    return result
   }, [])
 
-  // 计算以地球组件为圆心的圆形排布位置
-  const calculateCirclePosition = (index: number, total: number) => {
-    // 地球组件位置分析：fixed bottom-[-15vw] left-1/2, 大小 50vw x 50vw
-    // 地球中心位置计算
-    const earthCenterX = 50 // 水平居中百分比
-    const earthCenterY = 75 // 地球中心在屏幕75%位置（考虑到bottom-[-15vw]的偏移）
+  // 处理图片加载错误
+  const handleImageError = (cityId: string, cityName: string) => {
+    console.error(`图片加载失败: ${cityName} (${cityId})`);
+    setImageErrors(prev => ({ ...prev, [cityId]: true }));
+  }
+
+  // 处理图片加载成功
+  const handleImageLoad = (cityName: string) => {
+    console.log(`图片加载成功: ${cityName}`);
+  }
+
+  // 计算球状弧线位置 - 确保角度均匀分布
+  const calculateSphericalArcPosition = (index: number, total: number, isSelected: boolean) => {
+    // 定义弧线参数
+    const centerX = 50 // 弧线中心X坐标（屏幕50%）
+    const centerY = 60 // 弧线中心Y坐标（屏幕40%）
+    const arcRadius = 45 // 弧线半径
     
-    // 大圆半径 - 足够大让城市围绕地球排布
-    const radius = 40 // 使用40%的屏幕作为半径，形成大圆
+    // 计算均匀角度间隔
+    const angleStep = 30 // 每两张图片之间的角度间隔（度）
     
-    // 计算每个城市的角度 - 均匀分布在360度圆周上
-    const angleStep = (2 * Math.PI) / total
-    const angle = index * angleStep - Math.PI / 2 // 从顶部开始（-90度）
+    // 计算中心图片的索引（居中对称）
+    const centerIndex = (total - 1) / 2
     
-    // 计算位置坐标
-    const x = earthCenterX + radius * Math.cos(angle)
-    const y = earthCenterY + radius * Math.sin(angle)
+    // 计算当前图片相对于中心的角度偏移
+    const angleOffset = (index - centerIndex) * angleStep
+    
+    // 最终角度（0度为正上方，正值为顺时针）
+    const angle = angleOffset
+    const angleRad = (angle * Math.PI) / 180 // 转换为弧度
+    
+    // 计算基础位置 - 形成真正的圆形上半弧
+    const baseX = centerX + arcRadius * Math.sin(angleRad)
+    const baseY = centerY - arcRadius * Math.cos(angleRad) // 移除Y轴压缩，保证圆形
+    
+    // 选中状态的特殊处理
+    if (isSelected) {
+      return {
+        top: `${baseY - 3}%`, // 选中时稍微上移
+        left: `${baseX}%`,
+        transform: 'translate(-50%, -50%)',
+        zIndex: 20
+      }
+    }
     
     return {
-      top: `${Math.max(5, Math.min(90, y))}%`,
-      left: `${Math.max(5, Math.min(95, x))}%`,
+      top: `${baseY}%`,
+      left: `${baseX}%`,
       transform: 'translate(-50%, -50%)',
-      zIndex: 15 // 统一的zIndex，没有层级区别
+      zIndex: 10
     }
   }
 
@@ -99,19 +135,25 @@ const CitySelectionView: React.FC = () => {
       return
     }
 
-    // 直接选择并导航到该城市
-    toast.success(
-      `${language === 'zh' ? '出发前往' : 'Heading to'} ${language === 'zh' ? selectedCity.cityName : selectedCity.cityNameEn}!`,
-      {
-        duration: 1500,
-        position: 'top-center',
-      }
-    )
+    if (index === selectedCityIndex) {
+      // 确认操作：如果点击的城市已经被选中，则导航
+      toast.success(
+        `${language === 'zh' ? '准备出发！' : 'Ready to go!'}`,
+        {
+          duration: 1500,
+          position: 'top-center',
+        }
+      )
+  
+      // 延迟跳转，让用户看到选择效果
+      setTimeout(() => {
+        navigate(`/trip-themes/${selectedCity.id}`)
+      }, 1000)
 
-    // 延迟跳转，让用户看到选择效果
-    setTimeout(() => {
-      navigate(`/trip-themes/${selectedCity.id}`)
-    }, 1000)
+    } else {
+      // 选择操作：更新选中的城市
+      setSelectedCityIndex(index)
+    }
   }
 
   const handleBack = () => {
@@ -134,7 +176,7 @@ const CitySelectionView: React.FC = () => {
 
         <div className="relative z-20 flex flex-col items-center flex-grow p-6 pt-16">
           {/* 标题区域 */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-12">
             <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{
               background: 'linear-gradient(135deg, #4a7c59 0%, #8b9dc3 50%, #7b68ee 100%)',
               WebkitBackgroundClip: 'text',
@@ -143,44 +185,79 @@ const CitySelectionView: React.FC = () => {
             }}>
               WanderPaw
             </h1>
-            <p className="text-gray-600 text-lg mb-2">
+            <p className="text-gray-600 text-lg mb-4">
               {language === 'zh' ? '请选择希望探索的城市' : 'Choose the city you wish to explore'}
             </p>
-
+            {/* Selected city name tag */}
+            {destinations[selectedCityIndex] && (
+              <div className="inline-block">
+                <div className="px-6 py-2 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-full text-lg font-semibold shadow-lg">
+                  {language === 'zh' ? destinations[selectedCityIndex].cityName : destinations[selectedCityIndex].cityNameEn}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* 城市选择布局 - 围绕地球的圆形排布 */}
-          <div className="relative w-full flex-grow mb-0">
+          {/* 球状弧线城市布局 */}
+          <div className="relative w-full flex-grow">
+            {/* 弧线背景引导线（可选的视觉辅助） */}
+            <div className="absolute inset-0 pointer-events-none">
+              <svg
+                className="w-full h-full opacity-10"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M 12 40 A 45 45 0 0 1 88 40"
+                  stroke="url(#arcGradient)"
+                  strokeWidth="0.5"
+                  fill="none"
+                  strokeDasharray="2,2"
+                />
+                <defs>
+                  <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#4a7c59" stopOpacity="0.3" />
+                    <stop offset="50%" stopColor="#8b9dc3" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#7b68ee" stopOpacity="0.3" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
             {destinations.map((destination, index) => {
-              const position = calculateCirclePosition(index, destinations.length)
+              const isSelected = index === selectedCityIndex
+              const position = calculateSphericalArcPosition(index, destinations.length, isSelected)
               
               return (
                 <div
                   key={destination.id}
-                  className="absolute cursor-pointer transition-all duration-700 ease-in-out transform-gpu hover:scale-105"
+                  className="absolute cursor-pointer transition-all duration-700 ease-in-out transform-gpu hover:scale-105 group"
                   style={{
                     ...position,
-                    width: '200px',
-                    height: '200px',
+                    width: isSelected ? '300px' : '300px',
+                    height: isSelected ? '300px' : '300px',
                   }}
                   onClick={() => handleCitySelect(index)}
                 >
                   <div className="relative w-full h-full">
-                    {/* 城市名称标签 */}
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 transition-all duration-300 opacity-100">
-                      <div className="px-3 py-1 bg-black/70 text-white rounded-full text-sm font-medium backdrop-blur-sm">
-                        {language === 'zh' ? destination.cityName : destination.cityNameEn}
-                      </div>
+                    {/* 城市图片容器 */}
+                    <div className={`relative w-full h-full  transition-all duration-500`}>
+                      {/* 城市图片 */}
+                      <img
+                        src={imageErrors[destination.id] ? destination.fallbackImage : destination.image}
+                        alt={language === 'zh' ? destination.cityName : destination.cityNameEn}
+                        className={`w-full h-full object-cover transition-all duration-500 ${
+                          isSelected 
+                            ? 'scale-105 brightness-110' 
+                            : 'scale-100 saturate-90 brightness-95 group-hover:saturate-100 group-hover:brightness-100'
+                        }`}
+                        onError={() => handleImageError(destination.id, destination.cityName)}
+                        onLoad={() => handleImageLoad(destination.cityName)}
+                      />
+                      
+                    
                     </div>
-                    {/* 城市图片 */}
-                    <img
-                      src={destination.image}
-                      alt={language === 'zh' ? destination.cityName : destination.cityNameEn}
-                      className="w-full h-full object-cover rounded-full transition-all duration-500 ring-2 ring-white/30 hover:ring-4 hover:ring-green-400/60 hover:scale-110 shadow-2xl"
-                      style={{
-                        filter: 'saturate(0.9) brightness(0.95)',
-                      }}
-                    />
+                   
                     
                   
                   </div>
@@ -191,7 +268,9 @@ const CitySelectionView: React.FC = () => {
         </div>
 
         {/* 底部水豚地球组件 */}
-        <EarthWithCapybara />
+        <div className="absolute bottom-[-60vh] left-0 w-full h-full">
+          <EarthWithCapybara />
+        </div>
       </div>
     </WarmBg>
   )

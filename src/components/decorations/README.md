@@ -127,5 +127,59 @@ import { MapBorderMask } from '@/components/decorations'
 ### BottomGradientMask
 底部渐变蒙版，用于页面底部的视觉过渡效果。
 
+### GlassGradientMask ⭐ 毛玻璃渐变遮罩
+现代化的毛玻璃渐变遮罩组件，提供局部的毛玻璃效果。
+
+**特点：**
+- 支持4个方向：顶部、底部、左侧、右侧
+- 5种预设主题配色
+- 可调节毛玻璃模糊强度  
+- 多层次效果：主渐变 + 毛玻璃模糊 + 细节纹理
+- 自动z-index管理
+
+**Props：**
+```tsx
+interface GlassGradientMaskProps {
+  className?: string
+  height?: string                                              // 遮罩尺寸，默认calc(100vh / 13)
+  position?: 'top' | 'bottom' | 'left' | 'right'             // 位置，默认bottom
+  variant?: 'warm' | 'cool' | 'neutral' | 'sunset' | 'ocean' // 主题，默认warm
+  blurIntensity?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'  // 模糊强度，默认lg
+  opacity?: number                                            // 透明度，默认0.9
+  zIndex?: number                                             // 层级，默认30
+}
+```
+
+**使用示例：**
+```tsx
+import { GlassGradientMask } from '@/components/decorations/GlassGradientMask'
+
+// 底部毛玻璃渐变遮罩（默认）
+<GlassGradientMask />
+
+// 顶部冷色调毛玻璃遮罩
+<GlassGradientMask 
+  position="top"
+  variant="cool"
+  height="80px"
+  blurIntensity="xl"
+/>
+
+// 左侧日落主题遮罩
+<GlassGradientMask 
+  position="left"
+  variant="sunset"
+  height="120px"
+  opacity={0.8}
+  zIndex={40}
+/>
+```
+
+**应用场景：**
+- 替换传统的底部渐变遮罩，提供更现代的毛玻璃效果
+- 在滚动容器边缘创建视觉边界
+- 为内容区域提供层次感和深度
+- 与其他UI元素融合，创建统一的设计语言
+
 ### EarthWithCapybara  
 地球与水豚装饰动画，为页面添加趣味性元素。 

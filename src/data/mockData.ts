@@ -532,6 +532,37 @@ export const mockRegionsData: Record<string, RegionData> = {
     unemploymentRate: 4.5,
     timezone: 'Asia/Shanghai',
     coordinates: [104.0665, 30.5728]
+  },
+
+  'CN-QD': {
+    id: 'CN-QD',
+    name: '青岛',
+    nameEn: 'Qingdao',
+    type: 'city',
+    parentId: 'CN',
+    countryCode: 'CN',
+    currency: 'CNY',
+    averageSalary: 8200,
+    rentPrice: 2200,
+    foodCost: 1000,
+    transportCost: 250,
+    entertainmentCost: 600,
+    livingIndex: 62,
+    workLifeBalance: 75,
+    socialSafety: 85,
+    culturalDiversity: 70,
+    languageBarrier: 25,
+    climateComfort: 80,
+    internetSpeed: 120,
+    petFriendlyIndex: 72,
+    lifeQuality: 78,
+    stressFactor: 55,
+    freelanceFriendly: 70,
+    population: 10071000,
+    gdpPerCapita: 14500,
+    unemploymentRate: 3.8,
+    timezone: 'Asia/Shanghai',
+    coordinates: [120.3826, 36.0671]
   }
 }
 
