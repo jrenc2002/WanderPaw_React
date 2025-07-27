@@ -102,7 +102,7 @@ const HomeView: React.FC = () => {
       <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-[1000]">
         <h1 className="text-6xl font-bold drop-shadow-lg tracking-wide" 
             style={{ fontFamily: 'Paytone One, sans-serif', color: '#687949' }}>
-          wanderpaw
+          WanderPaw
         </h1>
       </div>
 

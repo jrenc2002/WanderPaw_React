@@ -1,7 +1,10 @@
 import axios, { type AxiosResponse } from 'axios'
 
-// 小红书API基础配置 - 使用vite代理
-const XHS_API_BASE_URL = '/xhs-api' // 使用vite代理访问小红书服务
+// 小红书API基础配置 - 根据环境选择不同的基础URL
+const isDevelopment = import.meta.env.DEV
+const XHS_API_BASE_URL = isDevelopment 
+  ? '/xhs-api' // 开发环境使用vite代理
+  : 'https://xhsxhs.zeabur.app' // 生产环境直接访问后端服务
 const XHS_API_PREFIX = '/spider' // 小红书API路径前缀
 
 // 创建axios实例
