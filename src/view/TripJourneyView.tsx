@@ -16,23 +16,17 @@ import {
   clearCurrentTripAtom
 } from '@/store/TripState'
 import { accessTokenAtom } from '@/store/AuthState'
-import { MapboxMap } from '@/components/map/MapboxMap'
 import toast from 'react-hot-toast'
 import { getUnifiedButtonStyle, getSecondaryButtonStyle, handleButtonHover, handleSecondaryButtonHover } from '@/utils/buttonStyles'
 import { TripContentService } from '@/services/tripContentService'
-
-// 添加生成的内容接口
-interface GeneratedContent {
-  activityId: string
-  imageUrl?: string
-  story?: {
-    time: string
-    name: string
-    description: string
-  }
-  isLoading: boolean
-  error?: string
-}
+import { 
+  TripProgressCard, 
+  TripPlanList, 
+  LetterAnimation, 
+  ContentModal, 
+  BackgroundElements,
+  GeneratedContent 
+} from '@/components/trip'
 
 const TripJourneyView: React.FC = () => {
   const navigate = useNavigate()
@@ -121,31 +115,7 @@ const TripJourneyView: React.FC = () => {
     }, 3500)
   }
 
-  // 处理行程卡片点击 - 添加背景收回动画
-  const handleTripCardClick = () => {
-    if (!isTripsCompleted && letterAnimationStage === 'hidden' && !isTransitioning) {
-      // 开始过渡动画
-      setIsTransitioning(true)
-      
-      // 1.5秒后完成旅行（动画完成时）
-      setTimeout(() => {
-        completeTrip()
-        setIsTransitioning(false)
-        toast.success(
-          language === 'zh' ? '行程已结束！' : 'Trip completed!',
-          {
-            icon: '🎉',
-            duration: 2000
-          }
-        )
-        
-        // 延迟0.5秒后开始信件动画
-        setTimeout(() => {
-          startLetterAnimation()
-        }, 500)
-      }, 1500)
-    }
-  }
+
 
   // 添加地图数据调试
   useEffect(() => {
@@ -212,7 +182,10 @@ const TripJourneyView: React.FC = () => {
   }
 
   // 处理时间轴圆点点击事件
-  const handleTimelinePointClick = async (activity: any, index: number) => {
+  const handleTimelinePointClick = async (activity: any, index: number, event: React.MouseEvent) => {
+    // 阻止事件冒泡，避免触发父级卡片的点击事件
+    event.stopPropagation()
+    
     if (!currentTripPlan) return
 
     const activityId = activity.id
@@ -458,73 +431,14 @@ ${petName} 💕`
         `}
       </style>
       
-      {/* 始终显示地图背景 */}
-      <div className="fixed inset-0 w-full h-full z-0">
-        <MapboxMap
-          className="w-full h-full"
-          center={getMapCenter()}
-          zoom={14}
-          maxZoom={16}
-          disableZoom={false}
-          disableInteraction={false}
-          points={mapPoints}
-          routes={mapRoutes}
-        />
-      </div>
-      
-
-
-      {/* 地球宠物装饰 - 在地图之上，UI之下 */}
-      <div className="fixed bottom-[-80vh] left-1/2 transform -translate-x-1/2 z-5 w-[50vw] h-[50vw] pointer-events-none">
-        <img 
-          src="/decorations/earth.jpeg" 
-          alt={language === 'zh' ? '地球装饰' : 'Earth decoration'} 
-          className="w-full h-full object-contain drop-shadow-lg"
-          style={{
-            animation: 'earthRotate 60s linear infinite'
-          }}
-        />
-        {/* 宠物在地球上 */}
-        <div className={`absolute top-[-15%] left-1/2 transform -translate-x-1/2 animate-pulse ${
-          currentTripPlan.petCompanion.type === 'cat' || currentTripPlan.petCompanion.type === 'dog' 
-            ? 'w-[12vw] h-[12vw]' 
-            : 'w-[15vw] h-[15vw]'
-        }`}
-        style={{
-          animation: 'petSwing 4s ease-in-out infinite'
-        }}>
-          <img 
-            src={
-              currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat.png' :
-              currentTripPlan.petCompanion.type === 'dog' ? '/decorations/fox.png' :
-              '/decorations/capybara.jpeg'
-            }
-            alt={
-              language === 'zh' ? (
-                currentTripPlan.petCompanion.type === 'cat' ? '猫咪' :
-                currentTripPlan.petCompanion.type === 'dog' ? '狗狗' : '水豚'
-              ) : (
-                currentTripPlan.petCompanion.type === 'cat' ? 'Cat' :
-                currentTripPlan.petCompanion.type === 'dog' ? 'Dog' : 'Capybara'
-              )
-            }
-            className="w-full h-full object-contain drop-shadow-md"
-          />
-        </div>
-      </div>
-
-      {/* 动画样式定义 */}
-      <style>{`
-        @keyframes earthRotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        @keyframes petSwing {
-          0%, 100% { transform: translate(-50%, 0) rotate(-3deg); }
-          50% { transform: translate(-50%, 0) rotate(3deg); }
-        }
-      `}</style>
+      {/* 背景元素 */}
+      <BackgroundElements
+        currentTripPlan={currentTripPlan}
+        language={language}
+        getMapCenter={getMapCenter}
+        mapPoints={mapPoints}
+        mapRoutes={mapRoutes}
+      />
 
       {/* 所有UI元素悬浮在地图上层 */}
       <div className="relative z-10">
@@ -544,190 +458,16 @@ ${petName} 💕`
 
 
         {/* 行程进程卡片 */}
-        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-20">
-          <div 
-            className={`backdrop-blur-sm p-5 w-[47vw] transition-all duration-300 ${
-              !isTripsCompleted && letterAnimationStage === 'hidden' && !isTransitioning
-                ? 'cursor-pointer hover:scale-105 hover:shadow-lg' 
-                : 'cursor-default'
-            }`}
-            style={{
-              borderRadius: '1.5vw',
-              background: '#FEFDF9',
-              boxShadow: isTripsCompleted || isTransitioning
-                ? '0 2px 34.9px 3px rgba(123, 66, 15, 0.05)' 
-                : '0 2px 34.9px 3px rgba(123, 66, 15, 0.11)',
-              opacity: isTripsCompleted || isTransitioning ? 0.8 : 1
-            }}
-            onClick={handleTripCardClick}
-            title={!isTripsCompleted && letterAnimationStage === 'hidden' && !isTransitioning
-              ? (language === 'zh' ? '点击结束行程' : 'Click to end trip') 
-              : ''
-            }
-          >
-            
-            
-            {/* 上层：头像、姓名、事情、时间、地点 */}
-            <div className="flex items-start justify-between mb-1">
-              {/* 左侧：宠物头像、名称和当前活动 */}
-              <div className="flex items-start gap-4">
-                <div className={`flex items-center justify-center overflow-hidden ${
-                  currentTripPlan.petCompanion.type === 'cat' || currentTripPlan.petCompanion.type === 'dog' 
-                    ? 'w-[7vw] h-[5.5vw]' 
-                    : 'w-[8vw] h-[6vw]'
-                }`}>
-                  <img 
-                    src={
-                      currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat.png' :
-                      currentTripPlan.petCompanion.type === 'dog' ? '/decorations/fox.png' :
-                      currentTripPlan.petCompanion.type === 'other' ? '/decorations/capybara.jpeg' :
-                      '/decorations/fox.png'
-                    }
-                    alt={
-                      currentTripPlan.petCompanion.type === 'cat' ? 'Cat' :
-                      currentTripPlan.petCompanion.type === 'dog' ? 'Dog' :
-                      currentTripPlan.petCompanion.type === 'other' ? 'Capybara' :
-                      'Pet'
-                    }
-                    className={`w-full h-full ${
-                      currentTripPlan.petCompanion.type === 'cat' || currentTripPlan.petCompanion.type === 'dog'
-                        ? 'object-contain'
-                        : 'object-cover'
-                    }`}
-                  />
-                </div>
-                
-                {/* 宠物名称和当前活动 */}
-                <div className="flex flex-col">
-                  <h2 
-                    style={{
-                      color: '#687949',
-                      fontFamily: 'PingFang SC',
-                      fontSize: '1.6vw',
-                      fontStyle: 'normal',
-                      fontWeight: 600,
-                      lineHeight: 'normal'
-                    }}
-                  >
-                    {currentTripPlan.petCompanion.name || (language === 'zh' ? '豚豚君' : 'Pig-kun')}
-                  </h2>
-                  
-                  {currentActivity && (
-                    <p 
-                      style={{
-                        color: '#B1C192',
-                        fontFamily: 'PingFang SC',
-                        fontSize: '0.9vw',
-                        fontStyle: 'normal',
-                        fontWeight: 400,
-                        lineHeight: 'normal',
-                        margin: '8px 0'
-                      }}
-                    >
-                      {language === 'zh' ? currentActivity.title : currentActivity.titleEn}
-                    </p>
-                  )}
-                </div>
-              </div>
-              
-              {/* 右侧：时间和地点 */}
-              <div className="flex flex-col items-end">
-                <div 
-                  style={{
-                    color: '#687949',
-                    fontFamily: 'PingFang SC',
-                    fontSize: '2.3vw',
-                    fontStyle: 'normal',
-                    fontWeight: 600,
-                    lineHeight: 'normal'
-                  }}
-                >
-                  {currentTime}
-                </div>
-                <div 
-                  style={{
-                    borderRadius: '4vw',
-                    background: '#F3E2B6',
-                    padding: '2px 10px',
-                    marginTop: '1px',
-                    marginBottom: '1px'
-                  }}
-                >
-                  <span className="text-s font-medium text-gray-700">
-                    {currentTripPlan.cityName}
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            {/* 下层：行程状态和进度条 */}
-            <div className="flex items-center gap-2">
-              {/* 行程状态 */}
-              <div className="flex top-[2vh] gap-2">
-                <span className="text-s text-gray-600">
-                  {tripProgress.currentActivityIndex < currentTripPlan.activities.length ? 
-                    (language === 'zh' ? '行程中' : 'In Progress') : 
-                    (language === 'zh' ? '行程结束' : 'Trip Completed')
-                  }
-                </span>
-              </div>
-              
-                             {/* 进度条 */}
-              <div className="flex-1 relative"
-                style={{ minWidth: '20vw', marginLeft: '1vw' }}
-              >
-                <div className="flex items-center justify-between relative">
-                {/* 连接线 */}
-                <div className="rounded-full absolute top-[7px] left-[10px] right-[10px] h-2" style={{ backgroundColor: '#E5E5E5' }}></div>
-                <div 
-                  className="rounded-full absolute top-[7px] left-[10px] h-2 transition-all duration-500"
-                  style={{ 
-                    width: `${((tripProgress.currentActivityIndex + 1 ) / tripProgress.totalActivities) * 120}%`,
-                    backgroundColor: '#597466'
-                  }}
-                ></div>
-                
-                {currentTripPlan.activities.map((activity, index) => (
-                  <div key={activity.id} className="flex flex-col items-center relative z-10">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="20" 
-                      height="20" 
-                      viewBox="0 0 20 20" 
-                      fill="none"
-                      className="w-[20px] h-[20px]"
-                    >
-                      <circle 
-                        cx="10" 
-                        cy="10" 
-                        r="10" 
-                        fill={index <= tripProgress.currentActivityIndex ? '#B1C192' : '#E5E5E5'}
-                      />
-                      <circle 
-                        cx="10" 
-                        cy="10" 
-                        r="5" 
-                        fill={index <= tripProgress.currentActivityIndex ? '#597466' : '#D1D5DB'}
-                      />
-                    </svg>
-                                        <span 
-                      className="mt-1"
-                      style={{
-                        color: '#687949',
-                        fontFamily: 'PingFang SC',
-                        fontSize: '14px',
-                        fontWeight: 400
-                      }}
-                    >
-                      {formatTimeToAMPM(activity.time)}
-                    </span>
-                  </div>
-                ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <TripProgressCard
+          currentTripPlan={currentTripPlan}
+          currentActivity={currentActivity}
+          tripProgress={tripProgress}
+          currentTime={currentTime}
+          language={language}
+          generatedContents={generatedContents}
+          onTimelinePointClick={handleTimelinePointClick}
+          formatTimeToAMPM={formatTimeToAMPM}
+        />
 
         {/* 左侧计划列表 */}
         <div 
@@ -791,7 +531,7 @@ ${petName} 💕`
                                          {/* 进程节点 */}
                      <div 
                        className="relative cursor-pointer transition-all hover:scale-110" 
-                       onClick={() => handleTimelinePointClick(activity, index)}
+                       onClick={(event) => handleTimelinePointClick(activity, index, event)}
                      >
                        <svg xmlns="http://www.w3.org/2000/svg" width="2vw" height="2vw" viewBox="0 0 41 41" fill="none">
                          <path d="M20.4216 0.600098C9.33294 0.600098 0.400391 9.53265 0.400391 20.6213C0.400391 31.71 9.33294 40.6426 20.4216 40.6426C31.5103 40.6426 40.4429 31.71 40.4429 20.6213C40.4429 9.53265 31.5103 0.600098 20.4216 0.600098ZM20.4216 37.5624C11.0271 37.5624 3.48058 30.0159 3.48058 20.6213C3.48058 11.2268 11.0271 3.68029 20.4216 3.68029C29.8162 3.68029 37.3627 11.2268 37.3627 20.6213C37.3627 30.0159 29.8162 37.5624 20.4216 37.5624Z" fill="#687949" fill-opacity="0.22"/>

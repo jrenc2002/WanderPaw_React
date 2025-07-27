@@ -16,10 +16,15 @@ const tripContentApi = axios.create({
 // 图片生成请求接口
 export interface ImageGenerationRequest {
   sessionId: string
+  taskType: 'image_generation'
   imageGeneration: {
     prompt: string
     style?: string
-    size?: string
+    parameters?: {
+      size?: string
+      quality?: string
+      seed?: number
+    }
     images?: Array<{
       data: string
       mimeType: string
@@ -71,11 +76,15 @@ export class TripContentService {
   ): Promise<string> {
     try {
       const requestData: ImageGenerationRequest = {
-        sessionId: `travel_image_${Date.now()}`,
+        sessionId: `temp_image_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`,
+        taskType: 'image_generation',
         imageGeneration: {
           prompt,
           style: 'realistic',
-          size: '1024x1024'
+          parameters: {
+            size: '1024x1024',
+            quality: 'hd'
+          }
         },
         streaming: false
       }
@@ -93,6 +102,11 @@ export class TripContentService {
       if (response.data.status === 'completed') {
         // 尝试从不同可能的响应格式中提取图片URL
         const result = response.data.response
+        
+        // 支持多种可能的字段名
+        if (result?.imageUrl) {
+          return result.imageUrl
+        }
         
         if (result?.image_url) {
           return result.image_url
@@ -136,7 +150,7 @@ export class TripContentService {
   ): Promise<string> {
     try {
       const requestData: StoryGenerationRequest = {
-        sessionId: `travel_story_${Date.now()}`,
+        sessionId: `temp_story_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`,
         messages: [
           {
             role: 'user',
