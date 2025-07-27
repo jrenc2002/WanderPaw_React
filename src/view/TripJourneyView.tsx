@@ -16,6 +16,7 @@ import {
   clearCurrentTripAtom
 } from '@/store/TripState'
 import { MapboxMap } from '@/components/map/MapboxMap'
+import PetDressUpModal, { DressUpItem } from '@/components/pet/PetDressUpModal'
 import toast from 'react-hot-toast'
 import { getUnifiedButtonStyle, getSecondaryButtonStyle, handleButtonHover, handleSecondaryButtonHover } from '@/utils/buttonStyles'
 
@@ -28,13 +29,14 @@ const TripJourneyView: React.FC = () => {
   const [letterAnimationStage, setLetterAnimationStage] = useState<'hidden' | 'appearing' | 'disappearing' | 'reappearing' | 'final'>('hidden')
   const [hasReadLetter, setHasReadLetter] = useState<boolean>(false)
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false)
+  const [showDressUpModal, setShowDressUpModal] = useState<boolean>(false)
 
   // 自定义虚线卡片样式已通过CSS类实现
 
   // 统一状态管理
   const [currentTripPlan] = useAtom(currentTripPlanAtom)
   const [tripProgress] = useAtom(tripProgressAtom)
-  const [petTravelState] = useAtom(petTravelStateAtom)
+  const [petTravelState, setPetTravelState] = useAtom(petTravelStateAtom)
   const [currentActivity] = useAtom(currentActivityAtom)
   const [, completeTrip] = useAtom(completeTripAtom)
   const [, clearCurrentTrip] = useAtom(clearCurrentTripAtom)
@@ -153,6 +155,31 @@ const TripJourneyView: React.FC = () => {
 
   const handleCloseLetterModal = () => {
     setShowLetterModal(false)
+  }
+
+  const handlePetClick = () => {
+    setShowDressUpModal(true)
+  }
+
+  const handleDressUpSave = (selectedItem: DressUpItem | null) => {
+    setPetTravelState(prev => ({
+      ...prev,
+      dressUpItem: selectedItem
+    }))
+    
+    if (selectedItem) {
+      toast.success(
+        language === 'zh' 
+          ? `已为${currentTripPlan?.petCompanion.name}添加${selectedItem.name}装扮`
+          : `Added ${selectedItem.nameEn} dressing up for ${currentTripPlan?.petCompanion.name}`
+      )
+    } else {
+      toast.success(
+        language === 'zh' 
+          ? `已移除${currentTripPlan?.petCompanion.name}的装扮`
+          : `Removed dressing up for ${currentTripPlan?.petCompanion.name}`
+      )
+    }
   }
 
   const handleAdjustPlan = () => {
@@ -317,24 +344,28 @@ ${petName} 💕`
 
 
       {/* 地球宠物装饰 - 在地图之上，UI之下 */}
-      <div className="fixed bottom-[-80vh] left-1/2 transform -translate-x-1/2 z-5 w-[50vw] h-[50vw] pointer-events-none">
+      <div className="fixed bottom-[-80vh] left-1/2 transform -translate-x-1/2 z-5 w-[50vw] h-[50vw]">
         <img 
           src="/decorations/earth.jpeg" 
           alt={language === 'zh' ? '地球装饰' : 'Earth decoration'} 
-          className="w-full h-full object-contain drop-shadow-lg"
+          className="w-full h-full object-contain drop-shadow-lg pointer-events-none"
           style={{
             animation: 'earthRotate 60s linear infinite'
           }}
         />
         {/* 宠物在地球上 */}
-        <div className={`absolute top-[-15%] left-1/2 transform -translate-x-1/2 animate-pulse ${
-          currentTripPlan.petCompanion.type === 'cat' || currentTripPlan.petCompanion.type === 'dog' 
-            ? 'w-[12vw] h-[12vw]' 
-            : 'w-[15vw] h-[15vw]'
-        }`}
-        style={{
-          animation: 'petSwing 4s ease-in-out infinite'
-        }}>
+        <div 
+          className={`absolute top-[-15%] left-1/2 transform -translate-x-1/2 animate-pulse cursor-pointer ${
+            currentTripPlan.petCompanion.type === 'cat' || currentTripPlan.petCompanion.type === 'dog' 
+              ? 'w-[12vw] h-[12vw]' 
+              : 'w-[15vw] h-[15vw]'
+          }`}
+          style={{
+            animation: 'petSwing 4s ease-in-out infinite'
+          }}
+          onClick={handlePetClick}
+          title={language === 'zh' ? '点击为宠物添加装扮' : 'Click to dress up your pet'}
+        >
           <img 
             src={
               currentTripPlan.petCompanion.type === 'cat' ? '/decorations/cat.png' :
@@ -352,6 +383,21 @@ ${petName} 💕`
             }
             className="w-full h-full object-contain drop-shadow-md"
           />
+          
+          {/* 装扮显示 */}
+          {petTravelState.dressUpItem && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="absolute -top-4 -right-4 w-16 h-16"
+            >
+              <img
+                src={petTravelState.dressUpItem.image}
+                alt={language === 'zh' ? petTravelState.dressUpItem.name : petTravelState.dressUpItem.nameEn}
+                className="w-full h-full object-contain drop-shadow-md"
+              />
+            </motion.div>
+          )}
         </div>
       </div>
 
@@ -1376,6 +1422,15 @@ ${petName} 💕`
           </>
         )}
       </AnimatePresence>
+
+      {/* 装扮选择弹窗 */}
+      <PetDressUpModal
+        isOpen={showDressUpModal}
+        onClose={() => setShowDressUpModal(false)}
+        onSave={handleDressUpSave}
+        currentItem={petTravelState.dressUpItem || null}
+        petName={currentTripPlan?.petCompanion.name || ''}
+      />
     </div>
   )
 }
