@@ -1187,11 +1187,13 @@ ${petName} 💕`
                       navigate('/travel-journal')
                     }}
                   >
-                    收进手帐
+                    {language === 'zh' ? '收进手帐' : 'Add to Journal'}
                   </button>
                   <button 
                     className="w-[4vw] h-[4vw] rounded-full flex items-center justify-center transition-all hover:scale-105"
                     style={{ background: '#D9C6B1' }}
+                    title={language === 'zh' ? '分享' : 'Share'}
+                    aria-label={language === 'zh' ? '分享信件' : 'Share letter'}
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" stroke="#687949" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

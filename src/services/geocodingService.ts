@@ -207,7 +207,7 @@ export class GeocodingService {
       if (provinceData.name === address || provinceData.nameEn === address) {
         return {
           address,
-          coordinates: provinceData.coordinates,
+          coordinates: provinceData.coordinates as [number, number],
           confidence: 0.9,
           source: 'static'
         }
@@ -241,7 +241,7 @@ export class GeocodingService {
           provinceData.nameEn.toLowerCase().includes(addressLower)) {
         return {
           address,
-          coordinates: provinceData.coordinates,
+          coordinates: provinceData.coordinates as [number, number],
           confidence: 0.6,
           source: 'static'
         }
