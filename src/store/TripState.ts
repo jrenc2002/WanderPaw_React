@@ -301,16 +301,7 @@ export const clearCurrentTripAtom = atom(
 // 工具函数：生成路线
 export const generateTripRoute = (activities: TripActivity[], cityCoordinates: [number, number]): TripRoute => {
   const waypoints: TripWaypoint[] = [
-    // 起始点
-    {
-      id: 'start',
-      name: '旅行起点',
-      nameEn: 'Trip Start',
-      coordinates: cityCoordinates,
-      type: 'start',
-      estimatedTime: '09:00'
-    },
-    // 活动点
+    // 只包含活动点，移除起始点和结束点
     ...activities.map((activity, _index) => ({
       id: activity.id,
       name: activity.location,
@@ -320,16 +311,7 @@ export const generateTripRoute = (activities: TripActivity[], cityCoordinates: [
       activityId: activity.id,
       estimatedTime: activity.time,
       description: activity.description
-    })),
-    // 结束点
-    {
-      id: 'end',
-      name: '旅行终点',
-      nameEn: 'Trip End',
-      coordinates: cityCoordinates,
-      type: 'end',
-      estimatedTime: '18:00'
-    }
+    }))
   ]
   
   // 计算总距离（简化计算）

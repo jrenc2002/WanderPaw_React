@@ -938,7 +938,7 @@ const TripPlanView: React.FC = () => {
                                                               {/* 下部分：正在做的事情 */}
                                 <div className="flex items-center justify-between relative z-10">
                                   <div className="ml-2 my-1 text-xs text-gray-700">
-                                    {language === 'zh' ? activity.description : activity.titleEn}
+                                    {language === 'zh' ? activity.description : activity.description}
                                   </div>
                               </div>
                             </div>

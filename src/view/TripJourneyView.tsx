@@ -15,9 +15,24 @@ import {
   completeTripAtom,
   clearCurrentTripAtom
 } from '@/store/TripState'
+import { accessTokenAtom } from '@/store/AuthState'
 import { MapboxMap } from '@/components/map/MapboxMap'
 import toast from 'react-hot-toast'
 import { getUnifiedButtonStyle, getSecondaryButtonStyle, handleButtonHover, handleSecondaryButtonHover } from '@/utils/buttonStyles'
+import { TripContentService } from '@/services/tripContentService'
+
+// 添加生成的内容接口
+interface GeneratedContent {
+  activityId: string
+  imageUrl?: string
+  story?: {
+    time: string
+    name: string
+    description: string
+  }
+  isLoading: boolean
+  error?: string
+}
 
 const TripJourneyView: React.FC = () => {
   const navigate = useNavigate()
@@ -29,6 +44,11 @@ const TripJourneyView: React.FC = () => {
   const [hasReadLetter, setHasReadLetter] = useState<boolean>(false)
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false)
 
+  // 新增状态：管理生成的内容
+  const [generatedContents, setGeneratedContents] = useState<Map<string, GeneratedContent>>(new Map())
+  const [showContentModal, setShowContentModal] = useState<boolean>(false)
+  const [selectedContent, setSelectedContent] = useState<GeneratedContent | null>(null)
+
   // 自定义虚线卡片样式已通过CSS类实现
 
   // 统一状态管理
@@ -38,6 +58,7 @@ const TripJourneyView: React.FC = () => {
   const [currentActivity] = useAtom(currentActivityAtom)
   const [, completeTrip] = useAtom(completeTripAtom)
   const [, clearCurrentTrip] = useAtom(clearCurrentTripAtom)
+  const [accessToken] = useAtom(accessTokenAtom)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -131,8 +152,25 @@ const TripJourneyView: React.FC = () => {
     if (currentTripPlan) {
       console.log('TripJourneyView: Map center coordinates:', [currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]])
       console.log('TripJourneyView: Route waypoints:', currentTripPlan.route.waypoints)
+      console.log('TripJourneyView: First activity coordinates:', currentTripPlan.activities[0]?.coordinates)
     }
   }, [currentTripPlan])
+
+  // 获取地图中心点坐标：优先使用第一个旅行活动的坐标，否则使用城市中心
+  const getMapCenter = (): [number, number] => {
+    if (!currentTripPlan) {
+      return [35.0, 110.0] // 默认中国中心
+    }
+    
+    // 如果有旅行活动，使用第一个活动的坐标
+    if (currentTripPlan.activities && currentTripPlan.activities.length > 0) {
+      const firstActivity = currentTripPlan.activities[0]
+      return [firstActivity.coordinates[1], firstActivity.coordinates[0]] // 转换 [lng, lat] -> [lat, lng]
+    }
+    
+    // 否则使用城市中心坐标
+    return [currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]]
+  }
 
   const handleJournalClick = () => {
     setIsJournalAnimating(true)
@@ -171,6 +209,126 @@ const TripJourneyView: React.FC = () => {
         tripPlan: tripPlanData
       }
     })
+  }
+
+  // 处理时间轴圆点点击事件
+  const handleTimelinePointClick = async (activity: any, index: number) => {
+    if (!currentTripPlan) return
+
+    const activityId = activity.id
+    
+    // 检查是否已经生成过内容
+    if (generatedContents.has(activityId)) {
+      const existingContent = generatedContents.get(activityId)!
+      setSelectedContent(existingContent)
+      setShowContentModal(true)
+      return
+    }
+
+    // 设置加载状态
+    const loadingContent: GeneratedContent = {
+      activityId,
+      isLoading: true
+    }
+    setGeneratedContents(prev => new Map(prev.set(activityId, loadingContent)))
+
+    try {
+      // 显示开始生成的提示
+      toast.loading(language === 'zh' ? '正在生成旅行照片和故事...' : 'Generating travel photo and story...', {
+        id: `generating-${activityId}`
+      })
+
+      // 并行调用图片生成和故事生成API
+      const [imageResult, storyResult] = await Promise.allSettled([
+        generateTravelImage(activity),
+        generateTravelStory(activity)
+      ])
+
+      let imageUrl: string | undefined
+      let story: any
+      let error: string | undefined
+
+      // 处理图片生成结果
+      if (imageResult.status === 'fulfilled') {
+        imageUrl = imageResult.value
+      } else {
+        console.error('图片生成失败:', imageResult.reason)
+        error = '图片生成失败'
+      }
+
+      // 处理故事生成结果  
+      if (storyResult.status === 'fulfilled') {
+        story = storyResult.value
+      } else {
+        console.error('故事生成失败:', storyResult.reason)
+        error = error ? `${error}，故事生成失败` : '故事生成失败'
+      }
+
+      // 更新生成的内容
+      const finalContent: GeneratedContent = {
+        activityId,
+        imageUrl,
+        story,
+        isLoading: false,
+        error
+      }
+
+      setGeneratedContents(prev => new Map(prev.set(activityId, finalContent)))
+      setSelectedContent(finalContent)
+      setShowContentModal(true)
+
+      // 关闭加载提示
+      toast.dismiss(`generating-${activityId}`)
+      
+      if (error) {
+        toast.error(error)
+      } else {
+        toast.success(language === 'zh' ? '内容生成完成！' : 'Content generated successfully!')
+      }
+      
+    } catch (error) {
+      console.error('生成内容时发生错误:', error)
+      const errorContent: GeneratedContent = {
+        activityId,
+        isLoading: false,
+        error: language === 'zh' ? '生成失败，请重试' : 'Generation failed, please try again'
+      }
+      
+      setGeneratedContents(prev => new Map(prev.set(activityId, errorContent)))
+      toast.dismiss(`generating-${activityId}`)
+      toast.error(language === 'zh' ? '生成失败，请重试' : 'Generation failed, please try again')
+    }
+  }
+
+  // 生成旅行图片
+  const generateTravelImage = async (activity: any): Promise<string> => {
+    if (!accessToken) {
+      throw new Error('用户未登录')
+    }
+
+    const petInfo = currentTripPlan!.petCompanion
+    const imagePrompt = TripContentService.buildImagePrompt(activity, petInfo, language)
+    
+    return await TripContentService.generateTravelImage(imagePrompt, accessToken)
+  }
+
+  // 生成旅行故事
+  const generateTravelStory = async (activity: any): Promise<{time: string, name: string, description: string}> => {
+    if (!accessToken) {
+      throw new Error('用户未登录')
+    }
+
+    const petInfo = currentTripPlan!.petCompanion
+    const cityName = currentTripPlan!.cityName
+    const storyPrompt = TripContentService.buildStoryPrompt(activity, petInfo, cityName, language)
+    
+    const storyContent = await TripContentService.generateTravelStory(storyPrompt, accessToken)
+
+    return {
+      time: activity.time,
+      name: language === 'zh' ? activity.location : activity.locationEn,
+      description: storyContent
+    }
   }
 
   // 时间格式转换函数
@@ -241,7 +399,7 @@ ${petName} 💕`
     position: [waypoint.coordinates[1], waypoint.coordinates[0]] as [number, number], // 转换 [lng, lat] -> [lat, lng]
     title: language === 'zh' ? waypoint.name : waypoint.nameEn,
     description: waypoint.description || '',
-    petFriendlyIndex: waypoint.type === 'start' ? 90 : waypoint.type === 'end' ? 85 : 75, // 根据类型设置宠物友好度
+    petFriendlyIndex: 75, // 所有活动点统一宠物友好度
     data: {
       averageSalary: 8000,
       rentPrice: 3000,
@@ -304,8 +462,8 @@ ${petName} 💕`
       <div className="fixed inset-0 w-full h-full z-0">
         <MapboxMap
           className="w-full h-full"
-          center={[currentTripPlan.cityCoordinates[1], currentTripPlan.cityCoordinates[0]] as [number, number]} // 转换 [lng, lat] -> [lat, lng]
-          zoom={12}
+          center={getMapCenter()}
+          zoom={14}
           maxZoom={16}
           disableZoom={false}
           disableInteraction={false}
@@ -579,10 +737,25 @@ ${petName} 💕`
                   {/* 左侧：进程节点和进度线 */}
                   <div className="flex flex-col items-center">
                                          {/* 进程节点 */}
-                     <div className="relative">
+                     <div 
+                       className="relative cursor-pointer transition-all hover:scale-110" 
+                       onClick={() => handleTimelinePointClick(activity, index)}
+                     >
                        <svg xmlns="http://www.w3.org/2000/svg" width="2vw" height="2vw" viewBox="0 0 41 41" fill="none">
                          <path d="M20.4216 0.600098C9.33294 0.600098 0.400391 9.53265 0.400391 20.6213C0.400391 31.71 9.33294 40.6426 20.4216 40.6426C31.5103 40.6426 40.4429 31.71 40.4429 20.6213C40.4429 9.53265 31.5103 0.600098 20.4216 0.600098ZM20.4216 37.5624C11.0271 37.5624 3.48058 30.0159 3.48058 20.6213C3.48058 11.2268 11.0271 3.68029 20.4216 3.68029C29.8162 3.68029 37.3627 11.2268 37.3627 20.6213C37.3627 30.0159 29.8162 37.5624 20.4216 37.5624Z" fill="#687949" fill-opacity="0.22"/>
                        </svg>
+                       
+                       {/* 加载状态指示器 */}
+                       {generatedContents.has(activity.id) && generatedContents.get(activity.id)?.isLoading && (
+                         <div className="absolute inset-0 flex items-center justify-center">
+                           <div className="w-4 h-4 border-2 border-[#687949] border-t-transparent rounded-full animate-spin"></div>
+                         </div>
+                       )}
+                       
+                       {/* 生成完成指示器 */}
+                       {generatedContents.has(activity.id) && !generatedContents.get(activity.id)?.isLoading && !generatedContents.get(activity.id)?.error && (
+                         <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                       )}
                        
                        {/* 如果已完成或正在进行，显示勾选标记 */}
                        {(isCompleted || isCurrent) && (
@@ -715,7 +888,7 @@ ${petName} 💕`
                        {/* 下部分：正在做的事情 */}
                        <div className="flex items-center justify-between relative z-10">
                          <div className="ml-2 my-1 text-xs text-gray-700">
-                           {language === 'zh' ? activity.title : activity.titleEn}
+                           {language === 'zh' ? activity.description : activity.description}
                          </div>
                          
                        </div>
@@ -1320,6 +1493,208 @@ ${petName} 💕`
               }}
             />
           </>
+        )}
+      </AnimatePresence>
+
+      {/* 生成内容展示弹窗 */}
+      <AnimatePresence>
+        {showContentModal && selectedContent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[30000]"
+            onClick={() => setShowContentModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, rotateY: -90 }}
+              animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+              exit={{ scale: 0.8, opacity: 0, rotateY: 90 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 30,
+                rotateY: { type: "spring", stiffness: 400, damping: 25 }
+              }}
+              className="bg-white rounded-3xl p-8 max-w-4xl w-[90vw] max-h-[90vh] overflow-auto relative"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: 'linear-gradient(135deg, #FDF5E8 0%, #F9F2E2 100%)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.15), 0 8px 16px rgba(0,0,0,0.1)'
+              }}
+            >
+              {/* 关闭按钮 */}
+              <button
+                onClick={() => setShowContentModal(false)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 flex items-center justify-center transition-all"
+                aria-label={language === 'zh' ? '关闭' : 'Close'}
+                title={language === 'zh' ? '关闭' : 'Close'}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="#687949" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+
+              {/* 信封动画效果 */}
+              <motion.div
+                initial={{ scale: 0, rotate: -10 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="text-center mb-6"
+              >
+                <div className="inline-block relative">
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                  >
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" className="text-[#687949]">
+                      <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6029 13.5963 11.995 13.5963C12.3871 13.5963 12.7713 13.4793 13.1 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </motion.div>
+                </div>
+                <h2 className="text-2xl font-bold mt-4" style={{ color: '#687949' }}>
+                  {language === 'zh' 
+                    ? `${currentTripPlan?.petCompanion?.name || '豚豚'}的旅行分享`
+                    : `${currentTripPlan?.petCompanion?.name || 'Pet'}'s Travel Share`
+                  }
+                </h2>
+              </motion.div>
+
+              {/* 内容区域 */}
+              <div className="flex gap-8 items-start">
+                {/* 左侧：图片 */}
+                <motion.div
+                  initial={{ x: -50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="w-1/2"
+                >
+                  {selectedContent.imageUrl ? (
+                    <div className="relative">
+                      <img 
+                        src={selectedContent.imageUrl}
+                        alt="旅行照片"
+                        className="w-full aspect-square object-cover rounded-2xl shadow-lg"
+                        style={{
+                          border: '8px solid #F3E2B6',
+                          transform: 'rotate(-2deg)'
+                        }}
+                      />
+                      {/* 照片装饰 */}
+                      <div 
+                        className="absolute -top-2 -right-2 w-8 h-8 bg-[#F3E2B6] rounded-full shadow-md"
+                        style={{ transform: 'rotate(15deg)' }}
+                      >
+                        <div className="w-full h-full bg-[#687949] rounded-full scale-50 m-auto mt-2"></div>
+                      </div>
+                    </div>
+                  ) : selectedContent.isLoading ? (
+                    <div className="w-full aspect-square bg-gray-100 rounded-2xl flex items-center justify-center">
+                      <div className="w-8 h-8 border-4 border-[#687949] border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  ) : (
+                    <div className="w-full aspect-square bg-gray-100 rounded-2xl flex items-center justify-center text-gray-500">
+                      {language === 'zh' ? '照片生成失败' : 'Image generation failed'}
+                    </div>
+                  )}
+                </motion.div>
+
+                {/* 右侧：故事内容 */}
+                <motion.div
+                  initial={{ x: 50, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="w-1/2"
+                >
+                  {selectedContent.story ? (
+                    <div 
+                      className="p-6 rounded-2xl relative"
+                      style={{
+                        background: '#F9F2E2',
+                        border: '2px dashed #D1BA9E'
+                      }}
+                    >
+                      {/* 标题 */}
+                      <div className="text-center mb-4">
+                        <h3 className="text-xl font-semibold mb-2" style={{ color: '#687949' }}>
+                          {selectedContent.story.name}
+                        </h3>
+                        <div className="text-sm" style={{ color: '#A6A196' }}>
+                          {selectedContent.story.time} · {language === 'zh' ? '天气晴朗' : 'Sunny Weather'} ☀️
+                        </div>
+                      </div>
+
+                      {/* 引号装饰 */}
+                      <div 
+                        className="absolute top-4 left-4 text-4xl opacity-50"
+                        style={{ color: '#687949' }}
+                      >
+                        "
+                      </div>
+                      
+                      {/* 故事内容 */}
+                      <div 
+                        className="text-base leading-relaxed pt-8 px-4 pb-4"
+                        style={{ color: '#687949' }}
+                      >
+                        {selectedContent.story.description}
+                      </div>
+                      
+                      <div 
+                        className="absolute bottom-4 right-4 text-4xl opacity-50"
+                        style={{ color: '#687949' }}
+                      >
+                        "
+                      </div>
+
+                      {/* 推荐指数 */}
+                      <div className="flex items-center justify-center mt-4 pt-4 border-t border-[#EADDC7]">
+                        <span className="text-sm mr-2" style={{ color: '#A6A196' }}>
+                          {language === 'zh' ? '推荐指数' : 'Rating'}
+                        </span>
+                        <div className="flex text-yellow-500">
+                          {'⭐'.repeat(Math.floor(Math.random() * 2) + 4)}
+                        </div>
+                      </div>
+                    </div>
+                  ) : selectedContent.isLoading ? (
+                    <div className="p-6 rounded-2xl bg-gray-100 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-6 h-6 border-4 border-[#687949] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                        <div className="text-sm text-gray-500">
+                          {language === 'zh' ? '正在生成故事...' : 'Generating story...'}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-6 rounded-2xl bg-gray-100 text-center text-gray-500">
+                      {language === 'zh' ? '故事生成失败' : 'Story generation failed'}
+                    </div>
+                  )}
+                </motion.div>
+              </div>
+
+              {/* 底部按钮 */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="flex justify-center mt-8"
+              >
+                <button 
+                  onClick={() => setShowContentModal(false)}
+                  className="px-8 py-3 rounded-full transition-all hover:scale-105"
+                  style={{
+                    background: '#687949',
+                    color: 'white',
+                    boxShadow: '0 4px 12px rgba(104, 121, 73, 0.3)'
+                  }}
+                >
+                  {language === 'zh' ? '收藏这份美好' : 'Treasure This Moment'}
+                </button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
