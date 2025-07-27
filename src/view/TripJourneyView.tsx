@@ -1522,12 +1522,11 @@ ${petName} 💕`
       </AnimatePresence>
 
       {/* 底部地球装饰组件 */}
-      <div className="absolute bottom-[-60vh] left-0 w-full h-full">
-        <EarthWithCapybara 
-          petType={currentTripPlan?.petCompanion?.type === 'none' ? 'other' : (currentTripPlan?.petCompanion?.type || 'other')} 
-          onClick={handlePetClick}
-        />
-      </div>
+      <EarthWithCapybara 
+        petType={currentTripPlan?.petCompanion?.type === 'none' ? 'other' : (currentTripPlan?.petCompanion?.type || 'other')} 
+        onClick={handlePetClick}
+        dressUpItem={petTravelState.dressUpItem}
+      />
 
       {/* 装饰品弹窗 */}
       <PetDressUpModal
