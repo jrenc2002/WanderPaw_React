@@ -10,7 +10,7 @@ import toast from 'react-hot-toast'
 import clipImage from '@/assets/夹子.jpg'
 import { getUnifiedButtonStyle, handleButtonHover } from '@/utils/buttonStyles'
 import { TripPlanningService, type TripPlanningRequest } from '@/services/tripPlanningService'
-import { XhsService } from '@/services/xhsService'
+// import { XhsService } from '@/services/xhsService' // 已移除：小红书服务已禁用
 
 const tripThemes: TripTheme[] = [
   {

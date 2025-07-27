@@ -32,21 +32,23 @@ export default defineConfig({
                     });
                 }
             },
-            // 小红书API代理 - 正确的路径映射
+            // 小红书API代理 - 已禁用，无法爬取
+            /*
             '/xhs-api': {
-                target: 'https://xhsxhs.zeabur.app',
-                changeOrigin: true,
-                rewrite: function (path) { return path.replace(/^\/xhs-api/, ''); },
-                secure: true,
-                configure: function (proxy, options) {
-                    proxy.on('error', function (err, req, res) {
-                        console.log('XHS proxy error:', err);
-                    });
-                    proxy.on('proxyReq', function (proxyReq, req, res) {
-                        console.log('XHS proxy request:', req.method, req.url, '-> ', proxyReq.path);
-                    });
-                }
+              target: 'https://xhsxhs.zeabur.app',
+              changeOrigin: true,
+              rewrite: (path) => path.replace(/^\/xhs-api/, ''),
+              secure: true,
+              configure: (proxy, options) => {
+                proxy.on('error', (err, req, res) => {
+                  console.log('XHS proxy error:', err);
+                });
+                proxy.on('proxyReq', (proxyReq, req, res) => {
+                  console.log('XHS proxy request:', req.method, req.url, '-> ', proxyReq.path);
+                });
+              }
             }
+            */
         },
     },
     preview: {

@@ -34,7 +34,8 @@ export default defineConfig({
           });
         }
       },
-      // 小红书API代理 - 正确的路径映射
+      // 小红书API代理 - 已禁用，无法爬取
+      /* 
       '/xhs-api': {
         target: 'https://xhsxhs.zeabur.app',
         changeOrigin: true,
@@ -49,6 +50,7 @@ export default defineConfig({
           });
         }
       }
+      */
     },
   },
   preview: {

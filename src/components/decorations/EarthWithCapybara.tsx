@@ -5,9 +5,10 @@ import { selectedLanguageAtom } from '@/store/MapState'
 interface EarthWithCapybaraProps {
   className?: string
   petType?: 'cat' | 'dog' | 'other'
+  onClick?: () => void
 }
 
-const EarthWithCapybara: React.FC<EarthWithCapybaraProps> = ({ className = '', petType = 'other' }) => {
+const EarthWithCapybara: React.FC<EarthWithCapybaraProps> = ({ className = '', petType = 'other', onClick }) => {
   const [language] = useAtom(selectedLanguageAtom)
 
   // 根据宠物类型选择图片和描述
@@ -75,7 +76,10 @@ const EarthWithCapybara: React.FC<EarthWithCapybaraProps> = ({ className = '', p
         }
       `}</style>
       
-      <div className={`fixed bottom-[-15vw] left-1/2 transform -translate-x-1/2 z-30 w-[50vw] h-[50vw] pointer-events-none relative ${className}`}>
+      <div 
+        className={`fixed bottom-[-15vw] left-1/2 transform -translate-x-1/2 z-30 w-[50vw] h-[50vw] relative ${className} ${onClick ? 'cursor-pointer hover:scale-105 transition-transform' : 'pointer-events-none'}`}
+        onClick={onClick}
+      >
         <img 
           src="/decorations/earth.jpeg" 
           alt={language === 'zh' ? '地球装饰' : 'Earth decoration'} 

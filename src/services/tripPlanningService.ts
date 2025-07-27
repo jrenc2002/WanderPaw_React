@@ -1,11 +1,14 @@
 import axios, { type AxiosResponse } from 'axios'
-import type { PetInfo } from '@/store/PetState'
 import type { XhsSearchResponse } from './xhsService'
 import { XhsService } from './xhsService'
+import type { PetInfo } from '@/store/PetState'
 import { parseAITripResponse, parseAITripResponseWithCoordinates, type AIRawResponse } from '@/utils/aiResponseParser'
 
-// WanderPaw Fastify后端API配置 - 使用vite代理 [[memory:4342674]]
-const TRIP_API_BASE_URL = '/api' // 使用vite代理访问后端API
+// API基础配置 - 根据环境选择不同的基础URL
+const isDevelopment = import.meta.env.DEV
+const TRIP_API_BASE_URL = isDevelopment 
+  ? '/api' // 开发环境使用vite代理
+  : 'https://backeenee.zeabur.app' // 生产环境直接访问后端服务
 const TRIP_API_PREFIX = '/chat'
 
 // 创建axios实例
@@ -196,6 +199,16 @@ export class TripPlanningService {
       // 第一步：搜索小红书内容（如果还没有的话）
       let xhsData = request.xhsData
       if (!xhsData) {
+        // DISABLED: 小红书爬取功能已关闭，直接使用默认空数据
+        console.log('小红书搜索功能已关闭，使用默认空数据')
+        xhsData = {
+          travelTips: [],
+          popularSpots: [],
+          recommendations: [],
+          totalNotes: 0
+        }
+        
+        /* 原小红书搜索代码（已禁用）
         try {
           console.log('搜索小红书旅行内容...')
           const xhsResponse = await XhsService.searchTravelContent(
@@ -217,6 +230,7 @@ export class TripPlanningService {
             totalNotes: 0
           }
         }
+        */
       }
 
       // 第二步：构建Dify工作流输入数据

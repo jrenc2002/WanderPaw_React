@@ -17,6 +17,7 @@ import {
 } from '@/store/TripState'
 import { accessTokenAtom } from '@/store/AuthState'
 import { MapboxMap } from '@/components/map/MapboxMap'
+import { EarthWithCapybara } from '@/components/decorations'
 import PetDressUpModal, { DressUpItem } from '@/components/pet/PetDressUpModal'
 import toast from 'react-hot-toast'
 import { getUnifiedButtonStyle, getSecondaryButtonStyle, handleButtonHover, handleSecondaryButtonHover } from '@/utils/buttonStyles'
@@ -1519,6 +1520,23 @@ ${petName} 💕`
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 底部地球装饰组件 */}
+      <div className="absolute bottom-[-60vh] left-0 w-full h-full">
+        <EarthWithCapybara 
+          petType={currentTripPlan?.petCompanion?.type === 'none' ? 'other' : (currentTripPlan?.petCompanion?.type || 'other')} 
+          onClick={handlePetClick}
+        />
+      </div>
+
+      {/* 装饰品弹窗 */}
+      <PetDressUpModal
+        isOpen={showDressUpModal}
+        onClose={() => setShowDressUpModal(false)}
+        onSave={handleDressUpSave}
+        currentItem={petTravelState.dressUpItem || null}
+        petName={currentTripPlan?.petCompanion?.name || ''}
+      />
     </div>
   )
 }

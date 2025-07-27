@@ -1,5 +1,18 @@
 import axios, { type AxiosResponse } from 'axios'
 
+/**
+ * 小红书爬取服务 - 当前已禁用
+ * 
+ * 注意：由于小红书反爬策略更新，此服务当前无法正常工作，已在以下位置禁用：
+ * 1. tripPlanningService.ts - 跳过小红书搜索，使用空数据
+ * 2. vite.config.ts - 注释掉代理配置
+ * 
+ * 如需重新启用，请：
+ * 1. 取消注释 vite.config.ts 中的 '/xhs-api' 代理配置
+ * 2. 修改 tripPlanningService.ts 中的小红书搜索逻辑
+ * 3. 确保后端爬虫服务可正常运行
+ */
+
 // 小红书API基础配置 - 根据环境选择不同的基础URL
 const isDevelopment = import.meta.env.DEV
 const XHS_API_BASE_URL = isDevelopment 
