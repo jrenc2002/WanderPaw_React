@@ -16,6 +16,8 @@ import {
   clearCurrentTripAtom
 } from '@/store/TripState'
 import { accessTokenAtom } from '@/store/AuthState'
+import { MapboxMap } from '@/components/map/MapboxMap'
+import PetDressUpModal, { DressUpItem } from '@/components/pet/PetDressUpModal'
 import toast from 'react-hot-toast'
 import { getUnifiedButtonStyle, getSecondaryButtonStyle, handleButtonHover, handleSecondaryButtonHover } from '@/utils/buttonStyles'
 import { TripContentService } from '@/services/tripContentService'
@@ -37,6 +39,7 @@ const TripJourneyView: React.FC = () => {
   const [letterAnimationStage, setLetterAnimationStage] = useState<'hidden' | 'appearing' | 'disappearing' | 'reappearing' | 'final'>('hidden')
   const [hasReadLetter, setHasReadLetter] = useState<boolean>(false)
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false)
+  const [showDressUpModal, setShowDressUpModal] = useState<boolean>(false)
 
   // 新增状态：管理生成的内容
   const [generatedContents, setGeneratedContents] = useState<Map<string, GeneratedContent>>(new Map())
@@ -48,7 +51,7 @@ const TripJourneyView: React.FC = () => {
   // 统一状态管理
   const [currentTripPlan] = useAtom(currentTripPlanAtom)
   const [tripProgress] = useAtom(tripProgressAtom)
-  const [petTravelState] = useAtom(petTravelStateAtom)
+  const [petTravelState, setPetTravelState] = useAtom(petTravelStateAtom)
   const [currentActivity] = useAtom(currentActivityAtom)
   const [, completeTrip] = useAtom(completeTripAtom)
   const [, clearCurrentTrip] = useAtom(clearCurrentTripAtom)
@@ -161,6 +164,31 @@ const TripJourneyView: React.FC = () => {
 
   const handleCloseLetterModal = () => {
     setShowLetterModal(false)
+  }
+
+  const handlePetClick = () => {
+    setShowDressUpModal(true)
+  }
+
+  const handleDressUpSave = (selectedItem: DressUpItem | null) => {
+    setPetTravelState(prev => ({
+      ...prev,
+      dressUpItem: selectedItem
+    }))
+    
+    if (selectedItem) {
+      toast.success(
+        language === 'zh' 
+          ? `已为${currentTripPlan?.petCompanion.name}添加${selectedItem.name}装扮`
+          : `Added ${selectedItem.nameEn} dressing up for ${currentTripPlan?.petCompanion.name}`
+      )
+    } else {
+      toast.success(
+        language === 'zh' 
+          ? `已移除${currentTripPlan?.petCompanion.name}的装扮`
+          : `Removed dressing up for ${currentTripPlan?.petCompanion.name}`
+      )
+    }
   }
 
   const handleAdjustPlan = () => {
@@ -1100,11 +1128,13 @@ ${petName} 💕`
                       navigate('/travel-journal')
                     }}
                   >
-                    收进手帐
+                    {language === 'zh' ? '收进手帐' : 'Add to Journal'}
                   </button>
                   <button 
                     className="w-[4vw] h-[4vw] rounded-full flex items-center justify-center transition-all hover:scale-105"
                     style={{ background: '#D9C6B1' }}
+                    title={language === 'zh' ? '分享' : 'Share'}
+                    aria-label={language === 'zh' ? '分享信件' : 'Share letter'}
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                       <path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" stroke="#687949" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

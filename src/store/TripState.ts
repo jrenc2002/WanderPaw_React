@@ -101,6 +101,13 @@ export interface PetTravelState {
   isVisible: boolean
   lastMoodUpdate: string
   moodMessage?: string
+  dressUpItem?: {
+    id: string
+    name: string
+    nameEn: string
+    image: string
+    type: 'hat' | 'accessory' | 'background'
+  } | null
 }
 
 // 主要状态 atoms
@@ -120,7 +127,8 @@ export const petTravelStateAtom = atomWithStorage<PetTravelState>('petTravelStat
   experience: 0,
   location: [116.4074, 39.9042], // 默认北京
   isVisible: true,
-  lastMoodUpdate: new Date().toISOString()
+  lastMoodUpdate: new Date().toISOString(),
+  dressUpItem: null
 })
 
 // 历史旅行记录

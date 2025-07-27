@@ -38,14 +38,8 @@ export const TripPlanMap: React.FC<TripPlanMapProps> = ({
         position: [activity.coordinates![1], activity.coordinates![0]], // 注意：MapPoint使用 [lat, lng] 格式
         title: activity.title,
         description: activity.description,
-        petFriendlyIndex: getPetFriendlyIndex(activity.theme),
-        data: {
-          time: activity.time,
-          theme: activity.theme,
-          duration: activity.duration,
-          tips: activity.tips,
-          order: index + 1
-        }
+        petFriendlyIndex: getPetFriendlyIndex(activity.theme)
+        // 不包含data属性，因为MapPoint的data结构与GeneratedTripActivity不兼容
       }))
   }, [activities])
 
