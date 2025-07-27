@@ -153,15 +153,15 @@ const CitySelectionView: React.FC = () => {
     <WarmBg>
       <div className="min-h-screen relative overflow-hidden flex flex-col">
         {/* 返回按钮 */}
-        <button
+        <div
           onClick={handleBack}
-          title={language === 'zh' ? '返回' : 'Back'}
-          className="fixed top-8 left-8 z-40 bg-white/80 backdrop-blur-sm rounded-full p-3 text-gray-600 hover:bg-white/90 transition-colors shadow-lg"
+          className="absolute top-6 left-6 z-40 flex items-center gap-2 text-[#687949] bg-transparent p-2 rounded-lg cursor-pointer transform transition-transform duration-200 hover:scale-110"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-        </button>
+          <span>{language === 'zh' ? '返回' : 'Back'}</span>
+        </div>
 
         <div className="relative z-20 flex flex-col items-center flex-grow p-6 pt-16">
           {/* 标题区域 */}
