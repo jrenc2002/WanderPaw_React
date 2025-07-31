@@ -1,8 +1,33 @@
 import axios, { type AxiosResponse } from 'axios'
 
-// API配置
-const API_BASE_URL = '/api' // 使用vite代理
+// API基础配置 - 根据环境选择不同的基础URL
+// 使用更可靠的环境判断：检查当前域名
+const isDevelopment = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || 
+   window.location.hostname === '127.0.0.1' ||
+   window.location.port === '5173')
+
+// 对于生产域名，强制使用生产环境API
+const isProductionDomain = typeof window !== 'undefined' && 
+  (window.location.hostname === 'wanderpaw.cn' ||
+   window.location.hostname === 'winderpawweb.zeabur.app' ||
+   window.location.hostname.endsWith('.zeabur.app'))
+
+const API_BASE_URL = (isDevelopment && !isProductionDomain)
+  ? '/api' // 开发环境使用vite代理
+  : 'https://backeenee.zeabur.app' // 生产环境直接访问后端服务
 const API_PREFIX = '/chat'
+
+// 调试信息 - 用于排查环境判断问题
+if (typeof window !== 'undefined') {
+  console.log('🔍 TripContentService 环境判断:')
+  console.log('- hostname:', window.location.hostname)
+  console.log('- port:', window.location.port)
+  console.log('- isDevelopment:', isDevelopment)
+  console.log('- isProductionDomain:', isProductionDomain)
+  console.log('- 最终 API_BASE_URL:', API_BASE_URL)
+  console.log('- 完整 baseURL:', `${API_BASE_URL}${API_PREFIX}`)
+}
 
 // 创建axios实例
 const tripContentApi = axios.create({

@@ -14,8 +14,19 @@ import axios, { type AxiosResponse } from 'axios'
  */
 
 // 小红书API基础配置 - 根据环境选择不同的基础URL
-const isDevelopment = import.meta.env.DEV
-const XHS_API_BASE_URL = isDevelopment 
+// 使用更可靠的环境判断：检查当前域名
+const isDevelopment = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || 
+   window.location.hostname === '127.0.0.1' ||
+   window.location.port === '5173')
+
+// 对于生产域名，强制使用生产环境API
+const isProductionDomain = typeof window !== 'undefined' && 
+  (window.location.hostname === 'wanderpaw.cn' ||
+   window.location.hostname === 'winderpawweb.zeabur.app' ||
+   window.location.hostname.endsWith('.zeabur.app'))
+
+const XHS_API_BASE_URL = (isDevelopment && !isProductionDomain)
   ? '/xhs-api' // 开发环境使用vite代理
   : 'https://xhsxhs.zeabur.app' // 生产环境直接访问后端服务
 const XHS_API_PREFIX = '/spider' // 小红书API路径前缀

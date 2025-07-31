@@ -54,5 +54,22 @@ export default defineConfig({
     preview: {
         host: '0.0.0.0',
         port: 5173,
+        proxy: {
+            // WanderPaw 后端API代理 - 生产环境预览模式
+            '/api': {
+                target: 'https://backeenee.zeabur.app',
+                changeOrigin: true,
+                rewrite: function (path) { return path.replace(/^\/api/, ''); },
+                secure: true,
+                configure: function (proxy, options) {
+                    proxy.on('error', function (err, req, res) {
+                        console.log('Preview API proxy error:', err);
+                    });
+                    proxy.on('proxyReq', function (proxyReq, req, res) {
+                        console.log('Preview API proxy request:', req.method, req.url, '-> ', proxyReq.path);
+                    });
+                }
+            }
+        }
     },
 });

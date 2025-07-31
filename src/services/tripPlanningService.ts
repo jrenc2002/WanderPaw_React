@@ -5,8 +5,19 @@ import type { PetInfo } from '@/store/PetState'
 import { parseAITripResponse, parseAITripResponseWithCoordinates, type AIRawResponse } from '@/utils/aiResponseParser'
 
 // API基础配置 - 根据环境选择不同的基础URL
-const isDevelopment = import.meta.env.DEV
-const TRIP_API_BASE_URL = isDevelopment 
+// 使用更可靠的环境判断：检查当前域名
+const isDevelopment = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || 
+   window.location.hostname === '127.0.0.1' ||
+   window.location.port === '5173')
+
+// 对于生产域名，强制使用生产环境API
+const isProductionDomain = typeof window !== 'undefined' && 
+  (window.location.hostname === 'wanderpaw.cn' ||
+   window.location.hostname === 'winderpawweb.zeabur.app' ||
+   window.location.hostname.endsWith('.zeabur.app'))
+
+const TRIP_API_BASE_URL = (isDevelopment && !isProductionDomain)
   ? '/api' // 开发环境使用vite代理
   : 'https://backeenee.zeabur.app' // 生产环境直接访问后端服务
 const TRIP_API_PREFIX = '/chat'
